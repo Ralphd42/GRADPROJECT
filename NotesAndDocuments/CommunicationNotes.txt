@@ -1,0 +1,15 @@
+Communications
+tcpip
+protocol
+all commands end in #
+
+start with <command Letter>
+for example <A>
+
+1FROM CLIENT TO SERVER
+ADD  <A>ClientLabel#
+
+2FROM SERVER TO CLIENT
+RESPOND TO ADD
+<A>1#    Added
+<A>2 reason#       failed to add      
