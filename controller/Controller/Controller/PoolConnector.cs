@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Collections;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Controller
 {
@@ -33,7 +34,14 @@ namespace Controller
 
         }
 
-
+        private Hashtable _htcmdIDS;
+        public Hashtable htcmdIDS
+        {
+            get 
+            { 
+                return _htcmdIDS; 
+            }
+        }
 
         public TcpClient poolTCPClient
         {
@@ -83,11 +91,36 @@ namespace Controller
                 json = json + "\n";
                 byte [] bytes = Encoding.ASCII.GetBytes(json);
                 _Client.GetStream().Write(bytes, 0, bytes.Length);
+                retval = true;
             }
             catch (Exception exp) 
             {
                 _Logger.LogMessage(exp, "failed to Subscribe");
             }
+            return retval;
+        }
+
+        bool authorize()
+        {
+            bool retval = false;
+            try
+            {
+                PoolAuth pa = new PoolAuth(1, "uname", "pwd");
+                string json = JsonConvert.SerializeObject(pa, Formatting.None);
+                json = json + "\n";
+                byte[] bytes = Encoding.ASCII.GetBytes(json);
+                _Client.GetStream().Write(bytes, 0, bytes.Length);
+                retval = true;
+            }
+            catch (Exception exp)
+            {
+                _Logger.LogMessage(exp, "failed to Authorize");
+            }
+
+
+
+
+
 
 
             return retval;
@@ -97,11 +130,11 @@ namespace Controller
 
 
 
-
         public class PoolSubscriber
         {
-            public PoolSubscriber( int id)
+            public PoolSubscriber( int ID)
             {
+                this.id = ID;
                 method = "mining.subscribe";
                 parameters = new ArrayList();
             }
@@ -111,6 +144,81 @@ namespace Controller
             [JsonProperty(PropertyName = "params")]
             public ArrayList parameters;
         }
+        public class PoolAuth
+        {
+            public PoolAuth(int ID, string uname, string pwd)
+            {
+                this.id = ID;
+                method = "mining.authorize";
+                parameters = new ArrayList();
+                parameters.Add(uname);
+                parameters.Add(pwd);
+            }
+            /*{"id": 1, "method": "mining.subscribe", "params": []}\n;*/
+            public int id;
+            public string method;
+            [JsonProperty(PropertyName = "params")]
+            public ArrayList parameters;
+        }
+
+        public void runListner()
+        {
+            string AllData = string.Empty;
+
+            NetworkStream ns = _Client.GetStream();
+            byte[] buffer = new byte[_Client.ReceiveBufferSize];
+
+            int read = ns.Read(buffer, 0, buffer.Length);
+            AllData = ASCIIEncoding.ASCII.GetString(buffer, 0, read);
+            // parse response run any rules
+            int cmdEnd = AllData.IndexOf("}");
+            while (cmdEnd > 0)
+            {
+                string cmdTxt = AllData.Substring(0, cmdEnd + 1);
+                //parse and process
+                JObject Robj = JObject.Parse(cmdTxt);
+                if (Robj.ContainsKey("method") && Robj["method"] != null)
+                {
+                    string method = Robj.ToString();
+                    if (String.Compare(method, "mining.notify") == 0)
+                    {
+                        MiningNotify(cmdTxt);
+                    }
+                    else
+                    if (String.Compare(method, "mining.set_difficulty") == 0)
+                    { 
+                        
+                    
+                    }
+                }
+                else if (Robj.ContainsKey("method"))
+                {
+
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// THis handles the notify. from the pool
+        /// </summary>
+        /// <param name="notifyJson">the JSON</param>
+        /// <returns></returns>
+        public bool MiningNotify(string notifyJson)
+        {
+            bool retval = false;
+            var obj = JObject.Parse(notifyJson);
+
+
+
+
+
+            return retval;
+        }
+
+
+
+
 
     }
 }
