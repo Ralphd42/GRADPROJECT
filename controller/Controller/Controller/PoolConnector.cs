@@ -205,17 +205,47 @@ namespace Controller
         /// <param name="notifyJson">the JSON</param>
         /// <returns></returns>
         public bool MiningNotify(string notifyJson)
-        {
+        {/*params[0]	string	The job ID for the job being sent in this message.
+params[1]	string	The hex-encoded previous block hash.
+params[2]	string	The hex-encoded prefix of the coinbase transaction (to precede extra nonce 2).
+params[3]	string	The hex-encoded suffix of the coinbase transaction (to follow extra nonce 2).
+params[4]	array	A JSON array containing the hex-encoded hashes needed to compute the merkle root. See Merkle Tree Hash Array.
+params[5]	string	The hex-encoded block version.
+params[6]	string	The hex-encoded network difficulty required for the block.
+params[7]	string	The hex-encoded current time for the block.
+params[8]*/
             bool retval = false;
             var obj = JObject.Parse(notifyJson);
+            JArray prms = (JArray)obj["params"];
+            JArray MA = (JArray)prms[4];
+            string[] aMerk = new string[MA.Count];
+            MIneJob m = new MIneJob() 
+            { 
+                clear      = bool.Parse(Convert.ToString(prms[8])),
+                CoinFollow = Convert.ToString(prms[3]),
+                CoinPre    = Convert.ToString(prms[4]),
+                Difficulty = Convert.ToString(prms[6]),
+                ID         = Convert.ToString(prms[0]),
+                Merk       = aMerk,
+                NetTime    = Convert.ToString(prms[7]),
+                PrevHash   = Convert.ToString(prms[2]),
+                Ver        = Convert.ToString(prms[5])
+            };
+            
+            /*BUild Queue or run at onece*/
+            
+            return retval;
+        }
 
 
-
+        public bool MiningSetDifficulty(string difJson)
+        {
+            bool retval = false;
+            var nObj = JObject.Parse(difJson);
 
 
             return retval;
         }
-
 
 
 

@@ -13,17 +13,18 @@ namespace Controller
     {
         private string _ipv4;
         private string _machineName;
-
+        private int _procCount;
         public string MachineName { get => _machineName;  }
         public string Ipv4 { get => _ipv4; }
 
-        public Worker(string ip, string name)
+        public Worker(string ip, string name, int pCnt)
         {
             _ipv4 = ip;
             _machineName = name;
-        
-        
-        
+            _procCount = pCnt;
+
+
+
         }
 
 
