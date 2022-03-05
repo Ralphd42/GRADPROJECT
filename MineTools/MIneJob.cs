@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Controller
+namespace MineTools
 {
-    class MIneJob
+    public class MineJob
     {
         public string ID;
 

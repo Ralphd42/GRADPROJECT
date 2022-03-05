@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Collections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using MineTools;
 namespace Controller
 {
     class PoolConnector
@@ -219,7 +219,7 @@ params[8]*/
             JArray prms = (JArray)obj["params"];
             JArray MA = (JArray)prms[4];
             string[] aMerk = new string[MA.Count];
-            MIneJob m = new MIneJob() 
+            MineTools.MineJob m = new MineJob() 
             { 
                 clear      = bool.Parse(Convert.ToString(prms[8])),
                 CoinFollow = Convert.ToString(prms[3]),

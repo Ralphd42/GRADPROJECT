@@ -98,7 +98,7 @@ namespace Controller
                     if (data.ToUpper().Contains("<A>"))
                     {
                         data = CommParser.removeHT(data);
-                        bool rv = addWorker(new Worker(af.ToString(), data));
+                        bool rv = addWorker(new Worker(af.ToString(), data,5));
                         ShowWorkers();
                         //byte[] msg = Encoding.ASCII.GetBytes(data);
                         handler.Send(Encoding.ASCII.GetBytes("<A>1#"));

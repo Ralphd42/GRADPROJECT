@@ -113,6 +113,16 @@
             "rid": "win"
           }
         }
+      },
+      "MineTools/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v5.0",
+        "compile": {
+          "bin/placeholder/MineTools.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MineTools.dll": {}
+        }
       }
     }
   },
@@ -343,11 +353,17 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "MineTools/1.0.0": {
+      "type": "project",
+      "path": "../../../MineTools/MineTools.csproj",
+      "msbuildProject": "../../../MineTools/MineTools.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
-      "BitcoinLib >= 1.15.0"
+      "BitcoinLib >= 1.15.0",
+      "MineTools >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -385,7 +401,11 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Development\\CSIGRADPROJECT\\GRADPROJECT\\MineTools\\MineTools.csproj": {
+              "projectPath": "C:\\Development\\CSIGRADPROJECT\\GRADPROJECT\\MineTools\\MineTools.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
