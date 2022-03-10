@@ -25,7 +25,7 @@ namespace MineTools
         /// <param name="b1Coin"></param>
         /// <param name="b2Coin"></param>
         /// <param name="Extra"></param>
-        public static ( byte[] cb,byte[] cbh)   CoinBaseHash(string b1Coin, string b2Coin, string extranonce1, string extranonce2)
+        public static   byte[]     CoinBaseHash(string b1Coin, string b2Coin, string extranonce1, string extranonce2)
         {
             StringBuilder sbCB = new StringBuilder();
             sbCB.Append(b1Coin);
@@ -36,29 +36,22 @@ namespace MineTools
             SHA256 sha25Obj = SHA256.Create();
             sha25Obj.Initialize();
             var cb= sha25Obj.ComputeHash(bArr1);
-            var cb1 = sha25Obj.ComputeHash(cb);
-            return (cb, cb1);
+            return sha25Obj.ComputeHash(cb);
+            
         }
         
         public static string MerkleRoot(string Coinb1, string Coinb2, string ExtraNonce1, string ExtraNonce2, string[] MerkleNumbers)
         {
-            
-            var cbhs = CoinBaseHash(Coinb1,Coinb2,ExtraNonce1, ExtraNonce2);
-            byte[] cb = cbhs.cb;
-            byte[] cb2 = cbhs.cbh;
-
+            byte[] cb;
+            byte[] cb2 = CoinBaseHash(Coinb1, Coinb2, ExtraNonce1, ExtraNonce2);
             SHA256 sha25Obj = SHA256.Create();
             sha25Obj.Initialize();
-
-
             foreach (string s in MerkleNumbers)
             {
                 cb = sha25Obj.ComputeHash(Convert.FromHexString(byteArrToString(cb2) + s));
                 cb2 = sha25Obj.ComputeHash(cb);
             }
-
             string MerkleRoot = byteArrToString(ReverseByteArrayByFours(cb2));
-
             return MerkleRoot;
         }
 
@@ -84,6 +77,20 @@ namespace MineTools
 
             return byteArray;
         }
+
+        public static string GenerateTarget(int Difficulty)
+        {
+
+            string Target = string.Empty;
+
+            return Target;
+        }
+
+
+
+
+
+
 
     }
 }
