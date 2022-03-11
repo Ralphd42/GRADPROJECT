@@ -78,19 +78,28 @@ namespace MineTools
             return byteArray;
         }
 
-        public static string GenerateTarget(int Difficulty)
+        public static byte [] GenerateTarget(int Difficulty)
         {
+            byte[] ba = { 
+                0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
-            string Target = string.Empty;
+             
+             
+            int n = ba[0];
+            byte[] result = new byte[ba.Length];
 
-            return Target;
+            for (int i = 0; i < ba.Length; i++)
+            {
+                int r = n / Difficulty;
+                result[i] = (byte)r;
+                int x = n - r * Difficulty;
+                n = (x << 8) + ba[i];
+            }
+            Array.Reverse((Array)result);
+            return result;
         }
-
-
-
-
-
-
-
     }
 }
