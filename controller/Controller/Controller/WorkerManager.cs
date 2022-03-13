@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using MineTools;
+using Newtonsoft.Json;
+
 namespace Controller
 {
     /// <summary>
@@ -53,10 +56,39 @@ namespace Controller
         }
 
 
+        public void sendJob()
+        {
+            byte[] ta = Encoding.ASCII.GetBytes("THIS IS THE TH DATA");
+            byte[] tar = Encoding.ASCII.GetBytes("TARGET -- TARGET");
+
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
 
 
 
-
+            MineThreadData dt = new MineThreadData()
+            {
+                thData = ta,
+                id = "AA1",
+                increment = 100,
+                Nonce = 50,
+                numToRun = 5,
+                target = tar
+            };
+            TcpClient tcpClient = new TcpClient(AddressFamily.InterNetworkV6);
+            tcpClient.Connect(ipAddress, 13001);
+            if (tcpClient != null)
+            {
+                NetworkStream stream = tcpClient.GetStream();
+                string dtJson = JsonConvert.SerializeObject(dt);
+                byte[] toSend = Encoding.ASCII.GetBytes(dtJson);
+                stream.Write(toSend, 0, toSend.Length);
+                stream.Flush();
+                stream.Close();
+                tcpClient.Close();
+            }
+        }
+        
         public void AddWorkerThread()
         {
             byte[] bytes = new Byte[1024];

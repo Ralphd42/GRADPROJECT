@@ -7,9 +7,15 @@ namespace MineWorker
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            MineOperations mi = new MineOperations();
-            mi.joinNetwork("AAA");
 
+            JobListner jl = new JobListner();
+            jl.ListenToController();
+            
+            if (false)
+            {
+                MineOperations mi = new MineOperations();
+                mi.joinNetwork("AAA");
+            }
         }
     }
 }

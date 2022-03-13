@@ -9,7 +9,17 @@ for example <A>
 1FROM CLIENT TO SERVER
 ADD  <A>ClientLabel#
 
+
+
+
+
+
+
+
+
 2FROM SERVER TO CLIENT
 RESPOND TO ADD
-<A>1#    Added
-<A>2 reason#       failed to add      
+<A>1#    			Added
+<A>2 reason#        Failed to add      
+<K>KILL#		    KILL NOTIFICATION
+<J>JOBData#                JOB

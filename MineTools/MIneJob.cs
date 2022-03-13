@@ -25,8 +25,23 @@ namespace MineTools
         public string NetTime;
         
         public bool clear;
-
-
-
+        public string MerkleRoot;
+        public byte[] target;
+        string Data
+        {
+            get
+            {
+                return Ver + PrevHash + MerkleRoot + NetTime + Difficulty;
+            }
+        }
+    }
+    public class MineThreadData
+    {
+        public string id;
+        public int numToRun;
+        public byte[] thData;
+        public byte[] target;
+        public uint Nonce;
+        public uint increment;
     }
 }

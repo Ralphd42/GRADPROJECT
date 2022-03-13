@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "MineWorker/1.0.0": {
+        "dependencies": {
+          "MineTools": "1.0.0"
+        },
+        "runtime": {
+          "MineWorker.dll": {}
+        }
+      },
+      "MineTools/1.0.0": {
+        "runtime": {
+          "MineTools.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MineWorker/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MineTools/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
