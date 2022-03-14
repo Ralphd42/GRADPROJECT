@@ -4,6 +4,7 @@ namespace MineTools
 {
     public class Miner
     {
+        public event EventHandler<uint> foundNonce;
         private bool _done;  // this will allow job to stop
         public void KillProc()
         {
@@ -17,13 +18,14 @@ namespace MineTools
             _job = mtd;
 
         }
-        public void sendFinalNonce()
-        {
-            KillProc();
+        public void OnFoundNonce()
+        {   
             if (!_done)
-            { 
-                // need to kill all procs in this and send back to controller
-                // send nonce()
+            {
+                if (foundNonce != null)
+                {
+                    foundNonce.Invoke(this, _job.Nonce);
+                }
             }
 
         }
@@ -50,7 +52,7 @@ namespace MineTools
                     Hashcount++;
                     if (meetsTarget(ScryptResult, _job.target))  // Did we meet the target?
                     {
-                        sendFinalNonce();
+                        OnFoundNonce();
                     }
                     else
                     {

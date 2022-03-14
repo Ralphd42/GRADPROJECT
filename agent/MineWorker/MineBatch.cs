@@ -25,14 +25,24 @@ namespace MineWorker
         {
             _running = true;
             _thData = thedata;
-        
-        
         }
+
+        public static void FoundNonce(object sender, uint nonce)
+        {
+            Console.WriteLine("Found it");
+            /*
+                notify controller.  
+             
+             */
+        }
+
+
+
+
         void LaunchThreads()
         {
-            _threads = new Thread        [_thData.numToRun];
+            _threads = new Thread [_thData.numToRun];
             _jobs = new Miner[_thData.numToRun];
-
             for (uint i = 0; i < _thData.numToRun; ++i)
             {
                 MineThreadData jobData = new MineThreadData();
@@ -50,10 +60,5 @@ namespace MineWorker
                 _threads[i].Join();
             }
         }
-
-
-
-
-
     }
 }
