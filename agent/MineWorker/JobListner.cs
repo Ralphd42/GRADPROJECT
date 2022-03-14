@@ -41,7 +41,7 @@ namespace MineWorker
                     objString.Append(Encoding.ASCII.GetString(rb));
                     Console.Write(objString.ToString());
                 }
-                MineTools.MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
+                MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
                 Console.WriteLine(dt.id);
 
                 // Start listening for connections.  

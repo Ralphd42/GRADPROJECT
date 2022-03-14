@@ -17,3 +17,4 @@ C:\Development\CSIGRADPROJECT\GRADPROJECT\agent\MineWorker\obj\Debug\net5.0\Mine
 C:\Development\CSIGRADPROJECT\GRADPROJECT\agent\MineWorker\obj\Debug\net5.0\ref\MineWorker.dll
 C:\Development\CSIGRADPROJECT\GRADPROJECT\agent\MineWorker\obj\Debug\net5.0\MineWorker.pdb
 C:\Development\CSIGRADPROJECT\GRADPROJECT\agent\MineWorker\obj\Debug\net5.0\MineWorker.genruntimeconfig.cache
+C:\Development\CSIGRADPROJECT\GRADPROJECT\agent\MineWorker\bin\Debug\net5.0\Newtonsoft.Json.dll

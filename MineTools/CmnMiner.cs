@@ -11,7 +11,12 @@ namespace MineTools
             // must do notifications to all
         }
         private MineThreadData _job;
+        public Miner(MineThreadData mtd)
+        {
+            _done = false;
+            _job = mtd;
 
+        }
         public void sendFinalNonce()
         {
             KillProc();
