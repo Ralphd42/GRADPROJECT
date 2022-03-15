@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,15 +22,49 @@ namespace MineWorker
         private Miner[] _jobs;
         private MineThreadData _thData;
         private bool _running ;
-        public MineBatch(MineThreadData thedata)
+        private NetworkStream _nsm;
+        public MineBatch(MineThreadData thedata, NetworkStream nsm)
         {
             _running = true;
             _thData = thedata;
+            _nsm = nsm;
         }
+
+
+
+        public void testwb()
+        {
+            Console.WriteLine("--ZZZZZZZZ--");
+            try
+            {
+                Console.WriteLine("--AAA--");
+                byte[] bytes = Encoding.ASCII.GetBytes("FUCKING YEAH");
+                _nsm.Write(bytes, 0, bytes.Length);
+                Console.WriteLine("--1--");
+                _nsm.Flush();
+                Console.WriteLine("--2--");
+                _nsm.Close();
+                Console.WriteLine("--3--");
+
+                _nsm.Dispose();
+                Console.WriteLine("--4--");
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(":::");
+            
+            
+            }
+        }
+
 
         public static void FoundNonce(object sender, uint nonce)
         {
             Console.WriteLine("Found it");
+
+
+
+           // _nsm.Write
             /*
                 notify controller.  
              
@@ -39,7 +74,7 @@ namespace MineWorker
 
 
 
-        void LaunchThreads()
+        public void LaunchThreads()
         {
             _threads = new Thread [_thData.numToRun];
             _jobs = new Miner[_thData.numToRun];

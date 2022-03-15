@@ -84,8 +84,21 @@ namespace Controller
                 byte[] toSend = Encoding.ASCII.GetBytes(dtJson);
                 stream.Write(toSend, 0, toSend.Length);
                 stream.Flush();
-                stream.Close();
-                tcpClient.Close();
+                //stream.Close();
+              //  stream = tcpClient.GetStream();
+                //NetworkStream nsm = tcpClient.GetStream();
+                
+                int byrd = 0;
+                byte[] rb = new byte[1024];
+                StringBuilder objString = new StringBuilder();
+                while ((byrd = stream.Read(rb)) > 0)
+                {
+                    objString.Append(Encoding.ASCII.GetString(rb));
+                    Console.Write(objString.ToString());
+                }
+                Console.Write("DONE");
+
+
             }
         }
         
