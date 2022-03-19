@@ -48,7 +48,7 @@ namespace MineTools
                     Databyte[77] = (byte)(_job.Nonce >> 8);
                     Databyte[78] = (byte)(_job.Nonce >> 16);
                     Databyte[79] = (byte)(_job.Nonce >> 24);
-                    ScryptResult = null; //Replicon.Cryptography.SCrypt.SCrypt.DeriveKey(Databyte, Databyte, 1024, 1, 1, 32);
+                    ScryptResult = new byte[8];// Replicon.Cryptography.SCrypt.SCrypt.DeriveKey(Databyte, Databyte, 1024, 1, 1, 32);
                     Hashcount++;
                     if (meetsTarget(ScryptResult, _job.target))  // Did we meet the target?
                     {
