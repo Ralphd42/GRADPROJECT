@@ -27,7 +27,7 @@ namespace MineTools
         public bool clear;
         public string MerkleRoot;
         public byte[] target;
-        string Data
+        public string Data
         {
             get
             {

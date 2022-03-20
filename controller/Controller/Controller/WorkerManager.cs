@@ -25,6 +25,14 @@ namespace Controller
             _addPort = 11000;
         }
 
+        public List<Worker> Workers
+        {
+            get 
+            {
+                return _workers;
+            }
+        }
+
         public bool Running { get => _running; set => _running = value; }
        
 

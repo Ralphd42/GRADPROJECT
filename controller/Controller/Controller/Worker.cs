@@ -16,7 +16,9 @@ namespace Controller
         private int _procCount;
         public string MachineName { get => _machineName;  }
         public string Ipv4 { get => _ipv4; }
-
+        public int Processors {
+            get => _procCount;
+        }
         public Worker(string ip, string name, int pCnt)
         {
             _ipv4 = ip;

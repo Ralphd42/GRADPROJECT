@@ -5,11 +5,11 @@ namespace MineTools
     public class Miner
     {
         public event EventHandler<uint> foundNonce;
-        private bool _done;  // this will allow job to stop
+        private volatile bool _done;  // this will allow job to stop
         public void KillProc()
         {
             _done = false;
-            // must do notifications to all
+           
         }
         private MineThreadData _job;
         public Miner(MineThreadData mtd)
@@ -22,12 +22,9 @@ namespace MineTools
         {   
             if (!_done)
             {
-                if (foundNonce != null)
-                {
-                    foundNonce.Invoke(this, _job.Nonce);
-                }
+                foundNonce?.Invoke(this, _job.Nonce);
+                _done = true;
             }
-
         }
 
 

@@ -57,21 +57,27 @@ namespace MineWorker
             }
         }
 
-
-        public static void FoundNonce(object sender, uint nonce)
+        void stopThreads()
         {
-            Console.WriteLine("Found it");
-
-
-
-           // _nsm.Write
-            /*
-                notify controller.  
-             
-             */
+            foreach (var jb in _jobs)
+            {
+                jb.KillProc();
+            }
         }
 
 
+
+        public void handleFound(object sender, uint newNonce)
+        {
+            //one notify all threads of done
+            // send to controller that we won
+            string msg = string.Format("<F>{0}#",newNonce);
+            byte[] bytes = Encoding.ASCII.GetBytes(msg);
+            _nsm.Write(bytes, 0, bytes.Length);
+            _nsm.Flush();
+            _nsm.Close();
+            _nsm.Dispose();
+        }
 
 
         public void LaunchThreads()
@@ -87,6 +93,7 @@ namespace MineWorker
                 jobData.target = _thData.target;
                 jobData.thData = _thData.thData;
                 _jobs[i] = new Miner(jobData);
+                _jobs[i].foundNonce += this.handleFound;
                 _threads[i] = new Thread(new ThreadStart(_jobs[i].runJob));
                 _threads[i].Start();
             }
