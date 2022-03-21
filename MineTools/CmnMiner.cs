@@ -8,7 +8,7 @@ namespace MineTools
         private volatile bool _done;  // this will allow job to stop
         public void KillProc()
         {
-            _done = false;
+            _done = true;
            
         }
         private MineThreadData _job;

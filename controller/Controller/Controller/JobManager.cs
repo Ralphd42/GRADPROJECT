@@ -54,5 +54,17 @@ namespace Controller
                 th.Join();
             }
         }
+        private static object foundObj = new object();
+
+        public void handleFound(object sender, uint newNonce)
+        {
+            lock (foundObj)
+            { 
+            
+            
+            
+            
+            }
+        }
     }
 }

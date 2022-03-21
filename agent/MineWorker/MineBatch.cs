@@ -66,17 +66,29 @@ namespace MineWorker
         }
 
 
-
+        private static object foundObj = new object();
         public void handleFound(object sender, uint newNonce)
         {
             //one notify all threads of done
             // send to controller that we won
-            string msg = string.Format("<F>{0}#",newNonce);
-            byte[] bytes = Encoding.ASCII.GetBytes(msg);
-            _nsm.Write(bytes, 0, bytes.Length);
-            _nsm.Flush();
-            _nsm.Close();
-            _nsm.Dispose();
+            lock (foundObj)
+            {   if (_running)
+                {
+                    string msg = string.Format("<F>{0}#", newNonce);
+                    byte[] bytes = Encoding.ASCII.GetBytes(msg);
+                    _nsm.Write(bytes, 0, bytes.Length);
+                    _nsm.Flush();
+                    _nsm.Close();
+                    _nsm.Dispose();
+                    foreach (var jb in _jobs)
+                    {
+                        jb.KillProc();
+                    
+                    }
+
+                }
+                _running = false;
+            }
         }
 
 
