@@ -18,6 +18,7 @@ namespace Controller
         private List<MineThreadData> _mineThData;
         private List<Thread> _threads;
         private List<JobThread> _jTHreads;
+        public EventHandler<uint> NotifyPool;
         public JobManager(MineJob job, List<Worker> Workers)
         {
             _job        = job;
@@ -26,7 +27,7 @@ namespace Controller
             _threads    = new List<Thread>();
             _jTHreads   = new List<JobThread>();
         }
-        public void startJob()
+        public void startJobs()
         {
             uint thNonce = 0;
             int totalThreads = (from w in _workers select w.Processors).Sum();
@@ -43,6 +44,7 @@ namespace Controller
                     
                 };
                 JobThread jt = new JobThread(_workers[dJobid], _mineThData[dJobid]);
+                jt.foundNonce += handleFound;
                 _jTHreads.Add(jt);   /// might not need this
                 Thread t = new Thread(new ThreadStart(jt.sendJob));
                 t.Start();
@@ -59,11 +61,17 @@ namespace Controller
         public void handleFound(object sender, uint newNonce)
         {
             lock (foundObj)
-            { 
-            
-            
-            
-            
+            {
+                NotifyPool?.Invoke(this,newNonce);
+                killThreads();
+            }
+        }
+        
+        public void killThreads()
+        {
+            foreach (var jt in _jTHreads)
+            {
+                jt.KIll();
             }
         }
     }

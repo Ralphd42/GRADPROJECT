@@ -19,21 +19,27 @@ namespace Controller
         public event EventHandler<uint> foundNonce;
         private bool _running;
         private uint _nonce;
+        TcpClient tcpClient;
         public void KIll()
         {
             _running = false;
+            if (tcpClient != null)
+            {
+                tcpClient.Close();
+            }
         }
+
         public JobThread(  Worker Worker, MineThreadData MTD)
         {
-            
-            _worker = Worker;
-            dt      = MTD   ;
-            _running = true;
+            _worker  = Worker;
+            dt       = MTD   ;
+            _running = true  ;
         }
+
         public void sendJob()
         {
             IPAddress ipAddress = IPAddress.Parse(_worker.Ipv4);
-            TcpClient tcpClient = new TcpClient(AddressFamily.InterNetwork);
+            tcpClient = new TcpClient(AddressFamily.InterNetwork);
             tcpClient.Connect(ipAddress, Settings.JOBPORT);
             if (tcpClient != null)
             {
