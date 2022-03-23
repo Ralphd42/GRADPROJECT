@@ -30,7 +30,7 @@ namespace MineWorker
                 IPAddress.Parse(ipAddress.ToString()),
                 ipAddress.ToString(), ipAddress
                 ));
-            Int32 port = 13001;
+            Int32 port = Settings.JOBPORT;
             tcpListener = new TcpListener(new IPEndPoint(IPAddress.IPv6Any, port));//      new(ipAddress, port);
             
             //tcpListener.
@@ -53,14 +53,11 @@ namespace MineWorker
                     {
                         break;
                     }
-
                 }
                 MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
                 Console.WriteLine(dt.id);
-                MineBatch mb = new MineBatch(dt,nsm);
+                MineBatch mb = new(dt,nsm);
                 mb.testwb();
-                // Start listening for connections.  
-
             }
             catch (Exception e)
             {

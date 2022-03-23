@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "spxp53H6OfNj8es3qPs/yq9rjvlykK7h8ZsJl9jaGeFjeVEASdgOM0u/MER+3DqL0eSWKDoi4iI4zvfDn55SPA==",
+  "success": true,
+  "projectFilePath": "C:\\Development\\CSIGRADPROJECT\\GRADPROJECT\\controller\\Controller\\Controller\\Controller.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ralph\\.nuget\\packages\\bitcoinlib\\1.15.0\\bitcoinlib.1.15.0.nupkg.sha512",
+    "C:\\Users\\ralph\\.nuget\\packages\\microsoft.netcore.platforms\\2.0.0\\microsoft.netcore.platforms.2.0.0.nupkg.sha512",
+    "C:\\Users\\ralph\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512",
+    "C:\\Users\\ralph\\.nuget\\packages\\system.configuration.configurationmanager\\4.5.0\\system.configuration.configurationmanager.4.5.0.nupkg.sha512",
+    "C:\\Users\\ralph\\.nuget\\packages\\system.security.accesscontrol\\4.5.0\\system.security.accesscontrol.4.5.0.nupkg.sha512",
+    "C:\\Users\\ralph\\.nuget\\packages\\system.security.cryptography.protecteddata\\4.5.0\\system.security.cryptography.protecteddata.4.5.0.nupkg.sha512",
+    "C:\\Users\\ralph\\.nuget\\packages\\system.security.permissions\\4.5.0\\system.security.permissions.4.5.0.nupkg.sha512",
+    "C:\\Users\\ralph\\.nuget\\packages\\system.security.principal.windows\\4.5.0\\system.security.principal.windows.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}

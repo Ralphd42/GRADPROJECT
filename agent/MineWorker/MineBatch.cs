@@ -65,6 +65,23 @@ namespace MineWorker
             }
         }
 
+        bool isActive()
+        {
+            bool retval = false;
+            if (_nsm != null)
+            {
+                if (_nsm.Socket.Poll(100, SelectMode.SelectWrite))
+                {
+                    retval = true;
+                }
+            }
+            return retval;
+        }
+
+
+
+
+
 
         private static object foundObj = new object();
         public void handleFound(object sender, uint newNonce)
@@ -80,14 +97,17 @@ namespace MineWorker
                     _nsm.Flush();
                     _nsm.Close();
                     _nsm.Dispose();
-                    foreach (var jb in _jobs)
-                    {
-                        jb.KillProc();
-                    
-                    }
-
+                    KillJobs();
                 }
                 _running = false;
+            }
+        }
+
+        public void KillJobs()
+        {
+            foreach (var jb in _jobs)
+            {
+                jb.KillProc();
             }
         }
 
