@@ -131,6 +131,8 @@ namespace Controller
                 while (Running)
                 {
                     Socket handler = listener.Accept();
+                    IPAddress remAddy = IPAddress.Parse(((IPEndPoint)handler.RemoteEndPoint).Address.ToString());
+                    //handler.RemoteEndPoint.
                     var rmp = (IPEndPoint)handler.RemoteEndPoint;
                     var af = rmp.Address;
                     string data = string.Empty;
@@ -151,7 +153,7 @@ namespace Controller
                     if (data.ToUpper().Contains("<A>"))
                     {
                         data = CommParser.removeHT(data);
-                        bool rv = addWorker(new Worker(af.ToString(), data,5));
+                        bool rv = addWorker(new Worker(remAddy.ToString(), data,5));
                         ShowWorkers();
                         //byte[] msg = Encoding.ASCII.GetBytes(data);
                         handler.Send(Encoding.ASCII.GetBytes("<A>1#"));

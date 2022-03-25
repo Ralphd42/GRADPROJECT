@@ -5,11 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
- 
+using MineTools;
+using Settings = MineTools.Settings;
 namespace MineWorker
 {
-    class MineOperations
+    public class MineOperations
     {
+        /// <summary>
+        /// joinNetwork
+        /// joins the distributed miner network
+        /// </summary>
+        /// <param name="clientName"></param>
+        /// <returns>true if succesful.   Errors written to log </returns>
         public bool joinNetwork(string clientName)
         {
             bool retval = false;
@@ -21,8 +28,11 @@ namespace MineWorker
                 // Establish the remote endpoint for the socket.  
                 // This example uses port 11000 on the local computer.  
                 IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-                //IPAddress ipAddress = ipHostInfo.AddressList[0];
-                IPEndPoint remoteEP = new IPEndPoint(MineTools.s, 11000);
+                IPAddress ipAddress = ipHostInfo.AddressList[0];
+                IPAddress conIPA = IPAddress.Parse(Settings.CONTROLLERIPV4);
+
+
+                IPEndPoint remoteEP = new IPEndPoint(conIPA, Settings.WORKERMANAGERPORT);
 
                 // Create a TCP/IP  socket.  
                 Socket sender = new Socket(ipAddress.AddressFamily,
@@ -32,51 +42,57 @@ namespace MineWorker
                 try
                 {
                     sender.Connect(remoteEP);
-
-                    Console.WriteLine("Socket connected to {0}",
-                        sender.RemoteEndPoint.ToString());
-
-                    // Encode the data string into a byte array.  
-                    byte[] msg = Encoding.ASCII.GetBytes("<A>zxddfe#");
-
-                    // Send the data through the socket.  
+                    string smsg = string.Format("<A>{0}#", clientName);
+                    byte[] msg = Encoding.ASCII.GetBytes(smsg);
                     int bytesSent = sender.Send(msg);
-
-                    // Receive the response from the remote device.  
                     int bytesRec = sender.Receive(bytes);
-                    Console.WriteLine("Echoed test = {0}",
-                        Encoding.ASCII.GetString(bytes, 0, bytesRec));
-
+                    string returnmsg = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    if (returnmsg.Contains("<A>1#"))
+                    {
+                        retval = true;
+                    }
                     // Release the socket.  
                     sender.Shutdown(SocketShutdown.Both);
                     sender.Close();
 
                 }
-                catch (ArgumentNullException ane)
+                /* catch (ArgumentNullException ane)
+                 {
+                     Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
+                 }
+                 catch (SocketException se)
+                 {
+                     Console.WriteLine("SocketException : {0}", se.ToString());
+                 }
+                 catch (Exception e)
+                 {
+                     Console.WriteLine("Unexpected exception : {0}", e.ToString());
+                 }*/
+                catch (Exception exp)
                 {
-                    Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
+                    if (_logger != null)
+                    {
+                        _logger.LogError(exp, "Error in joining network");
+                    }
                 }
-                catch (SocketException se)
-                {
-                    Console.WriteLine("SocketException : {0}", se.ToString());
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
-                }
-
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
-
-
-
-
             return retval;
         }
+        private ILogger _logger;
 
+
+
+        public MineOperations(ILogger lgger =null)
+        {
+            if (lgger != null)
+            {
+                _logger = lgger;
+            }
+        }
 
     }
 }
