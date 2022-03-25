@@ -12,12 +12,12 @@ namespace MineWorker
 {
     class JobListner
     {
-        private int _addPort;
         private bool Running;
         private TcpListener tcpListener;
-
-        public JobListner()
+        private ILogger _logger;
+        public JobListner(ILogger lger)
         {
+            _logger = lger;
             Running = true;
         }
         public void ListenToController()
@@ -57,7 +57,9 @@ namespace MineWorker
                 MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
                 Console.WriteLine(dt.id);
                 MineBatch mb = new(dt,nsm);
-                mb.testwb();
+                //mb.testwb();
+                mb.LaunchThreads();
+                
             }
             catch (Exception e)
             {

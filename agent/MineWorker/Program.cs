@@ -14,7 +14,7 @@ namespace MineWorker
                 if (joined)
                 {
                     lg.LogMessage("Joined Nwetwork");
-                    JobListner jl = new JobListner();
+                    JobListner jl = new JobListner(lg);
                     jl.ListenToController();
                 }
                 else

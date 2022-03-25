@@ -1,0 +1,12 @@
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\bin\Debug\net5.0\MineTools.deps.json
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\bin\Debug\net5.0\MineTools.dll
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\bin\Debug\net5.0\ref\MineTools.dll
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\bin\Debug\net5.0\MineTools.pdb
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\obj\Debug\net5.0\MineTools.csproj.AssemblyReference.cache
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\obj\Debug\net5.0\MineTools.GeneratedMSBuildEditorConfig.editorconfig
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\obj\Debug\net5.0\MineTools.AssemblyInfoInputs.cache
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\obj\Debug\net5.0\MineTools.AssemblyInfo.cs
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\obj\Debug\net5.0\MineTools.csproj.CoreCompileInputs.cache
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\obj\Debug\net5.0\MineTools.dll
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\obj\Debug\net5.0\ref\MineTools.dll
+C:\Development\CSIGRADPROJECT\GRADPROJECT\MineTools\obj\Debug\net5.0\MineTools.pdb

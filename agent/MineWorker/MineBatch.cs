@@ -93,10 +93,19 @@ namespace MineWorker
                 {
                     string msg = string.Format("<F>{0}#", newNonce);
                     byte[] bytes = Encoding.ASCII.GetBytes(msg);
-                    _nsm.Write(bytes, 0, bytes.Length);
-                    _nsm.Flush();
-                    _nsm.Close();
-                    _nsm.Dispose();
+                    if (_nsm.CanWrite)
+                    {
+                        _nsm.Write(bytes, 0, bytes.Length);
+                        _nsm.BeginWrite(bytes, 0, bytes.Length, new AsyncCallback((IAsyncResult ar) => 
+                        { 
+                             _nsm.Flush();
+                            _nsm.Close();
+                            _nsm.Dispose();    
+
+
+                        }), null);
+                       
+                    }
                     KillJobs();
                 }
                 _running = false;
