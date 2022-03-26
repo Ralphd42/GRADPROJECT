@@ -13,7 +13,7 @@ namespace MineWorker
                 bool joined = mi.joinNetwork(args[0]);
                 if (joined)
                 {
-                    lg.LogMessage("Joined Nwetwork");
+                    lg.LogMessage("Joined Network");
                     JobListner jl = new JobListner(lg);
                     jl.ListenToController();
                 }

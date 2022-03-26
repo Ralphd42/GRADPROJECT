@@ -31,35 +31,38 @@ namespace MineWorker
                 ipAddress.ToString(), ipAddress
                 ));
             Int32 port = Settings.JOBPORT;
-            tcpListener = new TcpListener(new IPEndPoint(IPAddress.IPv6Any, port));//      new(ipAddress, port);
+            tcpListener = new TcpListener(new IPEndPoint(IPAddress.IPv6Any, port));
             
-            //tcpListener.
+           
             try
             {
                 tcpListener.Start();
                 byte[] rb = new byte[1024];
-                TcpClient cli = tcpListener.AcceptTcpClient();
-                NetworkStream nsm = cli.GetStream();
-                int byrd = 0;
-                StringBuilder objString = new StringBuilder();
-                while ((byrd = nsm.Read(rb)) > 0)
+               
+                while (Running)
                 {
-                    objString.Append(Encoding.ASCII.GetString(rb, 0, byrd));
-                    string svr = objString.ToString();
-                    svr = svr.Trim();
-                    Console.WriteLine(svr);
-                    Console.WriteLine("LAST CHAR {0}", svr[svr.Length-1]);
-                    if (svr[svr.Length - 1] == '}')
+                    TcpClient cli = tcpListener.AcceptTcpClient();
+                    NetworkStream nsm = cli.GetStream();
+                    int byrd = 0;
+                    StringBuilder objString = new StringBuilder();
+                    while ((byrd = nsm.Read(rb)) > 0)
                     {
-                        break;
+                        objString.Append(Encoding.ASCII.GetString(rb, 0, byrd));
+                        string svr = objString.ToString();
+                        svr = svr.Trim();
+                        Console.WriteLine(svr);
+                        Console.WriteLine("LAST CHAR {0}", svr[svr.Length - 1]);
+                        if (svr[svr.Length - 1] == '}')
+                        {
+                            break;
+                        }
                     }
+                    MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
+                    
+                    Console.WriteLine(dt.id);
+                    MineBatch mb = new(dt, nsm);
+                    mb.LaunchThreads();
                 }
-                MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
-                Console.WriteLine(dt.id);
-                MineBatch mb = new(dt,nsm);
-                //mb.testwb();
-                mb.LaunchThreads();
-                
             }
             catch (Exception e)
             {

@@ -32,50 +32,26 @@ namespace MineWorker
 
 
 
-        public void testwb()
-        {
-            Console.WriteLine("--ZZZZZZZZ--");
-            try
-            {
-                Console.WriteLine("--AAA--");
-                byte[] bytes = Encoding.ASCII.GetBytes("FUCKING YEAH");
-                _nsm.Write(bytes, 0, bytes.Length);
-                Console.WriteLine("--1--");
-                _nsm.Flush();
-                Console.WriteLine("--2--");
-                _nsm.Close();
-                Console.WriteLine("--3--");
+        
 
-                _nsm.Dispose();
-                Console.WriteLine("--4--");
-            }
-            catch (Exception exp)
-            {
-                Console.WriteLine(":::");
-            
-            
-            }
-        }
+         
 
-        void stopThreads()
+        void isActive()
         {
-            foreach (var jb in _jobs)
+            while (_running)
             {
-                jb.KillProc();
-            }
-        }
-
-        bool isActive()
-        {
-            bool retval = false;
-            if (_nsm != null)
-            {
-                if (_nsm.Socket.Poll(100, SelectMode.SelectWrite))
+                bool retval = false;
+                if (_nsm != null)
                 {
-                    retval = true;
+                    if ( _nsm.CanWrite    /*_nsm.Socket.Poll(100, SelectMode.SelectWrite)*/)
+                    {
+                        retval = true;
+                    }
                 }
+                KillJobs();
+                _running = retval;
+                Thread.Sleep(1);
             }
-            return retval;
         }
 
 
@@ -91,6 +67,7 @@ namespace MineWorker
             lock (foundObj)
             {   if (_running)
                 {
+                    _running = false;
                     string msg = string.Format("<F>{0}#", newNonce);
                     byte[] bytes = Encoding.ASCII.GetBytes(msg);
                     if (_nsm.CanWrite)
@@ -108,7 +85,7 @@ namespace MineWorker
                     }
                     KillJobs();
                 }
-                _running = false;
+                
             }
         }
 
@@ -123,6 +100,7 @@ namespace MineWorker
 
         public void LaunchThreads()
         {
+            _running = true;
             _threads = new Thread [_thData.numToRun];
             _jobs = new Miner[_thData.numToRun];
             for (uint i = 0; i < _thData.numToRun; ++i)
@@ -138,10 +116,41 @@ namespace MineWorker
                 _threads[i] = new Thread(new ThreadStart(_jobs[i].runJob));
                 _threads[i].Start();
             }
+            Thread thStats = new Thread(new ThreadStart(this.isActive));
+            thStats.IsBackground = true;
+            thStats.Start();
             for (uint i = 0; i < _thData.numToRun; ++i)
             {
                 _threads[i].Join();
             }
         }
+
+        //----------------------------------------------------------------------------------------
+        //unused code
+        #region  UNUSEDCODE
+        #if UNUSED
+        public void testwb()
+        {
+            Console.WriteLine("--ZZZZZZZZ--");
+            try
+            {
+                Console.WriteLine("--AAA--");
+                byte[] bytes = Encoding.ASCII.GetBytes("FUCKING YEAH");
+                _nsm.Write(bytes, 0, bytes.Length);
+                Console.WriteLine("--1--");
+                _nsm.Flush();
+                Console.WriteLine("--2--");
+                _nsm.Close();
+                Console.WriteLine("--3--");
+                _nsm.Dispose();
+                Console.WriteLine("--4--");
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(":{0}:",exp.Message);
+            }
+        }
+        #endif
+        #endregion
     }
 }
