@@ -79,8 +79,14 @@ namespace Controller
 
 
 
-        public void ShowWorkers()
+        public void ShowWorkers(string msg ="")
         {
+            if (msg.Length > 0)
+            {
+                Console.WriteLine(msg);
+
+            }
+            Console.WriteLine("Current WORKERS(Agents)");
             foreach (Worker w in this._workers)
             {
                 Console.WriteLine("Name:{0} |IP: {1} ", w.MachineName, w.Ipv4);
@@ -178,20 +184,20 @@ namespace Controller
                     {
                         data = CommParser.removeHT(data);
                         bool rv = addWorker(new Worker(remAddy.ToString(), data,5));
-                        ShowWorkers();
+                        ShowWorkers(String.Format("ADDED: {0}",data));
                         //byte[] msg = Encoding.ASCII.GetBytes(data);
                         handler.Send(Encoding.ASCII.GetBytes("<A>1#"));
                     }else if (data.ToUpper().Contains("<B>"))
                     {
                         data = CommParser.removeHT(data);
-                        bool rv = addWorker(new Worker(remAddy.ToString(), data,5));
-                        ShowWorkers();
+                        bool rv = removeWorker(  data );
+                        ShowWorkers(String.Format("Removed: {0}",data));
                         //byte[] msg = Encoding.ASCII.GetBytes(data);
                         handler.Send(Encoding.ASCII.GetBytes("<A>1#"));
                     }
                     else
                     {
-                        handler.Send(Encoding.ASCII.GetBytes("<A>2Already Registered#"));
+                        handler.Send(Encoding.ASCII.GetBytes("<A>2INVALID MESSAGE#"));
                     }
                     // Echo the data back to the client.  
                     
@@ -205,8 +211,7 @@ namespace Controller
                 Console.WriteLine(e.ToString());
             }
 
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
+            
         }
 
     }

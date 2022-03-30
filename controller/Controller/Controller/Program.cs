@@ -16,14 +16,20 @@ namespace Controller
 
             //need to look for jobs
             while(_RUNNING)
-            { 
+            {
+                if (wmt.Workers.Count > 0)
+                { 
+
+
+
+                    
+                }
 
 
 
 
 
 
-                
             }
 
 
