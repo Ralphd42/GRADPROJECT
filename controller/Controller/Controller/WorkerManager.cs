@@ -12,7 +12,7 @@ namespace Controller
 {
     /// <summary>
     /// controller class for managing workers
-    /// 
+    /// Handles adds and removes
     /// </summary>
     public class WorkerManager
     {
@@ -54,6 +54,30 @@ namespace Controller
             }
             return retval;        
         }
+
+        public bool removeWorker(string MachineName)
+        {
+            MachineName = MachineName.Trim().ToLower();
+            bool retval = false;
+            if (_workers == null)
+            {
+                _workers = new List<Worker>();
+            }
+            var ex = from r in _workers where 
+                //r.Ipv4 == w.Ipv4 || 
+                r.MachineName.Trim().ToLower() ==
+                MachineName select r;
+            if (ex.Count() > 0)
+            {
+                _workers.Remove(ex.FirstOrDefault());
+                retval = true;
+            }
+            return retval;        
+        }
+
+
+
+
 
         public void ShowWorkers()
         {
@@ -151,6 +175,13 @@ namespace Controller
                     Console.WriteLine("Text received : {0}", data);
                     // parse AND PROCESS
                     if (data.ToUpper().Contains("<A>"))
+                    {
+                        data = CommParser.removeHT(data);
+                        bool rv = addWorker(new Worker(remAddy.ToString(), data,5));
+                        ShowWorkers();
+                        //byte[] msg = Encoding.ASCII.GetBytes(data);
+                        handler.Send(Encoding.ASCII.GetBytes("<A>1#"));
+                    }else if (data.ToUpper().Contains("<B>"))
                     {
                         data = CommParser.removeHT(data);
                         bool rv = addWorker(new Worker(remAddy.ToString(), data,5));

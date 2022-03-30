@@ -17,18 +17,26 @@ namespace MineWorker
         }
 
         public object LogLock = new object();
-            
-
-
         public void  LogError(Exception exp, string message)
         {
             StringBuilder msg = new StringBuilder();
             msg.AppendLine(message);
             msg.AppendLine(exp.Message);
+            string specMsg= string.Empty;
+            if (exp is ArgumentNullException) 
+            {
+                specMsg = (exp as ArgumentException).Message;
+
+            }else if (exp is System.Net.Sockets.SocketException) 
+            { 
+                specMsg = (exp as System.Net.Sockets.SocketException).Message;
+
+            }
             if (exp.InnerException != null)
             {
                 msg.AppendLine(exp.InnerException.Message);
             }
+            msg.AppendLine(specMsg);
             lock (LogLock)
             {
                 using StreamWriter file = new(LOGFILE, append: true);

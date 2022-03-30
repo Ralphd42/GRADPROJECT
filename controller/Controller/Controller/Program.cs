@@ -4,11 +4,31 @@ using System.Threading;
 namespace Controller
 {
     class Program
-    {
+    {   
+        private static bool _RUNNING = true;
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+
+            // start waiting for Threads.
             WorkerManager wmt = new WorkerManager();
+            Thread wmtThread = new Thread(new ThreadStart(wmt.AddWorkerThread));
+            wmtThread.Start();
+
+            //need to look for jobs
+            while(_RUNNING)
+            { 
+
+
+
+
+
+
+                
+            }
+
+
+
+
             wmt.sendJob();
             Console.WriteLine("Press button");
             Console.Read();
