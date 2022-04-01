@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Controller
 {
-    interface ILogger
+    interface ILogger_REMOVE
     {
         public void LogMessage(string msg);
         public void LogMessage(Exception exp, String msg);

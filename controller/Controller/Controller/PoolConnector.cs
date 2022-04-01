@@ -18,12 +18,13 @@ namespace Controller
         private string _User;
         private string _Pwd;
         private ILogger _Logger;
+        private JobQueue _Queue;
         public PoolConnector(
             string Address,
             int Port,
             string user,
             string pwd,
-            ILogger logger)
+            ILogger logger, JobQueue queue)
         {
 
             _Logger = logger;
@@ -31,6 +32,7 @@ namespace Controller
             _Port = Port;
             _User = user;
             _Pwd = pwd;
+            _Queue = queue;
 
         }
 
@@ -76,7 +78,7 @@ namespace Controller
             }
             catch (Exception exp)
             {
-                _Logger.LogMessage(exp, "Failed to connect");
+                _Logger.LogError(exp, "Failed to connect");
             }
             return retval;
         }
@@ -95,7 +97,7 @@ namespace Controller
             }
             catch (Exception exp) 
             {
-                _Logger.LogMessage(exp, "failed to Subscribe");
+                _Logger.LogError(exp, "failed to Subscribe");
             }
             return retval;
         }
@@ -114,7 +116,7 @@ namespace Controller
             }
             catch (Exception exp)
             {
-                _Logger.LogMessage(exp, "failed to Authorize");
+                _Logger.LogError(exp, "failed to Authorize");
             }
 
 
@@ -231,9 +233,9 @@ params[8]*/
                 PrevHash   = Convert.ToString(prms[2]),
                 Ver        = Convert.ToString(prms[5])
             };
-            
-            /*BUild Queue or run at onece*/
-            
+            _Queue.AddJob(m);
+             
+
             return retval;
         }
 
