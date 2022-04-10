@@ -49,7 +49,27 @@ namespace Controller
             _poolConn = new PoolConnector(PoolAddress, PoolPort, PoolUser, PoolPwd, new Logger(), _queue);
         }
 
+        public bool startConnectionToPool()
+        {
+            bool retval = false;
+            if (_poolConn.ConnectPool())
+            {
+                if (_poolConn.subscribe())
+                {
+                    if (_poolConn.authorize())
+                    {
+                        retval = true;
+                    }
+                }
+            }
+            return retval;
+        }
+        public void StartListner()
+        {
+            _poolConn.runListner();
 
+
+        }
 
     }
 }

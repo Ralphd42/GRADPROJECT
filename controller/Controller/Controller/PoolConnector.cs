@@ -59,7 +59,7 @@ namespace Controller
         public string Pwd { get => _Pwd; set => _Pwd = value; }
         internal ILogger Logger { get => _Logger; set => _Logger = value; }
 
-        bool ConnectPool()
+        public bool ConnectPool()
         {
             bool retval = false;
             try
@@ -102,7 +102,7 @@ namespace Controller
             return retval;
         }
 
-        bool authorize()
+        public bool authorize()
         {
             bool retval = false;
             try
@@ -118,20 +118,8 @@ namespace Controller
             {
                 _Logger.LogError(exp, "failed to Authorize");
             }
-
-
-
-
-
-
-
             return retval;
         }
-
-
-
-
-
         public class PoolSubscriber
         {
             public PoolSubscriber( int ID)

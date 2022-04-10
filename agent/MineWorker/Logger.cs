@@ -11,7 +11,8 @@ namespace MineWorker
     {
         public static string LOGFILE
         {
-            get {
+            get 
+            {
                 return @"C:\logs\minerlog.log";
             }
         }
@@ -30,7 +31,6 @@ namespace MineWorker
             }else if (exp is System.Net.Sockets.SocketException) 
             { 
                 specMsg = (exp as System.Net.Sockets.SocketException).Message;
-
             }
             if (exp.InnerException != null)
             {
@@ -59,9 +59,7 @@ namespace MineWorker
 
         public void  LogWIthDate(string Message)
         {
-
             Message = string.Format("{0}:{1}", DateTime.Now, Message);
-
             lock (LogLock)
             {
                 using StreamWriter file = new(LOGFILE, append: true);
