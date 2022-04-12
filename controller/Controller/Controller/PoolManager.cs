@@ -10,38 +10,45 @@ using Newtonsoft.Json.Linq;
 using MineTools;
 namespace Controller
 {
-    class PoolManager
+    public class PoolManager
     {
-        public static string PoolAddress{
-            get{
+        public static string PoolAddress
+        {
+            get
+            {
                 return "";
             }
         }
-
-        public static int PoolPort{
-            get {
+        public static int PoolPort
+        {
+            get
+            {
                 return 1;
 
             }
 
         }
 
-        public static string PoolUser{
-            get {
+        public static string PoolUser
+        {
+            get
+            {
                 return "";
 
             }
 
         }
-        public static string PoolPwd{
-            get {
+        public static string PoolPwd
+        {
+            get
+            {
                 return "";
 
             }
 
         }
 
-    private JobQueue _queue;
+        private JobQueue _queue;
         private PoolConnector _poolConn;
         public PoolManager(JobQueue queue)
         {

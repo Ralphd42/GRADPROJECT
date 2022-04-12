@@ -22,7 +22,7 @@ namespace Controller
         public WorkerManager()
         {
             Running = true;
-            _addPort = 11000;
+            _addPort = 8005;
         }
 
         public List<Worker> Workers
@@ -144,14 +144,14 @@ namespace Controller
         {
             byte[] bytes = new Byte[1024];
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPAddress ipAddress = ipHostInfo.AddressList[1];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, _addPort);
             Console.WriteLine(string.Format("IPADDRESS:{0}|{1}|{2}  "    , 
                 IPAddress.Parse(ipAddress.ToString(    )),
                 ipAddress.ToString(),ipAddress
                 ));
             Socket listener = new Socket(ipAddress.AddressFamily,
-                SocketType.Stream, ProtocolType.Tcp);
+                SocketType.Stream, ProtocolType.Tcp );//   ..Tcp);
             try
             {
                 listener.Bind(localEndPoint);
@@ -193,7 +193,7 @@ namespace Controller
                         bool rv = removeWorker(  data );
                         ShowWorkers(String.Format("Removed: {0}",data));
                         //byte[] msg = Encoding.ASCII.GetBytes(data);
-                        handler.Send(Encoding.ASCII.GetBytes("<A>1#"));
+                        handler.Send(Encoding.ASCII.GetBytes("<B>1#"));
                     }
                     else
                     {

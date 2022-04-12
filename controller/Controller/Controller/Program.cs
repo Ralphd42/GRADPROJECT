@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Text;
+using System.Net;
 namespace Controller
 {
     class Program
@@ -10,6 +11,7 @@ namespace Controller
         
         static void Main(string[] args)
         {
+            showIP();
             MainJobQueue = new JobQueue();
             Logger lgr = new Logger();
             // start waiting for Threads.
@@ -18,13 +20,15 @@ namespace Controller
             wmtThread.IsBackground = true;  // this thread must end when program hits end
                                             // there will be no joining
             wmtThread.Start();
-            
-            // wait until there are workers
-            while (wmt.Workers.Count <= 0)
-            {
-                Thread.Sleep(500);
-            }
 
+            // wait until there are workers
+            Console.WriteLine("waiting for workers to join network");
+            while (wmt.Workers==null || wmt.Workers.Count <= 0)
+            {
+                Thread.Sleep(1000);
+                Console.Write(".");
+            }
+            Console.WriteLine("Workers joined waiting for job from network");
             //Start the queue worker thread.
             JobQueueWatcher jqe = new JobQueueWatcher(MainJobQueue,wmt.Workers);
             Thread jqeThread = new Thread(new ThreadStart(jqe.WatchQueue));
@@ -93,6 +97,27 @@ namespace Controller
             System.Environment.Exit(-1);
         }
 
+        public static void showIP()
+        { 
+            string IPAddress = "";
+            IPHostEntry Host = default(IPHostEntry);
+            string Hostname = null;
+            Hostname = System.Environment.MachineName;
+            Host = Dns.GetHostEntry(Hostname);
+            foreach (IPAddress IP in Host.AddressList)
+            {
+                if (IP.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    IPAddress = Convert.ToString(IP);
+                }
+            }
+
+            Console.WriteLine(IPAddress);
+
+
+
+
+        }
 
 
     }
