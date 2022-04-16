@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Dac0EurQJyi4Zz/IXp7IcFrD7Ttvh/YhxizFjAzp+tgBJJK9LoBBF9rSAoSYzx94LjY3ExsjR7kVIoHpD6fKpA==",
+  "dgSpecHash": "HmEn4UOgLsXSFFM8T58sO9d7GeBQCbYoKcxEztEKxn6WFqgX+bc6SXOe58p0jsGAtuCbrN5pGYmnamsB3x7GQQ==",
   "success": true,
-  "projectFilePath": "C:\\Development\\CSIGRADPROJECT\\GRADPROJECT\\MineTools\\MineTools.csproj",
+  "projectFilePath": "C:\\Development\\gradproj\\GRADPROJECT\\MineTools\\MineTools.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
