@@ -32,7 +32,8 @@ namespace Controller
 
         public int count()
         {
-            return _jobs.Count();
+            int retval = _jobs!=null ?_jobs.Count :0;
+            return retval;
         }
 
         public MineJob  GetJob()

@@ -8,11 +8,13 @@ namespace Controller
     {   
         public static bool _RUNNING = true;
         public static JobQueue  MainJobQueue;
+        public static AckMan       Acks;
         
         static void Main(string[] args)
         {
             showIP();
             MainJobQueue = new JobQueue();
+            Acks = new AckMan();
             Logger lgr = new Logger();
             // start waiting for Threads.
             WorkerManager wmt = new WorkerManager();

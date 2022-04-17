@@ -44,6 +44,13 @@ namespace Controller
                 return _htcmdIDS; 
             }
         }
+        private int? _difficulty;
+
+        public int? Difficulty{
+            get{return _difficulty;}
+
+        }
+
 
         public TcpClient poolTCPClient
         {
@@ -93,6 +100,8 @@ namespace Controller
                 json = json + "\n";
                 byte [] bytes = Encoding.ASCII.GetBytes(json);
                 _Client.GetStream().Write(bytes, 0, bytes.Length);
+                _Client.GetStream().Flush();
+                Program.Acks.AddAck(ps.id,ps.method);
                 retval = true;
             }
             catch (Exception exp) 
@@ -112,6 +121,8 @@ namespace Controller
                 json = json + "\n";
                 byte[] bytes = Encoding.ASCII.GetBytes(json);
                 _Client.GetStream().Write(bytes, 0, bytes.Length);
+                _Client.GetStream().Flush();
+                Program.Acks.AddAck(pa.id, pa.method);
                 retval = true;
             }
             catch (Exception exp)
@@ -177,12 +188,37 @@ namespace Controller
                     else
                     if (String.Compare(method, "mining.set_difficulty") == 0)
                     { 
-                        
+                        MiningNotify(cmdTxt);
                     
                     }
                 }
                 else if (Robj.ContainsKey("method"))
                 {
+                    /*Handle the acks                  */
+                    if (String.Compare(method, "mining.authorize") == 0)
+                    {
+                        miningauthorizeACK(cmdTxt);
+                    }
+                    else
+                    if (String.Compare(method, "mining.subscribe") == 0)
+                    { 
+                        miningsubscribeACK(cmdTxt);
+                    
+                    } else
+                    if (String.Compare(method, "mining.submit") == 0)
+                    { 
+                        miningsubmitACK(cmdTxt);
+                    
+                    }
+                    else
+                    {
+                        // log no change
+
+                    }
+
+
+
+
 
 
                 }
@@ -222,8 +258,6 @@ params[8]*/
                 Ver        = Convert.ToString(prms[5])
             };
             _Queue.AddJob(m);
-             
-
             return retval;
         }
 
@@ -232,13 +266,26 @@ params[8]*/
         {
             bool retval = false;
             var nObj = JObject.Parse(difJson);
-
-
+            var obj = JObject.Parse(notifyJson);
+            JArray prms = (JArray)obj["params"];
+            //string sval =prms[0];
+            int dval;
+            if(int.TryParse(prms[0],out dval))
+            {
+                retval=true;
+                _difficulty= dval;
+            }else
+            {
+                _difficulty=null;
+            }
             return retval;
         }
+        public void miningauthorizeACK(string json)
+        {}
+         public void miningsubscribeACK(string json)
+        {}
 
-
-
-
+        public void miningsubmitACK(string json)
+        {}
     }
 }
