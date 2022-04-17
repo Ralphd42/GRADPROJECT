@@ -25,9 +25,9 @@ import java.net.Socket;
 
 public class DisplayMessageActivity extends AppCompatActivity {
     ServerSocket serverSocket;
-    public final String IPAddress = "192.168.1.28";
+    public final String IPAddress = "192.168.1.12";
     public final int WMPort = 8005;
-    public final int JOBPort = 8005;
+    public final int JOBPort = 8006;
     boolean running =false;
     public final String CHANNEL_ID = "AACCDD";
     TextView textView;
