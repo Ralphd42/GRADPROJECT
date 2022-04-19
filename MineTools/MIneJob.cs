@@ -34,6 +34,10 @@ namespace MineTools
                 return Ver + PrevHash + MerkleRoot + NetTime + Difficulty;
             }
         }
+        public int NONCE;
+        public int ExtraNONCE;
+
+
     }
     public class MineThreadData
     {

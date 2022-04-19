@@ -19,6 +19,8 @@ namespace Controller
         private string _Pwd;
         private ILogger _Logger;
         private JobQueue _Queue;
+        private int _Nonce;
+        private int _extraNonce;
         public PoolConnector(
             string Address,
             int Port,
@@ -35,7 +37,7 @@ namespace Controller
             _Queue = queue;
 
         }
-
+/*
         private Hashtable _htcmdIDS;
         public Hashtable htcmdIDS
         {
@@ -43,7 +45,7 @@ namespace Controller
             { 
                 return _htcmdIDS; 
             }
-        }
+        }*/
         private int? _difficulty;
 
         public int? Difficulty{
@@ -192,30 +194,61 @@ namespace Controller
                     
                     }
                 }
-                else if (Robj.ContainsKey("method"))
+                /*
+                    public class StratumResponse
+                    {
+                        [DataMember]
+        public ArrayList error;
+        [DataMember]
+        public System.Nullable<int> id;
+        [DataMember]
+        public object result;
+    }
+                Response.error != null || Response.result != null
+                
+                */
+
+
+
+                else //if (Robj.ContainsKey("method"))
                 {
+                    if(  
+                        (Robj.ContainsKey("error") && Robj["error"] != null  && Robj["error"].ToString().Trim().Length>0   )
+                            ||    
+                        (Robj.ContainsKey("result") && Robj["result"] != null  && Robj["result"].ToString().Trim().Length>0   )
+                    )  
+                    {
+                         
+                        int id;// = Robj["ID"];
+                        if( int.TryParse( Robj["ID"].ToString(), out id  ))
+                        {
+                            string method = Program.Acks.getACK(id);
+                            if (String.Compare(method, "mining.authorize") == 0)
+                            {
+                                miningauthorizeACK(cmdTxt);
+                            }
+                            else if (String.Compare(method, "mining.subscribe") == 0)
+                            { 
+                                miningsubscribeACK(cmdTxt);
+                    
+                            } else if (String.Compare(method, "mining.submit") == 0)
+                    { 
+                                    miningsubmitACK(cmdTxt);
+                    
+                    }        
+
+
+
+
+
+
+
+
+                        }
+
                     /*Handle the acks                  */
-                    if (String.Compare(method, "mining.authorize") == 0)
-                    {
-                        miningauthorizeACK(cmdTxt);
-                    }
-                    else
-                    if (String.Compare(method, "mining.subscribe") == 0)
-                    { 
-                        miningsubscribeACK(cmdTxt);
-                    
-                    } else
-                    if (String.Compare(method, "mining.submit") == 0)
-                    { 
-                        miningsubmitACK(cmdTxt);
                     
                     }
-                    else
-                    {
-                        // log no change
-
-                    }
-
 
 
 
@@ -266,11 +299,11 @@ params[8]*/
         {
             bool retval = false;
             var nObj = JObject.Parse(difJson);
-            var obj = JObject.Parse(notifyJson);
-            JArray prms = (JArray)obj["params"];
+            //var obj = JObject.Parse(notifyJson);
+            JArray prms = (JArray)nObj["params"];
             //string sval =prms[0];
             int dval;
-            if(int.TryParse(prms[0],out dval))
+            if(int.TryParse(prms[0].ToString(),out dval))
             {
                 retval=true;
                 _difficulty= dval;
@@ -281,11 +314,55 @@ params[8]*/
             return retval;
         }
         public void miningauthorizeACK(string json)
-        {}
+        {
+            var obj = JObject.Parse(json);
+            if(obj.ContainsKey("result")
+                && (bool) obj["result"] 
+            )
+            {
+                _Logger.LogMessage("Worker accepted");
+
+            }else
+            {
+                _Logger.LogMessage("Worker rejected");
+                _Logger.LogMessage(string.Format("Full JSON:{} ", json   ));
+                Environment.Exit(-1);
+            }}
          public void miningsubscribeACK(string json)
-        {}
+        {
+            var obj = JObject.Parse(json);
+            if( obj.ContainsKey("result")       )
+            {
+                JArray arr =     obj["result"] as JArray;
+                var en = arr[1];
+                if(int.TryParse(Convert.ToString(en), out _extraNonce))
+                {
+                    Console.WriteLine("Set ExtraNonce");
+                }else
+                {
+                    _Logger.LogMessage(String.Format("Failed to Subscribe:{0}", json  ));
+                }
+
+            }
+        }
 
         public void miningsubmitACK(string json)
-        {}
+        {
+            var obj = JObject.Parse(json);
+            if( obj.ContainsKey("result")       )
+            {
+
+
+            }
+            if (Response.result != null && (bool)Response.result)
+                    {
+                        SharesAccepted++;
+                        Console.WriteLine("Share accepted ({0} of {1})", SharesAccepted, SharesSubmitted);
+                    }
+                    else
+                        Console.WriteLine("Share rejected. {0}", Response.error[1]);
+
+
+        }
     }
 }
