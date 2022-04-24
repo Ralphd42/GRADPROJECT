@@ -46,8 +46,10 @@ namespace Controller
 
                 Thread.Sleep(1000);
 
-                
-
+                Console.Write("Adding a test task");
+                Thread.Sleep(1000);
+                LoadTestData();
+                Console.WriteLine("ADDED");
                 /*
                     artificially add item to JobQueue
 
@@ -117,7 +119,7 @@ namespace Controller
             {
                 var builder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("Parameters.json", optional: true, reloadOnChange: true);
+                    .AddJsonFile("params.json", optional: true, reloadOnChange: true);
                 var debug = builder.Build().GetSection("Parameter").GetSection("debug").Value;
                 bool retval = false;
                 if (!bool.TryParse(debug, out retval))

@@ -43,6 +43,7 @@ namespace Controller
                     thData = Encoding.ASCII.GetBytes(_job.Data)  
                     
                 };
+                _mineThData.Add(thd);
                 JobThread jt = new JobThread(_workers[dJobid], _mineThData[dJobid]);
                 jt.foundNonce += handleFound;
                 _jTHreads.Add(jt);   /// might not need this

@@ -13,6 +13,10 @@ import android.os.StrictMode;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -128,7 +132,15 @@ public class DisplayMessageActivity extends AppCompatActivity {
                     StatusView.setText("ADDED : " + StrtaskID);
                 }
                 Simple_Notification(StrtaskID);
-                boolean running =true;
+                running =true;
+                // wait for a job
+
+                Listner lt = new Listner();
+                runOnUiThread(lt);
+                //(new Thread(new Listner())).start();
+
+
+
             } catch (Exception exp) {
                 exp.printStackTrace();
                 String msg = "**Error join network \n";
@@ -144,10 +156,13 @@ public class DisplayMessageActivity extends AppCompatActivity {
         }
         Socket socket;
         class Listner implements  Runnable{
+            public String JSN="";
+
+
             @Override
             public void run() {
                 try{
-                    serverSocket = new ServerSocket(8005);
+                    serverSocket = new ServerSocket(JOBPort);
                     while(running) {
                         socket = serverSocket.accept();
                         InputStream ins =socket.getInputStream();
@@ -159,15 +174,35 @@ public class DisplayMessageActivity extends AppCompatActivity {
                             jsonB.append(in1);
                             in1 =(char)inRd.read();
                         }
-                        Gson gson = new Gson();
-                        MineThreadData mtd = gson.fromJson(jsonB.toString(), MineThreadData.class);
+                        jsonB.append("}");
+                        //Gson gson = new Gson();
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .registerTypeAdapter(byte[].class, (JsonSerializer<byte[]>) (src, typeOfSrc, context) -> new JsonPrimitive(new String(src)))
+                                .registerTypeAdapter(byte[].class, (JsonDeserializer<byte[]>) (json, typeOfT, context) -> json == null ? null : json.getAsString() == null ? null : json.getAsString().getBytes())
+                                .create();
+                        JSN = jsonB.toString();
+                        MineThreadData mtd = gson.fromJson(JSN, MineThreadData.class);
                         OutputStream outputStream = client.getOutputStream();
+                        // need to call runner
+
                     }
 
                 }catch(IOException  ioe)
                 {
+                    System.out.print(ioe);
+                    if( StatusView !=null) {
+                        StatusView.setText("IOException : " + ioe.getMessage());
+                    }
 
+                }
+                catch( Exception exp)
+                {
+                    System.out.print(exp);
+                    if( StatusView !=null) {
+                        StatusView.setText("JSON :" +JSN+  "| Exception : " + exp.getMessage());
 
+                    }
+                    exp.printStackTrace();
 
                 }
             }
