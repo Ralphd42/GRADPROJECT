@@ -22,20 +22,21 @@ namespace Controller
         public WorkerManager()
         {
             Running = true;
-            _addPort = 8005;
+            _addPort = MineTools.Settings.WORKERMANAGERPORT;
         }
 
-        public List<Worker> Workers
-        {
-            get 
-            {
-                return _workers;
-            }
-        }
+/// <summary>
+///  returns workers.  This probably should be changed to a copy
+/// </summary>
+        public List<Worker> Workers{get => _workers;}
 
         public bool Running { get => _running; set => _running = value; }
        
-
+/// <summary>
+///     adds a worker to workers
+/// </summary>
+/// <param name="w">A worker object</param>
+/// <returns>true if added</returns>
         public bool addWorker(Worker w)
         {
             bool retval = false;
@@ -44,7 +45,7 @@ namespace Controller
                 _workers = new List<Worker>();
             }
             var ex = from r in _workers where 
-                //r.Ipv4 == w.Ipv4 || 
+                 
                 r.MachineName.Trim().ToLower() ==
                 w.MachineName.Trim().ToLower() select r;
             if (ex.Count() <= 0)
@@ -94,6 +95,10 @@ namespace Controller
         }
 
 
+        /**
+            this is a tester
+        
+        */
         public void sendJob()
         {
             byte[] ta = Encoding.ASCII.GetBytes("THIS IS THE TH DATA");
@@ -101,9 +106,6 @@ namespace Controller
 
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-
-
-
             MineThreadData dt = new MineThreadData()
             {
                 thData = ta,
@@ -146,10 +148,14 @@ namespace Controller
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[1];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, _addPort);
-            Console.WriteLine(string.Format("IPADDRESS:{0}|{1}|{2}  "    , 
-                IPAddress.Parse(ipAddress.ToString(    )),
-                ipAddress.ToString(),ipAddress
-                ));
+            Console.WriteLine(
+                string.Format(
+                    "Currently listiening at IPADDRESS:{0}|{1}|{2}"    , 
+                    IPAddress.Parse(ipAddress.ToString()),
+                    ipAddress.ToString(),
+                    ipAddress
+                )
+            );
             Socket listener = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp );//   ..Tcp);
             try
@@ -183,7 +189,9 @@ namespace Controller
                     if (data.ToUpper().Contains("<A>"))
                     {
                         data = CommParser.removeHT(data);
-                        bool rv = addWorker(new Worker(remAddy.ToString(), data,5));
+                        Worker wk = new Worker(remAddy.ToString());
+                        CommParser.ParseWorker(data, wk);
+                        bool rv = addWorker(wk);
                         ShowWorkers(String.Format("ADDED: {0}",data));
                         //byte[] msg = Encoding.ASCII.GetBytes(data);
                         handler.Send(Encoding.ASCII.GetBytes("<A>1#"));
@@ -208,10 +216,8 @@ namespace Controller
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Program.lgr.LogError(e, "Error in AddWorkerThread Listner");
             }
-
-            
         }
 
     }

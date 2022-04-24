@@ -2,20 +2,25 @@
 using System.Threading;
 using System.Text;
 using System.Net;
+using Microsoft.Extensions.Configuration;
+ 
+using System.IO;
 namespace Controller
 {
     class Program
-    {   
+    {
         public static bool _RUNNING = true;
-        public static JobQueue  MainJobQueue;
-        public static AckMan       Acks;
-        
+        public static JobQueue MainJobQueue;
+        public static AckMan Acks;
+        public static Logger lgr;
         static void Main(string[] args)
         {
+            _RUNNING = true;
             showIP();
+             
             MainJobQueue = new JobQueue();
             Acks = new AckMan();
-            Logger lgr = new Logger();
+            lgr = new Logger();
             // start waiting for Threads.
             WorkerManager wmt = new WorkerManager();
             Thread wmtThread = new Thread(new ThreadStart(wmt.AddWorkerThread));
@@ -25,18 +30,30 @@ namespace Controller
 
             // wait until there are workers
             Console.WriteLine("waiting for workers to join network");
-            while (wmt.Workers==null || wmt.Workers.Count <= 0)
+            while (wmt.Workers == null || wmt.Workers.Count <= 0)
             {
                 Thread.Sleep(1000);
                 Console.Write(".");
             }
             Console.WriteLine("Workers joined waiting for job from network");
             //Start the queue worker thread.
-            JobQueueWatcher jqe = new JobQueueWatcher(MainJobQueue,wmt.Workers);
+            JobQueueWatcher jqe = new JobQueueWatcher(MainJobQueue, wmt.Workers);
             Thread jqeThread = new Thread(new ThreadStart(jqe.WatchQueue));
             jqeThread.Start();
             PoolManager pm = new PoolManager(MainJobQueue);
-            if (pm.startConnectionToPool())
+            if (debug)
+            {
+
+                Thread.Sleep(1000);
+
+                
+
+                /*
+                    artificially add item to JobQueue
+
+                */
+
+            }else if (   pm.startConnectionToPool())
             {
                 /*
                     Need to build thread for listner to add jobs to the Queue
@@ -48,16 +65,17 @@ namespace Controller
             {
                 Console.Write("Failed to connect to Server Exiting.......");
                 lgr.LogMessage("Failed to connect to Server.  Exiting......");
+                _RUNNING = false;
                 System.Environment.Exit(-1);
 
             }
-            
+
             //need to look for jobs
-            while(_RUNNING)
+            while (_RUNNING)
             {
                 Console.WriteLine(CommandMessage());
-                string msg =Console.ReadLine();
-                
+                string msg = Console.ReadLine();
+
 
                 Thread.Sleep(1);
             }
@@ -92,6 +110,36 @@ namespace Controller
 
             return msg.ToString();
         }
+        #region Settings
+        public static bool debug 
+        {
+            get 
+            {
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("Parameters.json", optional: true, reloadOnChange: true);
+                var debug = builder.Build().GetSection("Parameter").GetSection("debug").Value;
+                bool retval = false;
+                if (!bool.TryParse(debug, out retval))
+                {
+                    retval = false;
+                }
+                return retval; 
+            }
+        }
+        
+        public static string LogFile
+        {
+            get
+            {
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("Params.json", optional: true, reloadOnChange: true);
+                var lf = builder.Build().GetSection("Parameter").GetSection("LOGFILE").Value;
+                return lf;
+            }
+        }
+        #endregion
 
         public static void exitApp()
         {
@@ -99,8 +147,12 @@ namespace Controller
             System.Environment.Exit(-1);
         }
 
+        /// <summary>
+        /// This gives information about the system
+        /// Spcifically it displays the ip address.  This is an easy way to get it for the clients(Agents)
+        /// </summary>
         public static void showIP()
-        { 
+        {
             string IPAddress = "";
             IPHostEntry Host = default(IPHostEntry);
             string Hostname = null;
@@ -113,13 +165,77 @@ namespace Controller
                     IPAddress = Convert.ToString(IP);
                 }
             }
+            Console.WriteLine("Bitcoin network miner starting");
+            Console.WriteLine("HostName:{0} ", Hostname  );
+            Console.WriteLine("RUNNING ON IP ADDRESS {0} ", IPAddress);
+            Console.WriteLine("Waiting for agents(workers) to join network");
+        }
 
-            Console.WriteLine(IPAddress);
+        public static void LoadTestData()
+        {
+            const int testdiff = 100;
 
+            MineTools.MineJob mjtest = new MineTools.MineJob
+            ()
+            {
+                /*https://reference.cash/mining/stratum-protocol*/
+                /*
+0                   [“bf”, 
+1                   “4d16b6f85af6e2198f44ae2a6de67f78487ae5611b77c6c0440b921e00000000”,
+2 “01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff20020862062f503253482f04b8864e5008”,
+3 “072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000”, 
+4 [],
+5 “00000002”, 
+6 “1c2ac4af”, 
+7 “504e86b9”, 
+8 false]
+*/
+                 
+                    clear = false,
+                    CoinPre = 
+"072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000",
+                    CoinFollow = "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff20020862062f503253482f04b8864e5008",
+                    Difficulty = "1c2ac4af",
+                    ID = "bf",
+                   // Merk = aMerk,
+                    NetTime = "504e86b9",
+                    PrevHash = "4d16b6f85af6e2198f44ae2a6de67f78487ae5611b77c6c0440b921e00000000",
+                    Ver = "00000002",
+                    target = MineTools.CryptoHelpers.GenerateTarget((int)testdiff)
+                 
+
+
+
+
+            };
+            MainJobQueue.AddJob(mjtest);
+
+
+            /*MineTools.MineJob mjTest = new MineTools.MineJob() { }
+
+
+
+
+
+            MainJobQueue.AddJob(
+                    new MineTools.MineJob(){ 
+                    
+
+
+                    }
+
+
+                )
+
+
+*/
 
 
 
         }
+
+
+
 
 
     }

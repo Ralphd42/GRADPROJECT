@@ -12,7 +12,7 @@ namespace Controller
         public static string LOGFILE
         {
             get {
-                return @"C:\logs\Controllerlog.log";
+                return Program.LogFile;
             }
         }
 

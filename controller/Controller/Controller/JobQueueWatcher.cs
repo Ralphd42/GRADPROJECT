@@ -45,7 +45,7 @@ namespace Controller
                 MineJob jb = _queue.GetJob();
                 if (jb != null)
                 {
-                    JobManager jm = new JobManager(jb, null);// (MineJob job, List<Worker> Workers)
+                    JobManager jm = new JobManager(jb, _workers); 
                     jm.startJobs();
                 }
             }

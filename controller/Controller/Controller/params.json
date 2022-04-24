@@ -1,0 +1,14 @@
+{
+    "Logging": {
+      "LogLevel": {
+        "Default": "Warning"
+      }
+    },
+    "ConnectionStrings": {
+      "DbConnection": "NOTUSED"
+    },
+    "Parameter": {
+      "debug": "true",
+      "LOGFILE": "c:/logs/bc.log"
+    }
+  }

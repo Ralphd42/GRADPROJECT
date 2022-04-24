@@ -18,12 +18,24 @@ namespace Controller
             data = data.Trim();
             data = data.Substring(3);
             data = data.Replace("#", "");
-
-
             return data;
         }
 
-
-
+        public static Worker ParseWorker(string data, Worker worker)
+        {
+            data = removeHT(data);
+            string[] arrdt = data.Split(":");
+            worker.MachineName = arrdt[0];
+            int numthreads =1;
+            if ( 
+                arrdt.Length<2 ||
+                !int.TryParse(arrdt[1], out numthreads    )
+                )
+            {
+                numthreads = 1;
+            }
+            worker.Processors = numthreads;
+            return worker;
+        }
     }
 }

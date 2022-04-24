@@ -19,8 +19,15 @@ namespace Controller
     /// </summary>
     public class JobQueue
     {
+        /// <summary>
+        /// this is a threadsafe QUEUE object
+        /// </summary>
         private ConcurrentQueue<MineJob> _jobs;
 
+        /// <summary>
+        /// This adds a job to the QUEUE
+        /// </summary>
+        /// <param name="jb"></param>
         public void AddJob(MineJob jb)
         {
             if (_jobs == null)
@@ -30,13 +37,22 @@ namespace Controller
             _jobs.Enqueue(jb);
         }
 
+        /// <summary>
+        /// A count of items in the Job Queue
+        /// </summary>
+        /// <returns></returns>
         public int count()
         {
-            int retval = _jobs!=null ?_jobs.Count :0;
+            int retval = _jobs != null ? _jobs.Count : 0;
             return retval;
         }
 
-        public MineJob  GetJob()
+        /// <summary>
+        /// removes a job from the QUEUE
+        /// This should only happen when job is being worked
+        /// </summary>
+        /// <returns>The job to run</returns>
+        public MineJob GetJob()
         {
             MineJob ret = null;
             if (_jobs.TryDequeue(out ret))

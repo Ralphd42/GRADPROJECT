@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+
+
 using System.Text;
-using System.Threading.Tasks;
+
 using System.Net.Sockets;
 using System.Collections;
 using Newtonsoft.Json;
@@ -37,19 +37,11 @@ namespace Controller
             _Queue = queue;
 
         }
-/*
-        private Hashtable _htcmdIDS;
-        public Hashtable htcmdIDS
-        {
-            get 
-            { 
-                return _htcmdIDS; 
-            }
-        }*/
         private int? _difficulty;
 
-        public int? Difficulty{
-            get{return _difficulty;}
+        public int? Difficulty
+        {
+            get { return _difficulty; }
 
         }
 
@@ -100,13 +92,13 @@ namespace Controller
                 PoolSubscriber ps = new PoolSubscriber(1);
                 string json = JsonConvert.SerializeObject(ps, Formatting.None);
                 json = json + "\n";
-                byte [] bytes = Encoding.ASCII.GetBytes(json);
+                byte[] bytes = Encoding.ASCII.GetBytes(json);
                 _Client.GetStream().Write(bytes, 0, bytes.Length);
                 _Client.GetStream().Flush();
-                Program.Acks.AddAck(ps.id,ps.method);
+                Program.Acks.AddAck(ps.id, ps.method);
                 retval = true;
             }
-            catch (Exception exp) 
+            catch (Exception exp)
             {
                 _Logger.LogError(exp, "failed to Subscribe");
             }
@@ -135,7 +127,7 @@ namespace Controller
         }
         public class PoolSubscriber
         {
-            public PoolSubscriber( int ID)
+            public PoolSubscriber(int ID)
             {
                 this.id = ID;
                 method = "mining.subscribe";
@@ -189,38 +181,21 @@ namespace Controller
                     }
                     else
                     if (String.Compare(method, "mining.set_difficulty") == 0)
-                    { 
-                        MiningNotify(cmdTxt);
-                    
+                    {
+                        MiningSetDifficulty(cmdTxt);
                     }
                 }
-                /*
-                    public class StratumResponse
-                    {
-                        [DataMember]
-        public ArrayList error;
-        [DataMember]
-        public System.Nullable<int> id;
-        [DataMember]
-        public object result;
-    }
-                Response.error != null || Response.result != null
-                
-                */
-
-
-
-                else //if (Robj.ContainsKey("method"))
+                else
                 {
-                    if(  
-                        (Robj.ContainsKey("error") && Robj["error"] != null  && Robj["error"].ToString().Trim().Length>0   )
-                            ||    
-                        (Robj.ContainsKey("result") && Robj["result"] != null  && Robj["result"].ToString().Trim().Length>0   )
-                    )  
+                    if (
+                        (Robj.ContainsKey("error") && Robj["error"] != null && Robj["error"].ToString().Trim().Length > 0)
+                            ||
+                        (Robj.ContainsKey("result") && Robj["result"] != null && Robj["result"].ToString().Trim().Length > 0)
+                    )
                     {
-                         
-                        int id;// = Robj["ID"];
-                        if( int.TryParse( Robj["ID"].ToString(), out id  ))
+
+                        int id;
+                        if (int.TryParse(Robj["ID"].ToString(), out id))
                         {
                             string method = Program.Acks.getACK(id);
                             if (String.Compare(method, "mining.authorize") == 0)
@@ -228,32 +203,16 @@ namespace Controller
                                 miningauthorizeACK(cmdTxt);
                             }
                             else if (String.Compare(method, "mining.subscribe") == 0)
-                            { 
+                            {
                                 miningsubscribeACK(cmdTxt);
-                    
-                            } else if (String.Compare(method, "mining.submit") == 0)
-                    { 
-                                    miningsubmitACK(cmdTxt);
-                    
-                    }        
 
-
-
-
-
-
-
-
+                            }
+                            else if (String.Compare(method, "mining.submit") == 0)
+                            {
+                                miningsubmitACK(cmdTxt);
+                            }
                         }
-
-                    /*Handle the acks                  */
-                    
                     }
-
-
-
-
-
                 }
             }
         }
@@ -273,24 +232,29 @@ params[5]	string	The hex-encoded block version.
 params[6]	string	The hex-encoded network difficulty required for the block.
 params[7]	string	The hex-encoded current time for the block.
 params[8]*/
-            bool retval = false;
-            var obj = JObject.Parse(notifyJson);
-            JArray prms = (JArray)obj["params"];
-            JArray MA = (JArray)prms[4];
-            string[] aMerk = new string[MA.Count];
-            MineTools.MineJob m = new MineJob() 
-            { 
-                clear      = bool.Parse(Convert.ToString(prms[8])),
-                CoinFollow = Convert.ToString(prms[3]),
-                CoinPre    = Convert.ToString(prms[4]),
-                Difficulty = Convert.ToString(prms[6]),
-                ID         = Convert.ToString(prms[0]),
-                Merk       = aMerk,
-                NetTime    = Convert.ToString(prms[7]),
-                PrevHash   = Convert.ToString(prms[2]),
-                Ver        = Convert.ToString(prms[5])
-            };
-            _Queue.AddJob(m);
+             bool retval = false;
+            if (Difficulty != null)
+            {
+               
+                var obj = JObject.Parse(notifyJson);
+                JArray prms = (JArray)obj["params"];
+                JArray MA = (JArray)prms[4];
+                string[] aMerk = new string[MA.Count];
+                MineTools.MineJob m = new MineJob()
+                {
+                    clear = bool.Parse(Convert.ToString(prms[8])),
+                    CoinFollow = Convert.ToString(prms[3]),
+                    CoinPre = Convert.ToString(prms[4]),
+                    Difficulty = Convert.ToString(prms[6]),
+                    ID = Convert.ToString(prms[0]),
+                    Merk = aMerk,
+                    NetTime = Convert.ToString(prms[7]),
+                    PrevHash = Convert.ToString(prms[2]),
+                    Ver = Convert.ToString(prms[5]),
+                    target = MineTools.CryptoHelpers.GenerateTarget((int)Difficulty)
+                };
+                _Queue.AddJob(m);
+            }
             return retval;
         }
 
@@ -303,66 +267,67 @@ params[8]*/
             JArray prms = (JArray)nObj["params"];
             //string sval =prms[0];
             int dval;
-            if(int.TryParse(prms[0].ToString(),out dval))
+            if (int.TryParse(prms[0].ToString(), out dval))
             {
-                retval=true;
-                _difficulty= dval;
-            }else
+                retval = true;
+                _difficulty = dval;
+            }
+            else
             {
-                _difficulty=null;
+                _difficulty = null;
             }
             return retval;
         }
         public void miningauthorizeACK(string json)
         {
             var obj = JObject.Parse(json);
-            if(obj.ContainsKey("result")
-                && (bool) obj["result"] 
+            if (obj.ContainsKey("result")
+                && (bool)obj["result"]
             )
             {
                 _Logger.LogMessage("Worker accepted");
-
-            }else
+            }
+            else
             {
                 _Logger.LogMessage("Worker rejected");
-                _Logger.LogMessage(string.Format("Full JSON:{} ", json   ));
+                _Logger.LogMessage(string.Format("Full JSON:{} ", json));
                 Environment.Exit(-1);
-            }}
-         public void miningsubscribeACK(string json)
+            }
+        }
+        public void miningsubscribeACK(string json)
         {
             var obj = JObject.Parse(json);
-            if( obj.ContainsKey("result")       )
+            if (obj.ContainsKey("result"))
             {
-                JArray arr =     obj["result"] as JArray;
+                JArray arr = obj["result"] as JArray;
                 var en = arr[1];
-                if(int.TryParse(Convert.ToString(en), out _extraNonce))
+                if (int.TryParse(Convert.ToString(en), out _extraNonce))
                 {
                     Console.WriteLine("Set ExtraNonce");
-                }else
-                {
-                    _Logger.LogMessage(String.Format("Failed to Subscribe:{0}", json  ));
                 }
-
+                else
+                {
+                    _Logger.LogMessage(String.Format("Failed to Subscribe:{0}", json));
+                }
             }
         }
 
         public void miningsubmitACK(string json)
         {
             var obj = JObject.Parse(json);
-            if( obj.ContainsKey("result")       )
+            if (obj.ContainsKey("result"))
             {
-
-
+                bool rv;
+                var res = obj["result"];
+                if (bool.TryParse(res.ToString(), out rv))
+                {
+                    Console.WriteLine("We Won!!!!!");
+                }
+                else
+                {
+                    Console.WriteLine("Not a winner this time");
+                }
             }
-            if (Response.result != null && (bool)Response.result)
-                    {
-                        SharesAccepted++;
-                        Console.WriteLine("Share accepted ({0} of {1})", SharesAccepted, SharesSubmitted);
-                    }
-                    else
-                        Console.WriteLine("Share rejected. {0}", Response.error[1]);
-
-
         }
     }
 }

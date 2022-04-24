@@ -7,5 +7,12 @@
 			"path": "..\\..\\..\\MineTools"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"editor.defaultFormatter": "ms-dotnettools.csharp",
+		"csharp.format.enable": true,
+		"[csharp]": {
+			"editor.defaultFormatter": "ms-dotnettools.csharp"
+		},
+		"editor.formatOnType": true
+	}
 }

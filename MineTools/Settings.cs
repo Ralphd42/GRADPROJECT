@@ -12,7 +12,7 @@ namespace MineTools
         {
             get
             {
-                return 13001;
+                return 8006;
             }
         }
 
@@ -20,14 +20,19 @@ namespace MineTools
         {
             get
             {
-                return 13002;
+                return 8005;
             }
         }
-        public static string CONTROLLERIPV4
+
+        
+
+
+
+        public static int STATUSPORT
         {
             get
             {
-                return "127.0.0.1";
+                return 8007;
             }
         
         }

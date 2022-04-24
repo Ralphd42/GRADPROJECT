@@ -3,3 +3,27 @@ http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html
 Most of the fields are used in the block header. The prevhash is the hash of the previous block. Apparently mixing big-ending and little-endian isn't confusing enough so this hash value also has every block of 4 bytes reversed. The version is the block protocol version. The nbits indicates the difficulty[3] of the block. The timestamp ntime is not necessarily accurate.
 
 http://bfgminer.org/
+
+
+todo
+DOCUMENTATION
+
+Backlog
+Story
+	Monitor tool
+	a simple website
+	db stuff
+Enhancements
+	1) get thread count from clients
+	2) configuration settings
+	3) Console UI
+	4) enhnace screen on Android agent
+	5) test feeder
+	6) config for ports and IPS
+	7) build clients
+	
+	
+Controller
+1) fix startup info.  Make as nice as possible as startup.  SHow IP and port that will be listening for workers
+
+2)  
