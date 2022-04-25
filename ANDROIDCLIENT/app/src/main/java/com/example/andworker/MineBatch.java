@@ -64,7 +64,7 @@ public class MineBatch {
         // send to controller that we won
         if (!_done) {
             _done = true;
-            String msg = String.format("<F>%i#", _mtd.Nonce);
+            String msg = String.format("<F>%d#", _mtd.Nonce);
             byte[] bytes = msg.getBytes(StandardCharsets.US_ASCII);//   Encoding.ASCII.GetBytes(msg);
             if (_nsm != null) {
                 try {
@@ -73,6 +73,10 @@ public class MineBatch {
                     _nsm.close();
                 } catch (IOException exp) {
                     exp.printStackTrace();
+                }catch (Exception exp)
+                {
+                    exp.printStackTrace();
+
                 }
             }
         }

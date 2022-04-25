@@ -69,11 +69,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
+      "projectUniqueName": "C:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
       "projectName": "MineWorker",
-      "projectPath": "c:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
+      "projectPath": "C:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
       "packagesPath": "C:\\Users\\ralph\\.nuget\\packages\\",
-      "outputPath": "c:\\Development\\GRADPROJECT\\agent\\MineWorker\\obj\\",
+      "outputPath": "C:\\Development\\GRADPROJECT\\agent\\MineWorker\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ralph\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -91,8 +91,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "c:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj": {
-              "projectPath": "c:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj"
+            "C:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj": {
+              "projectPath": "C:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj"
             }
           }
         }

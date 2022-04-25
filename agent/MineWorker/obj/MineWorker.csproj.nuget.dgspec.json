@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj": {}
+    "C:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj": {}
   },
   "projects": {
-    "c:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj": {
+    "C:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
+        "projectUniqueName": "C:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
         "projectName": "MineWorker",
-        "projectPath": "c:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
+        "projectPath": "C:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
         "packagesPath": "C:\\Users\\ralph\\.nuget\\packages\\",
-        "outputPath": "c:\\Development\\GRADPROJECT\\agent\\MineWorker\\obj\\",
+        "outputPath": "C:\\Development\\GRADPROJECT\\agent\\MineWorker\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ralph\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -29,8 +29,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "c:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj": {
-                "projectPath": "c:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj"
+              "C:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj": {
+                "projectPath": "C:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj"
               }
             }
           }
@@ -69,14 +69,14 @@
         }
       }
     },
-    "c:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj": {
+    "C:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj",
+        "projectUniqueName": "C:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj",
         "projectName": "MineTools",
-        "projectPath": "c:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj",
+        "projectPath": "C:\\Development\\GRADPROJECT\\MineTools\\MineTools.csproj",
         "packagesPath": "C:\\Users\\ralph\\.nuget\\packages\\",
-        "outputPath": "c:\\Development\\GRADPROJECT\\MineTools\\obj\\",
+        "outputPath": "C:\\Development\\GRADPROJECT\\MineTools\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ralph\\AppData\\Roaming\\NuGet\\NuGet.Config",
