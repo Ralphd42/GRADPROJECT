@@ -29,7 +29,7 @@ namespace MineWorker
                 // This example uses port 11000 on the local computer.  
                 IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
-                IPAddress conIPA = IPAddress.Parse(Settings.CONTROLLERIPV4);
+                IPAddress conIPA = IPAddress.Parse(Program.ControllerIP);
 
 
                 IPEndPoint remoteEP = new IPEndPoint(conIPA, Settings.WORKERMANAGERPORT);

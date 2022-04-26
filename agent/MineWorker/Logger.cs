@@ -13,7 +13,7 @@ namespace MineWorker
         {
             get 
             {
-                return @"C:\logs\minerlog.log";
+                return Program.LogFile;
             }
         }
 
@@ -37,6 +37,11 @@ namespace MineWorker
                 msg.AppendLine(exp.InnerException.Message);
             }
             msg.AppendLine(specMsg);
+            if( Program.LogToConsole)
+            {
+                Console.WriteLine(specMsg);
+
+            }
             lock (LogLock)
             {
                 using StreamWriter file = new(LOGFILE, append: true);
@@ -48,6 +53,10 @@ namespace MineWorker
 
         public void  LogMessage(string Message)
         {
+            if( Program.LogToConsole)
+            {
+                Console.WriteLine(Message);
+            }
             lock (LogLock)
             {
                 using StreamWriter file = new(LOGFILE, append: true);
@@ -60,6 +69,10 @@ namespace MineWorker
         public void  LogWIthDate(string Message)
         {
             Message = string.Format("{0}:{1}", DateTime.Now, Message);
+            if( Program.LogToConsole)
+            {
+                Console.WriteLine(Message);
+            }
             lock (LogLock)
             {
                 using StreamWriter file = new(LOGFILE, append: true);

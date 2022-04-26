@@ -1,0 +1,16 @@
+{
+    "Logging": {
+      "LogLevel": {
+        "Default": "Warning"
+      }
+    },
+    "ConnectionStrings": {
+      "DbConnection": "NOTUSED"
+    },
+    "Parameter": {
+      "debug"            : "true",
+      "LOGFILE"          : "c:/logs/agent.log",
+      "WorkerManagerPort": "8005",
+      "JobPort"          : "8006"
+    }
+  }

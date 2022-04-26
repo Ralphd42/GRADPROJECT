@@ -27,3 +27,15 @@ Controller
 1) fix startup info.  Make as nice as possible as startup.  SHow IP and port that will be listening for workers
 
 2)  
+tcpClient.Connect(ipAddress, Settings.JOBPORT);
+
+java.lang.IllegalStateException: Expected BEGIN_ARRAY but was STRING at line 1 column 34 path $.thData
+
+-------------------------------------------------------------------------------------------------------------------
+DeskClient
+1) add console logging
+2) add settings file
+3) make good user interface from cmdline
+4) settings for both ports
+5) setting for clientName
+6) 
