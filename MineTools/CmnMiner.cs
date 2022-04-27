@@ -12,10 +12,16 @@ namespace MineTools
            
         }
         private MineThreadData _job;
-        public Miner(MineThreadData mtd)
+        private ILogger _logger;
+        public Miner(MineThreadData mtd, ILogger lgr =null)
         {
             _done = false;
             _job = mtd;
+            if( lgr!=null)
+            {
+                _logger =lgr;
+
+            }
 
         }
         public void OnFoundNonce()
@@ -36,7 +42,7 @@ namespace MineTools
             DateTime StartTime = DateTime.Now;
             try
             {
-                byte[] ScryptResult = new byte[32];
+                byte[] SHAHash = new byte[32];
 
                 // Loop until done is set or we meet the target
                 while (!_done)
@@ -45,9 +51,9 @@ namespace MineTools
                     Databyte[77] = (byte)(_job.Nonce >> 8);
                     Databyte[78] = (byte)(_job.Nonce >> 16);
                     Databyte[79] = (byte)(_job.Nonce >> 24);
-                    ScryptResult = new byte[8];// Replicon.Cryptography.SCrypt.SCrypt.DeriveKey(Databyte, Databyte, 1024, 1, 1, 32);
+                    SHAHash = CryptoHelpers.ReHash(Databyte);
                     Hashcount++;
-                    if (meetsTarget(ScryptResult, _job.target))  // Did we meet the target?
+                    if (meetsTarget(SHAHash, _job.target))  // Did we meet the target?
                     {
                         OnFoundNonce();
                     }
@@ -59,7 +65,7 @@ namespace MineTools
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _logger.LogError(ex,"runJob");
             }
         }
 
