@@ -16,14 +16,15 @@ namespace Controller
         {
             get
             {
-                return "";
+                //return "stratum+tcp://us-east.stratum.slushpool.com";
+                return "us-east.stratum.slushpool.com";
             }
         }
         public static int PoolPort
         {
             get
             {
-                return 1;
+                return 3333;
 
             }
 
@@ -33,7 +34,7 @@ namespace Controller
         {
             get
             {
-                return "";
+                return "ralphd42.GRADPROJ";
 
             }
 
@@ -42,7 +43,7 @@ namespace Controller
         {
             get
             {
-                return "";
+                return "anything123";
 
             }
 

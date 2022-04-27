@@ -80,6 +80,9 @@ namespace MineTools
 
         public static byte [] GenerateTarget(int Difficulty)
         {
+
+
+            Difficulty = int.MaxValue;
             byte[] ba = { 
                 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -98,7 +101,14 @@ namespace MineTools
                 int x = n - r * Difficulty;
                 n = (x << 8) + ba[i];
             }
+            string tarasString = byteArrToString(result);
+            Console.WriteLine("DIFFR:{0}  |Target:{1}|",Difficulty, tarasString);
             Array.Reverse((Array)result);
+            tarasString = byteArrToString(result);
+            Console.WriteLine("DIFF :{0}  |Target:{1}|",Difficulty, tarasString);
+
+
+
             return result;
         }
     }

@@ -95,7 +95,7 @@ namespace Controller
                 byte[] bytes = Encoding.ASCII.GetBytes(json);
                 _Client.GetStream().Write(bytes, 0, bytes.Length);
                 _Client.GetStream().Flush();
-                Program.Acks.AddAck(ps.id, ps.method);
+                AckMan.Acks.AddAck(ps.id, ps.method);
                 retval = true;
             }
             catch (Exception exp)
@@ -110,13 +110,13 @@ namespace Controller
             bool retval = false;
             try
             {
-                PoolAuth pa = new PoolAuth(1, "uname", "pwd");
+                PoolAuth pa = new PoolAuth(1, PoolManager.PoolUser, PoolManager.PoolPwd);
                 string json = JsonConvert.SerializeObject(pa, Formatting.None);
                 json = json + "\n";
                 byte[] bytes = Encoding.ASCII.GetBytes(json);
                 _Client.GetStream().Write(bytes, 0, bytes.Length);
                 _Client.GetStream().Flush();
-                Program.Acks.AddAck(pa.id, pa.method);
+                AckMan.Acks.AddAck(pa.id, pa.method);
                 retval = true;
             }
             catch (Exception exp)
@@ -197,7 +197,7 @@ namespace Controller
                         int id;
                         if (int.TryParse(Robj["ID"].ToString(), out id))
                         {
-                            string method = Program.Acks.getACK(id);
+                            string method = AckMan.Acks.getACK(id);
                             if (String.Compare(method, "mining.authorize") == 0)
                             {
                                 miningauthorizeACK(cmdTxt);

@@ -11,15 +11,35 @@ namespace Controller
     {
         public static bool _RUNNING = true;
         public static JobQueue MainJobQueue;
-        public static AckMan Acks;
+        
         public static Logger lgr;
+
+        public static void TargetTester()
+        {
+            int[] testers = new int[] { 
+                1,2,3,4,5,6,7,
+                100,1000,10000,1000000, int.MaxValue
+
+            };
+            foreach (var i in testers)
+            {
+                MineTools.CryptoHelpers.GenerateTarget(i);
+            }
+            Program.exitApp();
+        }
+
+
         static void Main(string[] args)
         {
+            // TargetTester();
+           // PoolConnTest();
+
+
             _RUNNING = true;
             showIP();
              
             MainJobQueue = new JobQueue();
-            Acks = new AckMan();
+            
             lgr = new Logger();
             // start waiting for Threads.
             WorkerManager wmt = new WorkerManager();
@@ -173,6 +193,14 @@ namespace Controller
             Console.WriteLine("Waiting for agents(workers) to join network");
         }
 
+        public static void PoolConnTest()
+        {
+            PoolManager pm = new PoolManager(new JobQueue());
+            pm.startConnectionToPool();
+            Program.exitApp();
+        }
+
+
         public static void LoadTestData()
         {
             const int testdiff = 100;
@@ -203,7 +231,7 @@ namespace Controller
                     NetTime = "504e86b9",
                     PrevHash = "4d16b6f85af6e2198f44ae2a6de67f78487ae5611b77c6c0440b921e00000000",
                     Ver = "00000002",
-                    target = MineTools.CryptoHelpers.GenerateTarget((int)testdiff)
+                    target = MineTools.CryptoHelpers.GenerateTarget((int)1)
                  
 
 
