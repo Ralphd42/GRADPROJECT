@@ -23,11 +23,16 @@ namespace MineWorker
         private MineThreadData _thData;
         private bool _running ;
         private NetworkStream _nsm;
-        public MineBatch(MineThreadData thedata, NetworkStream nsm)
+        private ILogger _logger;
+        public MineBatch(MineThreadData thedata, NetworkStream nsm, ILogger lgr =null)
         {
             _running = true;
             _thData = thedata;
             _nsm = nsm;
+            if( lgr!=null)
+            {
+                _logger = lgr;
+            }
         }
 
 
@@ -40,18 +45,23 @@ namespace MineWorker
         {
             while (_running)
             {
-                bool retval = false;
+                Thread.Sleep(1);
                 if (_nsm != null)
                 {
-                    if ( _nsm.CanWrite    /*_nsm.Socket.Poll(100, SelectMode.SelectWrite)*/)
+                    if ( _nsm.CanWrite 
+                        && _nsm.Socket.Connected
+                        && _nsm.Socket.Poll( 1,SelectMode.SelectWrite   )
+                    
+                        )
                     {
-                        retval = true;
+                        _running = true;
+                        continue;
                     }
                 }
                 KillJobs();
-                _running = retval;
-                Thread.Sleep(1);
+                _running = false;
             }
+            Console.WriteLine("Watcher stopped");
         }
 
 
@@ -111,7 +121,7 @@ namespace MineWorker
                 jobData.Nonce = _thData.Nonce + i;
                 jobData.target = _thData.target;
                 jobData.thData = _thData.thData;
-                _jobs[i] = new Miner(jobData);
+                _jobs[i] = new Miner(jobData, _logger);
                 _jobs[i].foundNonce += this.handleFound;
                 _threads[i] = new Thread(new ThreadStart(_jobs[i].runJob));
                 _threads[i].Start();

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ybWyovRwylP+C7ZaSc52wh5x0Dn7u20BVmhfzBJZ1c7DT/S8ApSo7VuLfSFWbcbCbrXxU1oa0s0NVv4epj8AQQ==",
+  "dgSpecHash": "uRqM5xcukJbJZgZF4JhKFlXkQNQGBbbYrlZIbxXD4SDJesbmp+Y/1u/fmfsils+Q/o+omP6Mlw4VjdTANZHJag==",
   "success": true,
-  "projectFilePath": "C:\\Development\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
+  "projectFilePath": "C:\\Development\\GradProject\\GRADPROJECT\\agent\\MineWorker\\MineWorker.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ralph\\.nuget\\packages\\microsoft.extensions.configuration\\6.0.1\\microsoft.extensions.configuration.6.0.1.nupkg.sha512",
     "C:\\Users\\ralph\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0\\microsoft.extensions.configuration.abstractions.6.0.0.nupkg.sha512",

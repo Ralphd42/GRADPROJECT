@@ -11,6 +11,7 @@
       "debug"            : "true",
       "LOGFILE"          : "c:/logs/agent.log",
       "WorkerManagerPort": "8005",
-      "JobPort"          : "8006"
+      "JobPort"          : "8006",
+      "ControllerIP"     : "192.168.1.12"
     }
   }

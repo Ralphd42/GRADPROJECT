@@ -24,14 +24,14 @@ namespace MineWorker
         {
             byte[] bytes = new Byte[1024];
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPAddress ipAddress = ipHostInfo.AddressList[1];
            // IPEndPoint ep = new IPEndPoint()
             Console.WriteLine(string.Format("IPADDRESS:{0}|{1}|{2}  ",
                 IPAddress.Parse(ipAddress.ToString()),
                 ipAddress.ToString(), ipAddress
                 ));
             Int32 port = Settings.JOBPORT;
-            tcpListener = new TcpListener(new IPEndPoint(IPAddress.IPv6Any, port));
+            tcpListener = new TcpListener(new IPEndPoint(IPAddress.Any, port));
             
            
             try
@@ -66,7 +66,8 @@ namespace MineWorker
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                _logger.LogError(e,"ListenToController");
+                Console.WriteLine(e.Message);
             }
 
             Console.WriteLine("\nPress ENTER to continue...");

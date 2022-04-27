@@ -49,6 +49,10 @@ namespace MineWorker
                     file.Write(msg);
                 }
             }
+             if( Program.LogToConsole)
+            {
+                Console.WriteLine(msg);
+            }
         }
 
         public void  LogMessage(string Message)

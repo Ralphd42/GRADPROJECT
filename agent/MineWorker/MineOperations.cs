@@ -28,7 +28,7 @@ namespace MineWorker
                 // Establish the remote endpoint for the socket.  
                 // This example uses port 11000 on the local computer.  
                 IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-                IPAddress ipAddress = ipHostInfo.AddressList[0];
+                IPAddress ipAddress = IPAddress.Any; //ipHostInfo.AddressList[0];
                 IPAddress conIPA = IPAddress.Parse(Program.ControllerIP);
 
 
@@ -37,7 +37,8 @@ namespace MineWorker
                 // Create a TCP/IP  socket.  
                 Socket sender = new Socket(ipAddress.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
-
+                 
+               // Socket sender = new Socket();
                 // Connect the socket to the remote endpoint. Catch any errors.  
                 try
                 {
