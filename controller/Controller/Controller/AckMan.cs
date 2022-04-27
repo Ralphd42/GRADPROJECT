@@ -12,12 +12,32 @@ using System.Collections.Concurrent;
 namespace Controller
 {
 
+
     /// <summary>
     ///Manages ackknoledegments of jobs
     /// </summary>
     public class AckMan
     {
-        private Dictionary<int,string> _acks;
+        private static AckMan _acksSing;
+        public static AckMan Acks
+        {
+            get
+            {
+                if (_acksSing == null)
+                {
+                    _acksSing = new AckMan();
+
+                }
+                return _acksSing;
+            }
+        }
+    
+
+
+
+
+
+    private Dictionary<int,string> _acks;
         public void AddAck(int ack, string command)
         {
             if( _acks==null)

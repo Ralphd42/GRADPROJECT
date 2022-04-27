@@ -53,13 +53,24 @@ namespace Controller
                 byte[] rb = new byte[1024];
                 StringBuilder objString = new StringBuilder();
                 bool found = false;
-                while ((byrd = stream.Read(rb)) > 0)
+                /* try and indicate dead client   */
+                try
                 {
-                    if (!_running)
-                        break;
-                    found = true;
-                    objString.Append(Encoding.ASCII.GetString(rb));
-                    Console.Write(objString.ToString());
+                    while ((byrd = stream.Read(rb)) > 0)
+                    {
+
+                        if (!_running)
+                            break;
+                        found = true;
+                        objString.Append(Encoding.ASCII.GetString(rb));
+                        Console.Write(objString.ToString());
+                    }
+                }
+                catch (Exception exp) 
+                {
+                    Program.lgr.LogError(exp, "Loast connection to agent");
+
+
                 }
                 if (found)
                 {
