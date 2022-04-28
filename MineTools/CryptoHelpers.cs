@@ -111,5 +111,15 @@ namespace MineTools
 
             return result;
         }
+        public static byte[] ReHash(byte[] input)
+        {
+            using(SHA256 sha25Obj = SHA256.Create())
+            { 
+                sha25Obj.Initialize();
+                return sha25Obj.ComputeHash(input);
+
+            }
+        }
+
     }
 }
