@@ -35,24 +35,15 @@ namespace MineWorker
             }
         }
 
-
-
-        
-
-         
-
-        void isActive()
+void isActive()
         {
+            try{ 
             while (_running)
             {
                 Thread.Sleep(1);
                 if (_nsm != null)
                 {
-                    if ( _nsm.CanWrite 
-                        && _nsm.Socket.Connected
-                        && _nsm.Socket.Poll( 1,SelectMode.SelectWrite   )
-                    
-                        )
+                    if(IsSocketConnected(_nsm.Socket))
                     {
                         _running = true;
                         continue;
@@ -60,6 +51,57 @@ namespace MineWorker
                 }
                 KillJobs();
                 _running = false;
+            }
+            }catch (Exception exp)
+            {
+                Console.WriteLine(exp);
+
+            }
+            Console.WriteLine("Watcher stopped");
+        }
+
+        
+
+         
+
+
+//IsSocketConnected
+        void isActive_OLD()
+        {
+            try{ 
+            while (_running)
+            {
+                Thread.Sleep(1);
+                if (_nsm != null)
+                {
+                    String stats =
+                        String.Format(
+                            "CANWRITE:{0}|CONNECTED:{1}|SW:{2}|SW:{3}|sr:{4}|sr:{5}",
+                            _nsm.CanWrite,
+                            _nsm.Socket.Connected,
+                            _nsm.Socket.Poll(-1,  SelectMode.SelectWrite),
+                            _nsm.Socket.Poll(1000, SelectMode.SelectWrite),
+                            _nsm.Socket.Poll(-1,  SelectMode.SelectRead),0//,
+                            //_nsm.Socket.Poll(1000, SelectMode.SelectRead)
+                            );
+
+
+                    Console.WriteLine(stats);
+                    if ( _nsm.CanWrite 
+                        && _nsm.Socket.Connected
+                        && !_nsm.Socket.Poll( 1000,SelectMode.SelectError  ))
+                    {
+                        _running = true;
+                        continue;
+                    }
+                }
+                KillJobs();
+                _running = false;
+            }
+            }catch (Exception exp)
+            {
+                Console.WriteLine(exp);
+
             }
             Console.WriteLine("Watcher stopped");
         }
@@ -134,6 +176,19 @@ namespace MineWorker
                 _threads[i].Join();
             }
         }
+
+        static bool IsSocketConnected(Socket s)
+    {bool part1 = s.Poll(1000, SelectMode.SelectRead);
+        bool part2 = (s.Available == 0);
+        if ((part1 && part2 ) || !s.Connected)
+            return false;
+        else
+            return true;
+
+
+    }
+
+
 
         //----------------------------------------------------------------------------------------
         //unused code
