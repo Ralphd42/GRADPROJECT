@@ -12,7 +12,7 @@ namespace MineWorker
             try
             {
                 MineOperations mi = new MineOperations(lg);
-                bool joined = mi.joinNetwork(args[0]);
+                bool joined = mi.joinNetwork(Program.AgentName);
                 if (joined)
                 {
                     lg.LogMessage("Joined Network");
@@ -28,21 +28,17 @@ namespace MineWorker
             {
                 Console.WriteLine("Error in agent Exiting");
                 lg.LogError(exp, "ERROR in agent");
-
-
             }
         }
 
         #region UIFuncts
+        
         static void welcome()
         {
             Console.WriteLine("Bitcoin worker starting");
         }
         
-        
         #endregion
-
-
         #region Settings
         public static bool debug
         {
@@ -98,12 +94,34 @@ namespace MineWorker
             }
         }
 
+        public static String AgentName
+        {
+            get
+            {
+                return Params.GetSection("AgentName").Value;
+            }
+        }
+
         public static int WorkerManagerPort
         {
             get
             {
                 int rv = -1;
                 var wmp = Params.GetSection("WorkerManagerPort").Value;
+                if (!int.TryParse(wmp, out rv))
+                {
+                    rv = -1;
+                }
+                return rv;
+            }
+        }
+
+        public static int JobPort
+        {
+            get
+            {
+                int rv = -1;
+                var wmp = Params.GetSection("JobPort").Value;
                 if (!int.TryParse(wmp, out rv))
                 {
                     rv = -1;

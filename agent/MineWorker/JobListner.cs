@@ -30,7 +30,7 @@ namespace MineWorker
                 IPAddress.Parse(ipAddress.ToString()),
                 ipAddress.ToString(), ipAddress
                 ));
-            Int32 port = Settings.JOBPORT;
+            Int32 port = Program.JobPort;
             tcpListener = new TcpListener(new IPEndPoint(IPAddress.Any, port));
             
            
@@ -50,8 +50,8 @@ namespace MineWorker
                         objString.Append(Encoding.ASCII.GetString(rb, 0, byrd));
                         string svr = objString.ToString();
                         svr = svr.Trim();
-                        Console.WriteLine(svr);
-                        Console.WriteLine("LAST CHAR {0}", svr[svr.Length - 1]);
+                        Console.WriteLine("received json {0}", svr);
+                         
                         if (svr[svr.Length - 1] == '}')
                         {
                             break;
@@ -59,7 +59,7 @@ namespace MineWorker
                     }
                     MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
                     
-                    Console.WriteLine(dt.id);
+                     
                     MineBatch mb = new(dt, nsm);
                     mb.LaunchThreads();
                 }
