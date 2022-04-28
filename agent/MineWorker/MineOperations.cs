@@ -38,12 +38,13 @@ namespace MineWorker
                 Socket sender = new Socket(ipAddress.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
                  
-               // Socket sender = new Socket();
+                // Socket sender = new Socket();
                 // Connect the socket to the remote endpoint. Catch any errors.  
                 try
                 {
                     sender.Connect(remoteEP);
-                    string smsg = string.Format("<A>{0}#", clientName);
+                    // need to send thread count
+                    string smsg = string.Format("<A>{0}:{1}#",Program.ThreadCount,   clientName);
                     byte[] msg = Encoding.ASCII.GetBytes(smsg);
                     int bytesSent = sender.Send(msg);
                     int bytesRec = sender.Receive(bytes);
@@ -55,9 +56,7 @@ namespace MineWorker
                     // Release the socket.  
                     sender.Shutdown(SocketShutdown.Both);
                     sender.Close();
-
                 }
-                
                 catch (Exception exp)
                 {
                     if (_logger != null)

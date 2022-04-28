@@ -7,6 +7,7 @@ namespace MineWorker
     {
         static void Main(string[] args)
         {
+            welcome();
             Logger lg = new Logger();
             try
             {
@@ -22,18 +23,30 @@ namespace MineWorker
                 {
                     lg.LogMessage("Failed to join NETWORK");
                 }
-            }catch (Exception exp)
+            }
+            catch (Exception exp)
             {
+                Console.WriteLine("Error in agent Exiting");
                 lg.LogError(exp, "ERROR in agent");
 
 
             }
         }
 
-        #region Settings
-        public static bool debug 
+        #region UIFuncts
+        static void welcome()
         {
-            get 
+            Console.WriteLine("Bitcoin worker starting");
+        }
+        
+        
+        #endregion
+
+
+        #region Settings
+        public static bool debug
+        {
+            get
             {
                 var builder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
@@ -44,13 +57,13 @@ namespace MineWorker
                 {
                     retval = false;
                 }
-                return retval; 
+                return retval;
             }
         }
 
-        public static bool LogToConsole 
+        public static bool LogToConsole
         {
-            get 
+            get
             {
                 var builder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
@@ -61,26 +74,27 @@ namespace MineWorker
                 {
                     retval = false;
                 }
-                return retval; 
+                return retval;
             }
         }
 
-        public static IConfigurationSection Params{ 
-        get{
-            var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("params.json", optional: true, reloadOnChange: true);
-            return builder.Build().GetSection("Parameter");
-
-        }
-        }
-
-        public static String ControllerIP 
+        public static IConfigurationSection Params
         {
-            get 
+            get
+            {
+                var builder = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("params.json", optional: true, reloadOnChange: true);
+                return builder.Build().GetSection("Parameter");
+
+            }
+        }
+
+        public static String ControllerIP
+        {
+            get
             {
                 return Params.GetSection("ControllerIP").Value;
-                 
             }
         }
 
@@ -88,22 +102,29 @@ namespace MineWorker
         {
             get
             {
-                int rv =-1;
+                int rv = -1;
                 var wmp = Params.GetSection("WorkerManagerPort").Value;
-                if(!int.TryParse(wmp,out rv))
+                if (!int.TryParse(wmp, out rv))
                 {
-                    rv=-1;
+                    rv = -1;
                 }
                 return rv;
             }
         }
 
-
-
-
-
-
-
+        public static int ThreadCount
+        {
+            get
+            {
+                int rv;
+                var wmp = Params.GetSection("ThreadCount").Value;
+                if (int.TryParse(wmp, out rv))
+                {
+                    return rv;
+                }
+                return 1;
+            }
+        }
         
         public static string LogFile
         {
@@ -117,9 +138,5 @@ namespace MineWorker
             }
         }
         #endregion
-
-
-
-
     }
 }
