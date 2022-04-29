@@ -20,6 +20,7 @@ namespace Controller
     public class JobQueueWatcher
     {
         private JobQueue _queue;
+        private JobManager jm;
         private List<Worker> _workers;
         public JobQueueWatcher(JobQueue queue, List<Worker> workers)
         {
@@ -45,10 +46,25 @@ namespace Controller
                 MineJob jb = _queue.GetJob();
                 if (jb != null)
                 {
-                    JobManager jm = new JobManager(jb, _workers); 
+                    jm= new JobManager(jb, _workers); 
                     jm.startJobs();
                 }
             }
+            if (jm != null)
+            {
+                jm.killThreads();
+                
+            }
         }
+
+        public void killThreads()
+        {
+            if (jm != null)
+            {
+                jm.killThreads();
+            }
+        }
+
+
     }
 }

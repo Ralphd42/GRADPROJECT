@@ -64,6 +64,7 @@ namespace Controller
             lock (foundObj)
             {
                 NotifyPool?.Invoke(this,newNonce);
+                Program.lgr.LogMessage(string.Format("Found a NONCE:{0}",newNonce));
                 killThreads();
             }
         }

@@ -41,8 +41,11 @@ namespace Controller
             IPAddress ipAddress = IPAddress.Parse(_worker.Ipv4);
             tcpClient = new TcpClient(AddressFamily.InterNetwork);
             tcpClient.Connect(ipAddress, Settings.JOBPORT);
+            tcpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+
             if (tcpClient != null)
             {
+                
                 NetworkStream stream = tcpClient.GetStream();
                 string dtJson = JsonConvert.SerializeObject(dt);
                 byte[] toSend = Encoding.ASCII.GetBytes(dtJson);

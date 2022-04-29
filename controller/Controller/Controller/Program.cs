@@ -3,7 +3,7 @@ using System.Threading;
 using System.Text;
 using System.Net;
 using Microsoft.Extensions.Configuration;
- 
+using System.Globalization;
 using System.IO;
 namespace Controller
 {
@@ -11,12 +11,12 @@ namespace Controller
     {
         public static bool _RUNNING = true;
         public static JobQueue MainJobQueue;
-        
+
         public static Logger lgr;
 
         public static void TargetTester()
         {
-            int[] testers = new int[] { 
+            int[] testers = new int[] {
                 1,2,3,4,5,6,7,
                 100,1000,10000,1000000, int.MaxValue
 
@@ -32,14 +32,14 @@ namespace Controller
         static void Main(string[] args)
         {
             // TargetTester();
-           // PoolConnTest();
+            // PoolConnTest();
 
 
             _RUNNING = true;
             showIP();
-             
+
             MainJobQueue = new JobQueue();
-            
+
             lgr = new Logger();
             // start waiting for Threads.
             WorkerManager wmt = new WorkerManager();
@@ -74,8 +74,13 @@ namespace Controller
                     artificially add item to JobQueue
 
                 */
+                Thread.Sleep(1000 * 60);
+                Console.WriteLine("KILLING");
+                jqe.killThreads();
 
-            }else if (   pm.startConnectionToPool())
+
+            }
+            else if (pm.startConnectionToPool())
             {
                 /*
                     Need to build thread for listner to add jobs to the Queue
@@ -133,9 +138,9 @@ namespace Controller
             return msg.ToString();
         }
         #region Settings
-        public static bool debug 
+        public static bool debug
         {
-            get 
+            get
             {
                 var builder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
@@ -146,10 +151,10 @@ namespace Controller
                 {
                     retval = false;
                 }
-                return retval; 
+                return retval;
             }
         }
-        
+
         public static string LogFile
         {
             get
@@ -188,7 +193,7 @@ namespace Controller
                 }
             }
             Console.WriteLine("Bitcoin network miner starting");
-            Console.WriteLine("HostName:{0} ", Hostname  );
+            Console.WriteLine("HostName:{0} ", Hostname);
             Console.WriteLine("RUNNING ON IP ADDRESS {0} ", IPAddress);
             Console.WriteLine("Waiting for agents(workers) to join network");
         }
@@ -205,40 +210,54 @@ namespace Controller
         {
             const int testdiff = 100;
 
-            MineTools.MineJob mjtest = new MineTools.MineJob
-            ()
+
+            int difvl;
+            if (int.TryParse("E9",System.Globalization.NumberStyles.HexNumber,
+             CultureInfo.InvariantCulture, out difvl))
             {
-                /*https://reference.cash/mining/stratum-protocol*/
-                /*
-0                   [“bf”, 
-1                   “4d16b6f85af6e2198f44ae2a6de67f78487ae5611b77c6c0440b921e00000000”,
-2 “01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff20020862062f503253482f04b8864e5008”,
-3 “072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000”, 
-4 [],
-5 “00000002”, 
-6 “1c2ac4af”, 
-7 “504e86b9”, 
-8 false]
-*/
-                 
+
+                MineTools.MineJob mjtest = new MineTools.MineJob
+                ()
+                {
+                    /*https://reference.cash/mining/stratum-protocol*/
+                    /*
+    0                   [“bf”, 
+    1                   “4d16b6f85af6e2198f44ae2a6de67f78487ae5611b77c6c0440b921e00000000”,
+    2 “01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff20020862062f503253482f04b8864e5008”,
+    3 “072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000”, 
+    4 [],
+    5 “00000002”, 
+    6 “1c2ac4af”, 
+    7 “504e86b9”, 
+    8 false]
+    */
+
                     clear = false,
-                    CoinPre = 
-"072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000",
+                    CoinPre =
+    "072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000",
                     CoinFollow = "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff20020862062f503253482f04b8864e5008",
-                    Difficulty = "1c2ac4af",
+                    Difficulty = "3E9",
                     ID = "bf",
-                   // Merk = aMerk,
+                    // Merk = aMerk,
                     NetTime = "504e86b9",
                     PrevHash = "4d16b6f85af6e2198f44ae2a6de67f78487ae5611b77c6c0440b921e00000000",
                     Ver = "00000002",
-                    target = MineTools.CryptoHelpers.GenerateTarget((int)1)
-                 
+                    target = MineTools.CryptoHelpers.GenerateTarget(difvl)
 
 
 
 
-            };
-            MainJobQueue.AddJob(mjtest);
+
+                };
+                Console.WriteLine("as INT: |{0}| ",difvl );
+                MainJobQueue.AddJob(mjtest);
+            }
+            else
+            {
+                Console.WriteLine("FAILED");
+
+
+            }
 
 
             /*MineTools.MineJob mjTest = new MineTools.MineJob() { }
