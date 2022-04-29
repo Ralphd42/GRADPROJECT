@@ -18,11 +18,11 @@ namespace Controller
     {
         private List<Worker> _workers;
         private bool _running;
-        private int _addPort;// 11000
+        private int _addPort; 
         public WorkerManager()
         {
             Running = true;
-            _addPort = MineTools.Settings.WORKERMANAGERPORT;
+            _addPort = Program.WorkerManagerPort; 
         }
 
 /// <summary>

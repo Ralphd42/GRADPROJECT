@@ -40,13 +40,14 @@ namespace Controller
         {
             IPAddress ipAddress = IPAddress.Parse(_worker.Ipv4);
             tcpClient = new TcpClient(AddressFamily.InterNetwork);
-            tcpClient.Connect(ipAddress, Settings.JOBPORT);
-            tcpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-
+            tcpClient.Client.SetSocketOption(SocketOptionLevel.Socket,
+             SocketOptionName.KeepAlive, 2000);
+            tcpClient.Connect(ipAddress,Program.JobPort);
+            
             if (tcpClient != null)
             {
-                
                 NetworkStream stream = tcpClient.GetStream();
+                stream.ReadTimeout = int.MaxValue;
                 string dtJson = JsonConvert.SerializeObject(dt);
                 byte[] toSend = Encoding.ASCII.GetBytes(dtJson);
                 stream.Write(toSend, 0, toSend.Length);
@@ -61,7 +62,6 @@ namespace Controller
                 {
                     while ((byrd = stream.Read(rb)) > 0)
                     {
-
                         if (!_running)
                             break;
                         found = true;
@@ -69,11 +69,37 @@ namespace Controller
                         Console.Write(objString.ToString());
                     }
                 }
+                catch (SocketException errS){
+                    Console.WriteLine(errS.ToString());
+                    if (errS.InnerException != null)
+                    {
+                        Console.WriteLine(errS.InnerException.ToString());
+
+                    }
+                }
+                catch (System.IO.IOException iexp)
+                { 
+                     Console.WriteLine("!IOE!");
+                    Console.WriteLine(iexp.ToString());
+                    if (iexp.InnerException != null)
+                    { 
+                        Console.WriteLine(iexp.InnerException.ToString());
+                    }
+                    Program.lgr.LogError(iexp, "Lost connection to agent");
+
+
+
+
+                }
                 catch (Exception exp) 
                 {
-                    Program.lgr.LogError(exp, "Loast connection to agent");
-
-
+                    Console.WriteLine("!TIMEOUT!");
+                    Console.WriteLine(exp.ToString());
+                    if (exp.InnerException != null)
+                    { 
+                        Console.WriteLine(exp.InnerException.ToString());
+                    }
+                    Program.lgr.LogError(exp, "Lost connection to agent");
                 }
                 if (found)
                 {

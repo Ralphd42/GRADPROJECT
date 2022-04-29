@@ -138,6 +138,47 @@ namespace Controller
             return msg.ToString();
         }
         #region Settings
+        public static IConfigurationSection Params
+        {
+            get
+            {
+                var builder = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("params.json", optional: true, reloadOnChange: true);
+                return builder.Build().GetSection("Parameter");
+
+            }
+        }
+        public static int WorkerManagerPort
+        {
+            get
+            {
+                int rv = -1;
+                var wmp = Params.GetSection("WorkerManagerPort").Value;
+                if (!int.TryParse(wmp, out rv))
+                {
+                    rv = -1;
+                }
+                return rv;
+            }
+        }
+
+        public static int JobPort
+        {
+            get
+            {
+                int rv = -1;
+                var wmp = Params.GetSection("JobPort").Value;
+                if (!int.TryParse(wmp, out rv))
+                {
+                    rv = -1;
+                }
+                return rv;
+            }
+        }
+
+
+
         public static bool debug
         {
             get
@@ -166,6 +207,12 @@ namespace Controller
                 return lf;
             }
         }
+
+
+
+
+
+
         #endregion
 
         public static void exitApp()
