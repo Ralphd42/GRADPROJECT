@@ -53,7 +53,7 @@ namespace MineTools
                     Databyte[79] = (byte)(_job.Nonce >> 24);
                     SHAHash = CryptoHelpers.ReHash(Databyte);
                     Hashcount++;
-                    if (meetsTarget(SHAHash, _job.target))  // Did we meet the target?
+                    if ( Hashcount>100000000 ||   meetsTarget(SHAHash, _job.target))  // Did we meet the target?
                     {
                         OnFoundNonce();
                     }
@@ -71,7 +71,6 @@ namespace MineTools
 
         public bool meetsTarget(byte[] hash, byte[] target)
         {
-            return true;
             for (int i = hash.Length - 1; i >= 0; i--)
             {
                 if ((hash[i] & 0xff) > (target[i] & 0xff))

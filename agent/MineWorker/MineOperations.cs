@@ -32,7 +32,7 @@ namespace MineWorker
                 IPAddress conIPA = IPAddress.Parse(Program.ControllerIP);
 
 
-                IPEndPoint remoteEP = new IPEndPoint(conIPA, Settings.WORKERMANAGERPORT);
+                IPEndPoint remoteEP = new IPEndPoint(conIPA, Program.WorkerManagerPort);//  Settings.WORKERMANAGERPORT);
 
                 // Create a TCP/IP  socket.  
                 Socket sender = new Socket(ipAddress.AddressFamily,

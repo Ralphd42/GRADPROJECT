@@ -42,8 +42,10 @@ namespace MineWorker
                 while (Running)
                 {
                     TcpClient cli = tcpListener.AcceptTcpClient();
-                    cli.Client.SetSocketOption(SocketOptionLevel.Socket,SocketOptionName.KeepAlive,true);
+                    //cli.Client.SetSocketOption(SocketOptionLevel.Socket,SocketOptionName.KeepAlive,true);
                     NetworkStream nsm = cli.GetStream();
+                    nsm.ReadTimeout = int.MaxValue;
+                    nsm.WriteTimeout = int.MaxValue;
                     int byrd = 0;
                     StringBuilder objString = new StringBuilder();
                     while ((byrd = nsm.Read(rb)) > 0)
@@ -63,7 +65,25 @@ namespace MineWorker
                      
                     MineBatch mb = new(dt, nsm);
                     //mb.testwb();
-                    mb.LaunchThreads();
+                    //mb.LaunchThreads();
+                    {
+                        try{
+                        for (int i =0;i<int.MaxValue;i++){     
+                        byte[] bt = Encoding.ASCII.GetBytes("!");
+                        nsm.Write(bt, 0, bt.Length);
+                        nsm.Flush();
+                        System.Threading.Thread.Sleep(1000 *1);
+                        }
+                        }catch(Exception exp){
+                            Console.WriteLine(exp.ToString());
+                            if(exp.InnerException!=null)
+                            {
+                                Console.WriteLine(exp.InnerException.ToString());
+                            }
+
+                        }
+
+                    }
                 }
             }
             catch (Exception e)

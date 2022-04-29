@@ -37,20 +37,19 @@ namespace MineWorker
 
         void isActive()
         {
-            while (_running)
-                {
-                    Thread.Sleep(10*1000);
-
-                }
+           
             try
             {
                 while (_running)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(1000);
                     if (_nsm != null)
                     {
                         if (IsSocketConnected(_nsm.Socket))
                         {
+                             byte[] bytes = Encoding.ASCII.GetBytes(".");
+                            _nsm.Write(bytes, 0, bytes.Length);
+                             _nsm.Flush();
                             _running = true;
                             continue;
                         }
@@ -161,8 +160,8 @@ namespace MineWorker
                         _nsm.BeginWrite(bytes, 0, bytes.Length, new AsyncCallback((IAsyncResult ar) =>
                         {
                             _nsm.Flush();
-                            _nsm.Close();
-                            _nsm.Dispose();
+                           // _nsm.Close();
+                            //_nsm.Dispose();
 
 
                         }), null);

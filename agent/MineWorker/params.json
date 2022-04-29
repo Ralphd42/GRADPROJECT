@@ -10,10 +10,10 @@
   "Parameter": {
     "debug": "true",
     "LOGFILE": "c:/logs/agent.log",
-    "WorkerManagerPort": "8005",
-    "JobPort": "8006",
+    "WorkerManagerPort": "13001",
+    "JobPort": "13002",
     "ControllerIP": "192.168.1.12",
-    "ThreadCount": "4",
+    "ThreadCount": "1",
     "AgentName": "AGENT.ONE"
   }
 }
