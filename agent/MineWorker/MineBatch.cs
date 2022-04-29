@@ -8,51 +8,81 @@ using System.Threading.Tasks;
 using MineTools;
 namespace MineWorker
 {
-    
+
     /// <summary>
-/// This manages the minining
-/// 1) launches threads with received job
-/// 2) notifies thread to stop
-/// 3) notifies miner is complete
-/// 4) handles stopping theread
-/// </summary>
+    /// This manages the minining
+    /// 1) launches threads with received job
+    /// 2) notifies thread to stop
+    /// 3) notifies miner is complete
+    /// 4) handles stopping theread
+    /// </summary>
     class MineBatch
     {
         private Thread[] _threads;
         private Miner[] _jobs;
         private MineThreadData _thData;
-        private bool _running ;
+        private bool _running;
         private NetworkStream _nsm;
         private ILogger _logger;
-        public MineBatch(MineThreadData thedata, NetworkStream nsm, ILogger lgr =null)
+        public MineBatch(MineThreadData thedata, NetworkStream nsm, ILogger lgr = null)
         {
             _running = true;
             _thData = thedata;
             _nsm = nsm;
-            if( lgr!=null)
+            if (lgr != null)
             {
                 _logger = lgr;
             }
         }
 
-void isActive()
+        void isActive()
         {
-            try{ 
             while (_running)
-            {
-                Thread.Sleep(1);
-                if (_nsm != null)
                 {
-                    if(IsSocketConnected(_nsm.Socket))
-                    {
-                        _running = true;
-                        continue;
-                    }
+                    Thread.Sleep(10*1000);
+
                 }
-                KillJobs();
-                _running = false;
+            try
+            {
+                while (_running)
+                {
+                    Thread.Sleep(1);
+                    if (_nsm != null)
+                    {
+                        if (IsSocketConnected(_nsm.Socket))
+                        {
+                            _running = true;
+                            continue;
+                        }
+                        else
+                        {
+                            try
+            {
+                Console.WriteLine("--AAA--");
+                byte[] bytes = Encoding.ASCII.GetBytes("FUCKING YEAH");
+                _nsm.Write(bytes, 0, bytes.Length);
+                Console.WriteLine("--1--");
+                _nsm.Flush();
+                Console.WriteLine("--2--");
+                //_nsm.Close();
+                Console.WriteLine("--3--");
+               // _nsm.Dispose();
+                Console.WriteLine("--4--");
             }
-            }catch (Exception exp)
+            catch (Exception exp)
+            {
+                Console.WriteLine(":{0}:",exp.Message);
+            }
+                            _running = false;
+
+                        }
+                    }
+                    _running = false;
+                    KillJobs();
+
+                }
+            }
+            catch (Exception exp)
             {
                 Console.WriteLine(exp);
 
@@ -60,45 +90,47 @@ void isActive()
             Console.WriteLine("Watcher stopped");
         }
 
-        
-
-         
 
 
-//IsSocketConnected
+
+
+
+        //IsSocketConnected
         void isActive_OLD()
         {
-            try{ 
-            while (_running)
+            try
             {
-                Thread.Sleep(1);
-                if (_nsm != null)
+                while (_running)
                 {
-                    String stats =
-                        String.Format(
-                            "CANWRITE:{0}|CONNECTED:{1}|SW:{2}|SW:{3}|sr:{4}|sr:{5}",
-                            _nsm.CanWrite,
-                            _nsm.Socket.Connected,
-                            _nsm.Socket.Poll(-1,  SelectMode.SelectWrite),
-                            _nsm.Socket.Poll(1000, SelectMode.SelectWrite),
-                            _nsm.Socket.Poll(-1,  SelectMode.SelectRead),0//,
-                            //_nsm.Socket.Poll(1000, SelectMode.SelectRead)
-                            );
-
-
-                    Console.WriteLine(stats);
-                    if ( _nsm.CanWrite 
-                        && _nsm.Socket.Connected
-                        && !_nsm.Socket.Poll( 1000,SelectMode.SelectError  ))
+                    Thread.Sleep(1);
+                    if (_nsm != null)
                     {
-                        _running = true;
-                        continue;
+                        String stats =
+                            String.Format(
+                                "CANWRITE:{0}|CONNECTED:{1}|SW:{2}|SW:{3}|sr:{4}|sr:{5}",
+                                _nsm.CanWrite,
+                                _nsm.Socket.Connected,
+                                _nsm.Socket.Poll(-1, SelectMode.SelectWrite),
+                                _nsm.Socket.Poll(1000, SelectMode.SelectWrite),
+                                _nsm.Socket.Poll(-1, SelectMode.SelectRead), 0//,
+                                                                              //_nsm.Socket.Poll(1000, SelectMode.SelectRead)
+                                );
+
+
+                        Console.WriteLine(stats);
+                        if (_nsm.CanWrite
+                            && _nsm.Socket.Connected
+                            && !_nsm.Socket.Poll(1000, SelectMode.SelectError))
+                        {
+                            _running = true;
+                            continue;
+                        }
                     }
+                    KillJobs();
+                    _running = false;
                 }
-                KillJobs();
-                _running = false;
             }
-            }catch (Exception exp)
+            catch (Exception exp)
             {
                 Console.WriteLine(exp);
 
@@ -117,7 +149,8 @@ void isActive()
             //one notify all threads of done
             // send to controller that we won
             lock (foundObj)
-            {   if (_running)
+            {
+                if (_running)
                 {
                     _running = false;
                     string msg = string.Format("<F>{0}#", newNonce);
@@ -125,19 +158,19 @@ void isActive()
                     if (_nsm.CanWrite)
                     {
                         _nsm.Write(bytes, 0, bytes.Length);
-                        _nsm.BeginWrite(bytes, 0, bytes.Length, new AsyncCallback((IAsyncResult ar) => 
-                        { 
-                             _nsm.Flush();
+                        _nsm.BeginWrite(bytes, 0, bytes.Length, new AsyncCallback((IAsyncResult ar) =>
+                        {
+                            _nsm.Flush();
                             _nsm.Close();
-                            _nsm.Dispose();    
+                            _nsm.Dispose();
 
 
                         }), null);
-                       
+
                     }
                     KillJobs();
                 }
-                
+
             }
         }
 
@@ -153,7 +186,7 @@ void isActive()
         public void LaunchThreads()
         {
             _running = true;
-            _threads = new Thread [_thData.numToRun];
+            _threads = new Thread[_thData.numToRun];
             _jobs = new Miner[_thData.numToRun];
             for (uint i = 0; i < _thData.numToRun; ++i)
             {
@@ -178,22 +211,23 @@ void isActive()
         }
 
         static bool IsSocketConnected(Socket s)
-    {bool part1 = s.Poll(1000, SelectMode.SelectRead);
-        bool part2 = (s.Available == 0);
-        if ((part1 && part2 ) || !s.Connected)
-            return false;
-        else
-            return true;
+        {
+            bool part1 = s.Poll(1000, SelectMode.SelectRead);
+            bool part2 = (s.Available == 0);
+            if ((part1 && part2) || !s.Connected)
+                return false;
+            else
+                return true;
 
 
-    }
+        }
 
 
 
         //----------------------------------------------------------------------------------------
         //unused code
         #region  UNUSEDCODE
-        #if UNUSED
+ 
         public void testwb()
         {
             Console.WriteLine("--ZZZZZZZZ--");
@@ -215,7 +249,7 @@ void isActive()
                 Console.WriteLine(":{0}:",exp.Message);
             }
         }
-        #endif
+ 
         #endregion
     }
 }

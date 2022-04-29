@@ -71,6 +71,7 @@ namespace MineTools
 
         public bool meetsTarget(byte[] hash, byte[] target)
         {
+            return true;
             for (int i = hash.Length - 1; i >= 0; i--)
             {
                 if ((hash[i] & 0xff) > (target[i] & 0xff))
