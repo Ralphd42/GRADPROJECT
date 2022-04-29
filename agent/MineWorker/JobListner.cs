@@ -42,6 +42,7 @@ namespace MineWorker
                 while (Running)
                 {
                     TcpClient cli = tcpListener.AcceptTcpClient();
+                    cli.Client.SetSocketOption(SocketOptionLevel.Socket,SocketOptionName.KeepAlive,true);
                     NetworkStream nsm = cli.GetStream();
                     int byrd = 0;
                     StringBuilder objString = new StringBuilder();
@@ -61,6 +62,7 @@ namespace MineWorker
                     
                      
                     MineBatch mb = new(dt, nsm);
+                    //mb.testwb();
                     mb.LaunchThreads();
                 }
             }
