@@ -11,6 +11,7 @@
       "debug"            :"true"          ,
       "LOGFILE"          :"c:/logs/bc.log",
       "WorkerManagerPort":"13001"         ,
-      "JobPort"          :"13002"
+      "JobPort"          :"13002"         ,
+      "JobRPort"         :"13003"
     }
   }
