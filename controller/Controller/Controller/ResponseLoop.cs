@@ -11,14 +11,12 @@ using Newtonsoft.Json;
 namespace Controller
 {
     /// <summary>
-    /// controller class for managing workers
-    /// Handles adds and removes
+    /// This will handle the responses from the agents
+    /// It will tell  use pool connector to notify POOL of sucess
+    /// It will notify 
     /// </summary>
     public class ResponseLoop
     {
-
-
-
         public void RunLoop()
         {
             byte[] bytes = new Byte[1024];
@@ -55,55 +53,36 @@ namespace Controller
                         data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
                         if (data.IndexOf("#") > -1)
                         {
+                            ProcResponse(data);
+                            //next need to kill threads for this job
+                            Program.jqe.killThreads();
                             break;
-                            // parse it out
-
+                            
                         }
                     }
                 }
             }
             catch (Exception exp)
             {
-
-
-
-
+                Program.lgr.LogError(exp, "Error in RunLoop Response processing");
             }
         }
         private void ProcResponse(string response)
         {
-            /*response format   */
-            /*<R>ID:newNONCE    */
-            /*
-                parse it
-                sent back to network
-                Kill all threads for this run
-            */
             string clean = MineTools.CommParser.removeHT(response);
             string[] itms = clean.Split(":");
             string ids = itms[0];
             string nonces = itms[1];
             int nonce = int.Parse(itms[1]);
             int id = int.Parse(ids);
-
-            // need way to have all of this available
-            // need way to get current job
             MineJob cur = Program.MainJobQueue.CurrentJob;
-
-
             Program.pm.PoolFuncts.miningSubmit(
-                 jobid: cur.ID    , 
-                 extranonce: Program.MainJobQueue.ExtraNonce2  , 
-                 Time: cur.Data  , 
-                 nonceHxSt:   nonce.ToString("x8")          , ID  :id
-                 ) ;
-
-
-
-
-
+                 jobid: cur.ID,
+                 extranonce: Program.MainJobQueue.ExtraNonce2.ToString("x8"),
+                 Time: cur.Data,
+                 nonceHxSt: nonce.ToString("x8"),
+                 ID: id
+            );
         }
-
-
     }
 }

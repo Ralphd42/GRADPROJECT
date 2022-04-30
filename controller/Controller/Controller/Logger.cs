@@ -17,24 +17,36 @@ namespace Controller
         }
 
         public object LogLock = new object();
+        /// <summary>
+        /// Generic error handler.  Will handle all types of errors
+        /// </summary>
+        /// <param name="exp">the is an exception object</param>
+        /// <param name="message">this is the message</param>
         public void  LogError(Exception exp, string message)
         {
             StringBuilder msg = new StringBuilder();
             msg.AppendLine(message);
             msg.AppendLine(exp.Message);
-            string specMsg= string.Empty;
-            if (exp is ArgumentNullException) 
-            {
-                specMsg = (exp as ArgumentException).Message;
-
-            }else if (exp is System.Net.Sockets.SocketException) 
-            { 
-                specMsg = (exp as System.Net.Sockets.SocketException).Message;
-
-            }
             if (exp.InnerException != null)
             {
                 msg.AppendLine(exp.InnerException.Message);
+            }
+
+            string specMsg = string.Empty;
+            if (exp is ArgumentNullException)
+            {
+                specMsg = (exp as ArgumentException).Message;
+
+            }
+            else if (exp is System.Net.Sockets.SocketException)
+            {
+                specMsg = (exp as System.Net.Sockets.SocketException).Message;
+
+            }
+            else if(exp is System.IO.IOException)
+            { 
+                specMsg = (exp as System.Net.Sockets.SocketException).Message;
+
             }
             msg.AppendLine(specMsg);
             lock (LogLock)
@@ -44,6 +56,7 @@ namespace Controller
                     file.Write(msg);
                 }
             }
+            Console.WriteLine(msg);
         }
 
         public void  LogMessage(string Message)

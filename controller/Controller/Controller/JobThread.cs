@@ -13,19 +13,38 @@ namespace Controller
 {
     public class JobThread
     {
-        
         private Worker _worker;
         private MineThreadData dt;
         public event EventHandler<uint> foundNonce;
         private bool _running;
-        private uint _nonce;
+        
         TcpClient tcpClient;
         public void KIll()
         {
             _running = false;
+            if (_stream != null)
+            {
+                string doneMsg = "<K>#";
+                byte[] toSend = Encoding.ASCII.GetBytes(doneMsg);
+                try
+                {
+                    _stream.Write(toSend, 0, toSend.Length);
+                    _stream.Flush();
+                    _stream.Close();
+                }catch (Exception exp)
+                {
+                    Program.lgr.LogError(exp, string.Format("Error closing stream thread:{0}", this.dt.id));
+                }
+            }
             if (tcpClient != null)
             {
-                tcpClient.Close();
+                try
+                {
+                    tcpClient.Close();
+                }catch (Exception exp)
+                {
+                    Program.lgr.LogError(exp, string.Format("Error closing tcpClient thread:{0}", this.dt.id));
+                }
             }
         }
 
@@ -35,6 +54,8 @@ namespace Controller
             dt       = MTD   ;
             _running = true  ;
         }
+
+        private NetworkStream _stream;
 
         public void sendJob()
         {
@@ -46,73 +67,47 @@ namespace Controller
             
             if (tcpClient != null)
             {
-                NetworkStream stream = tcpClient.GetStream();
-                stream.ReadTimeout = int.MaxValue;
+                _stream = tcpClient.GetStream();
+                _stream.ReadTimeout = int.MaxValue;
                 string dtJson = JsonConvert.SerializeObject(dt);
                 byte[] toSend = Encoding.ASCII.GetBytes(dtJson);
-                stream.Write(toSend, 0, toSend.Length);
-                stream.Flush();
+                _stream.Write(toSend, 0, toSend.Length);
+                _stream.Flush();
                 // receive response
                 int byrd = 0;
                 byte[] rb = new byte[1024];
                 StringBuilder objString = new StringBuilder();
-                bool found = false;
+                 
                 /* try and indicate dead client   */
                 try
                 {
-                    while ((byrd = stream.Read(rb)) > 0)
+                    while ((byrd = _stream.Read(rb)) > 0)
                     {
                         if (!_running)
                             break;
-                        found = true;
+                        // do we want to listem for a message here.
                         objString.Append(Encoding.ASCII.GetString(rb));
                         Console.Write(objString.ToString());
                     }
                 }
-                catch (SocketException errS){
-                    Console.WriteLine(errS.ToString());
-                    if (errS.InnerException != null)
-                    {
-                        Console.WriteLine(errS.InnerException.ToString());
-
-                    }
-                }
-                catch (System.IO.IOException iexp)
-                { 
-                     Console.WriteLine("!IOE!");
-                    Console.WriteLine(iexp.ToString());
-                    if (iexp.InnerException != null)
-                    { 
-                        Console.WriteLine(iexp.InnerException.ToString());
-                    }
-                    Program.lgr.LogError(iexp, "Lost connection to agent");
-
-
-
-
-                }
-                catch (Exception exp) 
+                catch (Exception exp)
                 {
-                    Console.WriteLine("!TIMEOUT!");
-                    Console.WriteLine(exp.ToString());
-                    if (exp.InnerException != null)
-                    { 
-                        Console.WriteLine(exp.InnerException.ToString());
-                    }
-                    Program.lgr.LogError(exp, "Lost connection to agent");
-                }
-                if (found)
-                {
-                    string strNonce = CommParser.removeHT(objString.ToString());
-                    if (uint.TryParse(strNonce,out  _nonce)) 
+                    if (_running)
                     {
-                        OnFoundNonce();
+                        Program.lgr.LogError(exp, "sendJob Waiting for data");
+                        //Thread died on its own
                     }
-                }
+                    
+                } 
                 Console.Write("DONE");
             }
         }
-        public void OnFoundNonce()
+    }
+}
+
+#if NotUSED
+    // incase needed later
+    public void OnFoundNonce()
         {
             if (_running)
             {
@@ -120,5 +115,6 @@ namespace Controller
                 _running = false;
             }
         }
-    }
-}
+    private uint _nonce;
+
+#endif
