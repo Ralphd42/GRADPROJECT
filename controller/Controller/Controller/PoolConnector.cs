@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 using MineTools;
 namespace Controller
 {
-    class PoolConnector
+    public class PoolConnector
     {
         private TcpClient _Client;
         private string _Address;
@@ -156,6 +156,24 @@ namespace Controller
             public ArrayList parameters;
         }
 
+        public class miningsubmitjson
+        {
+            public miningsubmitjson(string JobID, String ExtraNonce, String time, String NonceHS, int id)
+            {
+                method = "mining.submit";
+                parameters.Add(Program.PoolUser);
+                parameters.Add(JobID);
+                parameters.Add(ExtraNonce);
+                parameters.Add(time);
+                parameters.Add(NonceHS);
+                this.id = id;
+            }
+
+            public int id;
+            public string method;
+            [JsonProperty(PropertyName = "params")]
+            public ArrayList parameters;
+        }
         public void runListner()
         {
             string AllData = string.Empty;
@@ -329,5 +347,32 @@ params[8]*/
                 }
             }
         }
+
+        public bool miningSubmit(String jobid,string extranonce, string Time, string nonceHxSt,int ID)
+        {
+            bool retval = false;
+
+            try
+            {
+                miningsubmitjson minSub = new miningsubmitjson(JobID: jobid
+                , ExtraNonce: extranonce, time: Time, NonceHS: nonceHxSt, id: ID
+                );
+                string json = JsonConvert.SerializeObject(minSub, Formatting.None);
+                json = json + "\n";
+                byte[] bytes = Encoding.ASCII.GetBytes(json);
+                _Client.GetStream().Write(bytes, 0, bytes.Length);
+                _Client.GetStream().Flush();
+            }catch (Exception exp)
+            {
+                retval = false;
+                _Logger.LogError(exp, String.Format("MINING SUBMIT FAILED FOR JOBID:{0}|ID:{1} " , jobid, ID));
+
+
+            }
+            return retval;
+        }
+
+
+
     }
 }

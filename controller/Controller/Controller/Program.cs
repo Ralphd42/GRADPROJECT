@@ -11,7 +11,7 @@ namespace Controller
     {
         public static bool _RUNNING = true;
         public static JobQueue MainJobQueue;
-
+        public static PoolManager pm;
         public static Logger lgr;
 
         public static void TargetTester()
@@ -60,7 +60,7 @@ namespace Controller
             JobQueueWatcher jqe = new JobQueueWatcher(MainJobQueue, wmt.Workers);
             Thread jqeThread = new Thread(new ThreadStart(jqe.WatchQueue));
             jqeThread.Start();
-            PoolManager pm = new PoolManager(MainJobQueue);
+            pm = new PoolManager(MainJobQueue);
             if (debug)
             {
 
@@ -149,6 +149,19 @@ namespace Controller
 
             }
         }
+
+        //PoolUser
+        public static string   PoolUser
+        {
+            get
+            {   
+                return Params.GetSection("PoolUser").Value;
+            }
+        }
+
+
+
+
         public static int WorkerManagerPort
         {
             get
@@ -176,8 +189,20 @@ namespace Controller
                 return rv;
             }
         }
-
-
+        //JobRPort
+        public static int JobRPort
+        {
+            get
+            {
+                int rv = -1;
+                var wmp = Params.GetSection("JobRPort").Value;
+                if (!int.TryParse(wmp, out rv))
+                {
+                    rv = -1;
+                }
+                return rv;
+            }
+        }
 
         public static bool debug
         {
@@ -202,7 +227,7 @@ namespace Controller
             {
                 var builder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("Params.json", optional: true, reloadOnChange: true);
+                    .AddJsonFile("params.json", optional: true, reloadOnChange: true);
                 var lf = builder.Build().GetSection("Parameter").GetSection("LOGFILE").Value;
                 return lf;
             }

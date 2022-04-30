@@ -23,7 +23,7 @@ namespace Controller
         /// this is a threadsafe QUEUE object
         /// </summary>
         private ConcurrentQueue<MineJob> _jobs;
-
+        private int _extraNonce2 = 0;
         /// <summary>
         /// This adds a job to the QUEUE
         /// </summary>
@@ -57,9 +57,16 @@ namespace Controller
             MineJob ret = null;
             if (_jobs.TryDequeue(out ret))
             {
+                _currJob = ret;
+                ++_extraNonce2;
                 return ret;
             }
             return ret;
         }
+        private MineJob _currJob;
+        public MineJob CurrentJob { get => _currJob; } 
+        public int ExtraNonce2 {get => _extraNonce2; }
+
+
     }
 }

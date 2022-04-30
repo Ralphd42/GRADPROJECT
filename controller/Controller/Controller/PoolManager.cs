@@ -49,6 +49,14 @@ namespace Controller
 
         }
 
+        public PoolConnector PoolFuncts
+        {
+            get {
+                return _poolConn;
+            }
+
+        }
+
         private JobQueue _queue;
         private PoolConnector _poolConn;
         public PoolManager(JobQueue queue)
