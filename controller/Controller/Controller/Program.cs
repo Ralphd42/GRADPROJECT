@@ -61,6 +61,11 @@ namespace Controller
             jqe = new JobQueueWatcher(MainJobQueue, wmt.Workers);
             Thread jqeThread = new Thread(new ThreadStart(jqe.WatchQueue));
             jqeThread.Start();
+            ResponseLoop reLp = new ResponseLoop();
+            new Thread(reLp.RunLoop).Start();
+
+
+
             pm = new PoolManager(MainJobQueue);
             if (debug)
             {
