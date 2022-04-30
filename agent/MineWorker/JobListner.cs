@@ -65,25 +65,8 @@ namespace MineWorker
                      
                     MineBatch mb = new(dt, nsm);
                     //mb.testwb();
-                    //mb.LaunchThreads();
-                    {
-                        try{
-                        for (int i =0;i<int.MaxValue;i++){     
-                        byte[] bt = Encoding.ASCII.GetBytes("!");
-                        nsm.Write(bt, 0, bt.Length);
-                        nsm.Flush();
-                        System.Threading.Thread.Sleep(1000 *1);
-                        }
-                        }catch(Exception exp){
-                            Console.WriteLine(exp.ToString());
-                            if(exp.InnerException!=null)
-                            {
-                                Console.WriteLine(exp.InnerException.ToString());
-                            }
-
-                        }
-
-                    }
+                    mb.LaunchThreads();
+                    
                 }
             }
             catch (Exception e)

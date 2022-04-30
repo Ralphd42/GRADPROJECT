@@ -148,10 +148,7 @@ namespace MineWorker
         {
             get
             {
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("Params.json", optional: true, reloadOnChange: true);
-                var lf = builder.Build().GetSection("Parameter").GetSection("LOGFILE").Value;
+                var lf = Params.GetSection("LOGFILE").Value;
                 return lf;
             }
         }
