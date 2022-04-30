@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "..\\..\\..\\MineTools"
+		},
+		{
+			"path": "../../../MineTools"
 		}
 	],
 	"settings": {

@@ -13,6 +13,7 @@ namespace Controller
         public static JobQueue MainJobQueue;
         public static PoolManager pm;
         public static Logger lgr;
+        public static JobQueueWatcher jqe;
 
         public static void TargetTester()
         {
@@ -57,9 +58,14 @@ namespace Controller
             }
             Console.WriteLine("Workers joined waiting for job from network");
             //Start the queue worker thread.
-            JobQueueWatcher jqe = new JobQueueWatcher(MainJobQueue, wmt.Workers);
+            jqe = new JobQueueWatcher(MainJobQueue, wmt.Workers);
             Thread jqeThread = new Thread(new ThreadStart(jqe.WatchQueue));
             jqeThread.Start();
+            ResponseLoop reLp = new ResponseLoop();
+            new Thread(reLp.RunLoop).Start();
+
+
+
             pm = new PoolManager(MainJobQueue);
             if (debug)
             {
