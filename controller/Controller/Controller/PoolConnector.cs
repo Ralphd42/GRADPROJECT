@@ -19,7 +19,6 @@ namespace Controller
         private string _Pwd;
         private ILogger _Logger;
         private JobQueue _Queue;
-        private int _Nonce;
         private int _extraNonce;
         public PoolConnector(
             string Address,

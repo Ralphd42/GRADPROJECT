@@ -15,19 +15,7 @@ namespace Controller
         public static Logger lgr;
         public static JobQueueWatcher jqe;
 
-        public static void TargetTester()
-        {
-            int[] testers = new int[] {
-                1,2,3,4,5,6,7,
-                100,1000,10000,1000000, int.MaxValue
-
-            };
-            foreach (var i in testers)
-            {
-                MineTools.CryptoHelpers.GenerateTarget(i);
-            }
-            Program.exitApp();
-        }
+        
 
 
         static void Main(string[] args)
@@ -120,18 +108,9 @@ namespace Controller
             //Console.WriteLine("Press button");
             //Console.Read();
 
-            if (false)
-            {
-                Console.WriteLine("Hello World!");
-                WorkerManager wm = new WorkerManager();
-                wm.Running = true;
-                Thread backgroundThread = new Thread(new ThreadStart(wm.AddWorkerThread));
-                // Start thread  
-                backgroundThread.Start();
-                backgroundThread.Join();
-            }
+            
         }
-
+        #region USerInterface
         public static string CommandMessage()
         {
             //String msg  = @"Enter a command: W:";
@@ -143,7 +122,34 @@ namespace Controller
 
             return msg.ToString();
         }
+
+
+        /// <summary>
+        /// This gives information about the system
+        /// Spcifically it displays the ip address.  This is an easy way to get it for the clients(Agents)
+        /// </summary>
+        public static void showIP()
+        {
+            string IPAddress = "";
+            IPHostEntry Host = default(IPHostEntry);
+            string Hostname = null;
+            Hostname = System.Environment.MachineName;
+            Host = Dns.GetHostEntry(Hostname);
+            foreach (IPAddress IP in Host.AddressList)
+            {
+                if (IP.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    IPAddress = Convert.ToString(IP);
+                }
+            }
+            Console.WriteLine("Bitcoin network miner starting");
+            Console.WriteLine("HostName:{0} ", Hostname);
+            Console.WriteLine("RUNNING ON IP ADDRESS {0} ", IPAddress);
+            Console.WriteLine("Waiting for agents(workers) to join network");
+        }
+        #endregion
         #region Settings
+        /*These are the settings they can probably be moved to separate file*/
         public static IConfigurationSection Params
         {
             get
@@ -157,10 +163,10 @@ namespace Controller
         }
 
         //PoolUser
-        public static string   PoolUser
+        public static string PoolUser
         {
             get
-            {   
+            {
                 return Params.GetSection("PoolUser").Value;
             }
         }
@@ -238,12 +244,6 @@ namespace Controller
                 return lf;
             }
         }
-
-
-
-
-
-
         #endregion
 
         public static void exitApp()
@@ -251,49 +251,24 @@ namespace Controller
             Console.WriteLine("Exiting Controller");
             System.Environment.Exit(-1);
         }
-
-        /// <summary>
-        /// This gives information about the system
-        /// Spcifically it displays the ip address.  This is an easy way to get it for the clients(Agents)
-        /// </summary>
-        public static void showIP()
-        {
-            string IPAddress = "";
-            IPHostEntry Host = default(IPHostEntry);
-            string Hostname = null;
-            Hostname = System.Environment.MachineName;
-            Host = Dns.GetHostEntry(Hostname);
-            foreach (IPAddress IP in Host.AddressList)
-            {
-                if (IP.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
-                    IPAddress = Convert.ToString(IP);
-                }
-            }
-            Console.WriteLine("Bitcoin network miner starting");
-            Console.WriteLine("HostName:{0} ", Hostname);
-            Console.WriteLine("RUNNING ON IP ADDRESS {0} ", IPAddress);
-            Console.WriteLine("Waiting for agents(workers) to join network");
-        }
-
+        #region TestFuncts
+        /*
+            These functions are for testing
+            
+        */
         public static void PoolConnTest()
         {
             PoolManager pm = new PoolManager(new JobQueue());
             pm.startConnectionToPool();
             Program.exitApp();
         }
-
-
         public static void LoadTestData()
         {
-            const int testdiff = 100;
-
-
+            //const int testdiff = 100;
             int difvl;
-            if (int.TryParse("E9",System.Globalization.NumberStyles.HexNumber,
+            if (int.TryParse("E9", System.Globalization.NumberStyles.HexNumber,
              CultureInfo.InvariantCulture, out difvl))
             {
-
                 MineTools.MineJob mjtest = new MineTools.MineJob
                 ()
                 {
@@ -309,8 +284,7 @@ namespace Controller
     7 “504e86b9”, 
     8 false]
     */
-
-                    clear = false,
+                clear = false,
                     CoinPre =
     "072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000",
                     CoinFollow = "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff20020862062f503253482f04b8864e5008",
@@ -321,13 +295,8 @@ namespace Controller
                     PrevHash = "4d16b6f85af6e2198f44ae2a6de67f78487ae5611b77c6c0440b921e00000000",
                     Ver = "00000002",
                     target = MineTools.CryptoHelpers.GenerateTarget(difvl)
-
-
-
-
-
-                };
-                Console.WriteLine("as INT: |{0}| ",difvl );
+                    };
+                Console.WriteLine("as INT: |{0}| ", difvl);
                 MainJobQueue.AddJob(mjtest);
             }
             else
@@ -336,34 +305,39 @@ namespace Controller
 
 
             }
-
-
             /*MineTools.MineJob mjTest = new MineTools.MineJob() { }
-
-
-
-
-
             MainJobQueue.AddJob(
-                    new MineTools.MineJob(){ 
-                    
-
-
-                    }
-
-
-                )
-
-
-*/
-
-
-
+            new MineTools.MineJob(){ 
+            }
+            )*/
         }
-
-
-
-
-
+        public static void TargetTester()
+        {
+            int[] testers = new int[] {
+                1,2,3,4,5,6,7,
+                100,1000,10000,1000000, int.MaxValue
+            };
+            foreach (var i in testers)
+            {
+                MineTools.CryptoHelpers.GenerateTarget(i);
+            }
+            Program.exitApp();
+        }
+        #endregion
     }
 }
+#region OLDCODE
+#if UNUSEDCODE
+
+if (false)
+            {
+                Console.WriteLine("Hello World!");
+                WorkerManager wm = new WorkerManager();
+                wm.Running = true;
+                Thread backgroundThread = new Thread(new ThreadStart(wm.AddWorkerThread));
+                // Start thread  
+                backgroundThread.Start();
+                backgroundThread.Join();
+            }
+#endif
+#endregion
