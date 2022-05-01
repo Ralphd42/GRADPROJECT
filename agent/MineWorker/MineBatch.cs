@@ -79,14 +79,14 @@ namespace MineWorker
                 if (_running)
                 {
                     _running = false;
-                    string msg = string.Format("<F>{0}#", newNonce);
+                    string msg = string.Format("<F>{0}{1}#","1", newNonce);
                     byte[] bytes = Encoding.ASCII.GetBytes(msg);
                     IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-                    IPAddress ipAddress = IPAddress.Any;  
+                      
                     IPAddress conIPA = IPAddress.Parse(Program.ControllerIP);
                     IPEndPoint remoteEP = new IPEndPoint(conIPA, Program.WorkerManagerPort); 
                     TcpClient tcpClient = new TcpClient(AddressFamily.InterNetwork);
-                    tcpClient.Connect(ipAddress,Program.JobRPort);
+                    tcpClient.Connect(conIPA,Program.JobRPort);
                     var _nsm = tcpClient.GetStream();
                     _nsm.BeginWrite(bytes, 0, bytes.Length, new AsyncCallback((IAsyncResult ar) =>
                     {
