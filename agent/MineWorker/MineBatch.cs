@@ -79,7 +79,7 @@ namespace MineWorker
                 if (_running)
                 {
                     _running = false;
-                    string msg = string.Format("<F>{0}{1}#","1", newNonce);
+                    string msg = string.Format("<F>{0}:{1}#","1", newNonce);
                     byte[] bytes = Encoding.ASCII.GetBytes(msg);
                     IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
                       
