@@ -97,6 +97,8 @@ namespace Controller
                 Console.Clear();
                 Console.WriteLine(CommandMessage());
                 string msg = Console.ReadLine();
+
+
                 // parse and Process
 
                  
@@ -124,6 +126,13 @@ namespace Controller
             return msg.ToString();
         }
 
+        public static void KIllApp()
+        {
+            _RUNNING = false;  // this will give threads a chance to end on own
+            
+
+
+        }
 
         /// <summary>
         /// This gives information about the system
