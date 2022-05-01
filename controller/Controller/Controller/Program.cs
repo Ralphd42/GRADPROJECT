@@ -94,11 +94,12 @@ namespace Controller
             //need to look for jobs
             while (_RUNNING)
             {
+                Console.Clear();
                 Console.WriteLine(CommandMessage());
                 string msg = Console.ReadLine();
+                // parse and Process
 
-
-                Thread.Sleep(1);
+                 
             }
             //jqeThread.Join();
 

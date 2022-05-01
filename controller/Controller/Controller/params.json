@@ -9,7 +9,7 @@
     },
     "Parameter": {
       "debug"            :"true"          ,
-      "LOGFILE"          :"c:/logs/bc.log",
+      "LOGFILE"          :"bc.log",
       "WorkerManagerPort":"13001"         ,
       "JobPort"          :"13002"         ,
       "JobRPort"         :"13003"
