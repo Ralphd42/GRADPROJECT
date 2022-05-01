@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MineTools;
+using System.Net;
+ 
 namespace MineWorker
 {
 
@@ -37,7 +39,6 @@ namespace MineWorker
 
         void isActive()
         {
-           
             try
             {
                 while (_running)
@@ -55,98 +56,24 @@ namespace MineWorker
                         }
                         else
                         {
-                            try
-            {
-                Console.WriteLine("--AAA--");
-                byte[] bytes = Encoding.ASCII.GetBytes("FUCKING YEAH");
-                _nsm.Write(bytes, 0, bytes.Length);
-                Console.WriteLine("--1--");
-                _nsm.Flush();
-                Console.WriteLine("--2--");
-                //_nsm.Close();
-                Console.WriteLine("--3--");
-               // _nsm.Dispose();
-                Console.WriteLine("--4--");
-            }
-            catch (Exception exp)
-            {
-                Console.WriteLine(":{0}:",exp.Message);
-            }
                             _running = false;
-
                         }
                     }
                     _running = false;
                     KillJobs();
-
                 }
             }
             catch (Exception exp)
             {
                 Console.WriteLine(exp);
-
             }
             Console.WriteLine("Watcher stopped");
         }
-
-
-
-
-
-
-        //IsSocketConnected
-        void isActive_OLD()
-        {
-            try
-            {
-                while (_running)
-                {
-                    Thread.Sleep(1);
-                    if (_nsm != null)
-                    {
-                        String stats =
-                            String.Format(
-                                "CANWRITE:{0}|CONNECTED:{1}|SW:{2}|SW:{3}|sr:{4}|sr:{5}",
-                                _nsm.CanWrite,
-                                _nsm.Socket.Connected,
-                                _nsm.Socket.Poll(-1, SelectMode.SelectWrite),
-                                _nsm.Socket.Poll(1000, SelectMode.SelectWrite),
-                                _nsm.Socket.Poll(-1, SelectMode.SelectRead), 0//,
-                                                                              //_nsm.Socket.Poll(1000, SelectMode.SelectRead)
-                                );
-
-
-                        Console.WriteLine(stats);
-                        if (_nsm.CanWrite
-                            && _nsm.Socket.Connected
-                            && !_nsm.Socket.Poll(1000, SelectMode.SelectError))
-                        {
-                            _running = true;
-                            continue;
-                        }
-                    }
-                    KillJobs();
-                    _running = false;
-                }
-            }
-            catch (Exception exp)
-            {
-                Console.WriteLine(exp);
-
-            }
-            Console.WriteLine("Watcher stopped");
-        }
-
-
-
-
-
-
+        
         private static object foundObj = new object();
+        
         public void handleFound(object sender, uint newNonce)
         {
-            //one notify all threads of done
-            // send to controller that we won
             lock (foundObj)
             {
                 if (_running)
@@ -154,19 +81,19 @@ namespace MineWorker
                     _running = false;
                     string msg = string.Format("<F>{0}#", newNonce);
                     byte[] bytes = Encoding.ASCII.GetBytes(msg);
-                    if (_nsm.CanWrite)
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                    IPAddress ipAddress = IPAddress.Any;  
+                    IPAddress conIPA = IPAddress.Parse(Program.ControllerIP);
+                    IPEndPoint remoteEP = new IPEndPoint(conIPA, Program.WorkerManagerPort); 
+                    TcpClient tcpClient = new TcpClient(AddressFamily.InterNetwork);
+                    tcpClient.Connect(ipAddress,Program.JobRPort);
+                    var _nsm = tcpClient.GetStream();
+                    _nsm.BeginWrite(bytes, 0, bytes.Length, new AsyncCallback((IAsyncResult ar) =>
                     {
-                        _nsm.Write(bytes, 0, bytes.Length);
-                        _nsm.BeginWrite(bytes, 0, bytes.Length, new AsyncCallback((IAsyncResult ar) =>
-                        {
+
                             _nsm.Flush();
-                           // _nsm.Close();
-                            //_nsm.Dispose();
-
-
-                        }), null);
-
-                    }
+                            _nsm.Close();
+                    }), null);
                     KillJobs();
                 }
 
@@ -217,16 +144,11 @@ namespace MineWorker
                 return false;
             else
                 return true;
-
-
         }
-
-
-
-        //----------------------------------------------------------------------------------------
-        //unused code
-        #region  UNUSEDCODE
- 
+    }
+}
+#region  UNUSEDCODE
+        #if UNUSED
         public void testwb()
         {
             Console.WriteLine("--ZZZZZZZZ--");
@@ -248,7 +170,48 @@ namespace MineWorker
                 Console.WriteLine(":{0}:",exp.Message);
             }
         }
- 
+        void isActive_OLD()
+        {
+            try
+            {
+                while (_running)
+                {
+                    Thread.Sleep(1);
+                    if (_nsm != null)
+                    {
+                        String stats =
+                            String.Format(
+                                "CANWRITE:{0}|CONNECTED:{1}|SW:{2}|SW:{3}|sr:{4}|sr:{5}",
+                                _nsm.CanWrite,
+                                _nsm.Socket.Connected,
+                                _nsm.Socket.Poll(-1, SelectMode.SelectWrite),
+                                _nsm.Socket.Poll(1000, SelectMode.SelectWrite),
+                                _nsm.Socket.Poll(-1, SelectMode.SelectRead), 0//,
+                                                                              //_nsm.Socket.Poll(1000, SelectMode.SelectRead)
+                                );
+
+
+                        Console.WriteLine(stats);
+                        if (_nsm.CanWrite
+                            && _nsm.Socket.Connected
+                            && !_nsm.Socket.Poll(1000, SelectMode.SelectError))
+                        {
+                            _running = true;
+                            continue;
+                        }
+                    }
+                    KillJobs();
+                    _running = false;
+                }
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp);
+
+            }
+            Console.WriteLine("Watcher stopped");
+        }
+
+        #endif
         #endregion
-    }
-}
+    

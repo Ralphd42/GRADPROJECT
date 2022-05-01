@@ -64,7 +64,7 @@ namespace MineWorker
                     
                      
                     MineBatch mb = new(dt, nsm);
-                    //mb.testwb();
+                    
                     mb.LaunchThreads();
                     
                 }

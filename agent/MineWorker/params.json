@@ -14,6 +14,7 @@
     "JobPort": "13002",
     "ControllerIP": "192.168.1.12",
     "ThreadCount": "1",
-    "AgentName": "AGENT.ONE"
+    "AgentName": "AGENT.ONE",
+    "JobRPort" : "13003" 
   }
 }

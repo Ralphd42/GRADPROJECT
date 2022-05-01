@@ -129,6 +129,19 @@ namespace MineWorker
                 return rv;
             }
         }
+        public static int JobRPort
+        {
+            get
+            {
+                int rv = -1;
+                var wmp = Params.GetSection("JobRPort").Value;
+                if (!int.TryParse(wmp, out rv))
+                {
+                    rv = -1;
+                }
+                return rv;
+            }
+        }
 
         public static int ThreadCount
         {
