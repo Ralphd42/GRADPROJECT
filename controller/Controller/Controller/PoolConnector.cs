@@ -175,58 +175,61 @@ namespace Controller
         }
         public void runListner()
         {
-            string AllData = string.Empty;
-
-            NetworkStream ns = _Client.GetStream();
-            byte[] buffer = new byte[_Client.ReceiveBufferSize];
-
-            int read = ns.Read(buffer, 0, buffer.Length);
-            AllData = ASCIIEncoding.ASCII.GetString(buffer, 0, read);
-            // parse response run any rules
-            int cmdEnd = AllData.IndexOf("}");
-            while (cmdEnd > 0)
+            while (Program._RUNNING)
             {
-                string cmdTxt = AllData.Substring(0, cmdEnd + 1);
-                //parse and process
-                JObject Robj = JObject.Parse(cmdTxt);
-                if (Robj.ContainsKey("method") && Robj["method"] != null)
+                string AllData = string.Empty;
+
+                NetworkStream ns = _Client.GetStream();
+                byte[] buffer = new byte[_Client.ReceiveBufferSize];
+
+                int read = ns.Read(buffer, 0, buffer.Length);
+                AllData = ASCIIEncoding.ASCII.GetString(buffer, 0, read);
+                // parse response run any rules
+                int cmdEnd = AllData.IndexOf("}");
+                if (cmdEnd > 0)
                 {
-                    string method = Robj.ToString();
-                    if (String.Compare(method, "mining.notify") == 0)
+                    string cmdTxt = AllData.Substring(0, cmdEnd + 1);
+                    //parse and process
+                    JObject Robj = JObject.Parse(cmdTxt);
+                    if (Robj.ContainsKey("method") && Robj["method"] != null)
                     {
-                        MiningNotify(cmdTxt);
+                        string method = Robj.ToString();
+                        if (String.Compare(method, "mining.notify") == 0)
+                        {
+                            MiningNotify(cmdTxt);
+                        }
+                        else
+                        if (String.Compare(method, "mining.set_difficulty") == 0)
+                        {
+                            MiningSetDifficulty(cmdTxt);
+                        }
                     }
                     else
-                    if (String.Compare(method, "mining.set_difficulty") == 0)
                     {
-                        MiningSetDifficulty(cmdTxt);
-                    }
-                }
-                else
-                {
-                    if (
-                        (Robj.ContainsKey("error") && Robj["error"] != null && Robj["error"].ToString().Trim().Length > 0)
-                            ||
-                        (Robj.ContainsKey("result") && Robj["result"] != null && Robj["result"].ToString().Trim().Length > 0)
-                    )
-                    {
-
-                        int id;
-                        if (int.TryParse(Robj["ID"].ToString(), out id))
+                        if (
+                            (Robj.ContainsKey("error") && Robj["error"] != null && Robj["error"].ToString().Trim().Length > 0)
+                                ||
+                            (Robj.ContainsKey("result") && Robj["result"] != null && Robj["result"].ToString().Trim().Length > 0)
+                        )
                         {
-                            string method = AckMan.Acks.getACK(id);
-                            if (String.Compare(method, "mining.authorize") == 0)
-                            {
-                                miningauthorizeACK(cmdTxt);
-                            }
-                            else if (String.Compare(method, "mining.subscribe") == 0)
-                            {
-                                miningsubscribeACK(cmdTxt);
 
-                            }
-                            else if (String.Compare(method, "mining.submit") == 0)
+                            int id;
+                            if (int.TryParse(Robj["ID"].ToString(), out id))
                             {
-                                miningsubmitACK(cmdTxt);
+                                string method = AckMan.Acks.getACK(id);
+                                if (String.Compare(method, "mining.authorize") == 0)
+                                {
+                                    miningauthorizeACK(cmdTxt);
+                                }
+                                else if (String.Compare(method, "mining.subscribe") == 0)
+                                {
+                                    miningsubscribeACK(cmdTxt);
+
+                                }
+                                else if (String.Compare(method, "mining.submit") == 0)
+                                {
+                                    miningsubmitACK(cmdTxt);
+                                }
                             }
                         }
                     }
