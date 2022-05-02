@@ -129,8 +129,9 @@ namespace Controller
         public static void KIllApp()
         {
             _RUNNING = false;  // this will give threads a chance to end on own
-            
-
+            Thread.Sleep(2000);
+            //kill
+            System.Environment.Exit(1);
 
         }
 

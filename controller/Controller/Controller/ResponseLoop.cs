@@ -76,13 +76,19 @@ namespace Controller
             int nonce = int.Parse(itms[1]);
             int id = int.Parse(ids);
             MineJob cur = Program.MainJobQueue.CurrentJob;
-            Program.pm.PoolFuncts.miningSubmit(
+            bool rv =Program.pm.PoolFuncts.miningSubmit(
                  jobid: cur.ID,
                  extranonce: Program.MainJobQueue.ExtraNonce2.ToString("x8"),
                  Time: cur.Data,
                  nonceHxSt: nonce.ToString("x8"),
                  ID: id
             );
+            if (rv)
+            {
+                Program.MainJobQueue.ClearCurrent();
+                // kill job
+                Program.jqe.killThreads();
+            }
         }
     }
 }

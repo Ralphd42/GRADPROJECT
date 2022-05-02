@@ -53,6 +53,14 @@ namespace Controller
                 _workers.Add(w);
                 retval = true;
             }
+            else
+            {
+                // reset status to avaiable\
+                foreach (var itm in ex)
+                {
+                    itm.Available = Worker.WorkerState.Available;
+                }
+            }
             return retval;        
         }
 

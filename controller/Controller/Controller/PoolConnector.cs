@@ -353,7 +353,11 @@ params[8]*/
         public bool miningSubmit(String jobid,string extranonce, string Time, string nonceHxSt,int ID)
         {
             bool retval = false;
-
+            if (Program.debug)
+            {
+                Console.Write("Debugging not sending to POOL");
+                return true;
+            }
             try
             {
                 miningsubmitjson minSub = new miningsubmitjson(JobID: jobid

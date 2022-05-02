@@ -67,6 +67,10 @@ namespace Controller
         public MineJob CurrentJob { get => _currJob; } 
         public int ExtraNonce2 {get => _extraNonce2; }
 
+        public void ClearCurrent()
+        {
+            _currJob = null;
 
+        }
     }
 }

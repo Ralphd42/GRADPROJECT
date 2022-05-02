@@ -11,6 +11,16 @@ namespace Controller
     /// </summary>
     public class Worker
     {
+        public enum WorkerState
+        {
+            Available,
+            NotAvalable,
+            working,
+            Unknown
+
+
+        };
+
         private string _ipv4;
         private string _machineName;
         private int _procCount;
@@ -19,6 +29,10 @@ namespace Controller
         public int Processors {
             get => _procCount; set => _procCount = value;
         }
+
+        private WorkerState _available;  ///is it currently minining or otherwise busy
+        public WorkerState Available{ get => _available; set => _available = value; }
+
         /// <summary>
         ///  This can be used later want to know client type 
         /// </summary>
@@ -38,6 +52,7 @@ namespace Controller
             _ipv4 = ip;
             _machineName = name;
             _procCount = pCnt;
+            _available = WorkerState.Available;
 
 
 
