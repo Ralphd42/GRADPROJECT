@@ -84,7 +84,7 @@ namespace MineWorker
                     IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
                       
                     IPAddress conIPA = IPAddress.Parse(Program.ControllerIP);
-                    IPEndPoint remoteEP = new IPEndPoint(conIPA, Program.WorkerManagerPort); 
+                     
                     TcpClient tcpClient = new TcpClient(AddressFamily.InterNetwork);
                     tcpClient.Connect(conIPA,Program.JobRPort);
                     var _nsm = tcpClient.GetStream();
@@ -106,8 +106,14 @@ namespace MineWorker
             {
                 jb.KillProc();
             }
+            notifyAvail();
         }
 
+
+        public void notifyAvail()
+        {
+            bool joined = Program.mi.joinNetwork(Program.AgentName);
+        }
 
         public void LaunchThreads()
         {

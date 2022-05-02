@@ -5,13 +5,14 @@ namespace MineWorker
 {
     class Program
     {
+        public static MineOperations mi;
         static void Main(string[] args)
         {
             welcome();
             Logger lg = new Logger();
             try
             {
-                MineOperations mi = new MineOperations(lg);
+                mi = new MineOperations(lg);
                 bool joined = mi.joinNetwork(Program.AgentName);
                 if (joined)
                 {

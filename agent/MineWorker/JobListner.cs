@@ -61,9 +61,12 @@ namespace MineWorker
                             break;
                         }
                     }
-                    if( objString.ToString().Contains("") && mb!=null)
+                    if( objString.ToString().Contains("<K>")  )
                     {
-                        mb.KillJobs();
+                        if(mb!=null)
+                        { 
+                            mb.KillJobs();
+                        }
                     }else
                     {
                         MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
