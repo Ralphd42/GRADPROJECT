@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using MineTools;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace MineWorker
 {
@@ -38,7 +39,7 @@ namespace MineWorker
             {
                 tcpListener.Start();
                 byte[] rb = new byte[1024];
-               
+                MineBatch mb=null;
                 while (Running)
                 {
                     TcpClient cli = tcpListener.AcceptTcpClient();
@@ -60,13 +61,15 @@ namespace MineWorker
                             break;
                         }
                     }
-                    MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
-                    
-                     
-                    MineBatch mb = new(dt, nsm);
-                    
-                    mb.LaunchThreads();
-                    
+                    if( objString.ToString().Contains("") && mb!=null)
+                    {
+                        mb.KillJobs();
+                    }else
+                    {
+                        MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
+                        mb = new(dt, nsm);
+                        new Thread( new ThreadStart(   mb.LaunchThreads)).Start();
+                    }
                 }
             }
             catch (Exception e)
@@ -86,3 +89,4 @@ namespace MineWorker
 
     }
 }
+ 
