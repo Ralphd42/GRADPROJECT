@@ -265,14 +265,16 @@ params[8]*/
                     clear = bool.Parse(Convert.ToString(prms[8])),
                     CoinFollow = Convert.ToString(prms[3]),
                     CoinPre = Convert.ToString(prms[4]),
-                    Difficulty = Convert.ToString(prms[6]),
+                    JobDifficulty = Convert.ToString(prms[6]),
                     ID = Convert.ToString(prms[0]),
                     Merk = aMerk,
                     NetTime = Convert.ToString(prms[7]),
                     PrevHash = Convert.ToString(prms[2]),
                     Ver = Convert.ToString(prms[5]),
-                    target = MineTools.CryptoHelpers.GenerateTarget((int)Difficulty)
+                    target = MineTools.CryptoHelpers.GenerateTarget((int)Difficulty),
+                    
                 };
+                m.Data = m.GenData;
                 _Queue.AddJob(m);
             }
             return retval;

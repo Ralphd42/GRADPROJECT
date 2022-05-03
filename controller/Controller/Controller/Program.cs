@@ -94,7 +94,7 @@ namespace Controller
             //need to look for jobs
             while (_RUNNING)
             {
-                Console.Clear();
+                //Console.Clear();
                 Console.WriteLine(CommandMessage());
                 string msg = Console.ReadLine();
 
@@ -299,7 +299,7 @@ namespace Controller
                     CoinPre =
     "072f736c7573682f000000000100f2052a010000001976a914d23fcdf86f7e756a64a7a9688ef9903327048ed988ac00000000",
                     CoinFollow = "01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff20020862062f503253482f04b8864e5008",
-                    Difficulty = "3E9",
+                    JobDifficulty = "3E9",
                     ID = "bf",
                     // Merk = aMerk,
                     NetTime = "504e86b9",
@@ -307,6 +307,7 @@ namespace Controller
                     Ver = "00000002",
                     target = MineTools.CryptoHelpers.GenerateTarget(difvl)
                     };
+                mjtest.Data = mjtest.GenData;
                 Console.WriteLine("as INT: |{0}| ", difvl);
                 MainJobQueue.AddJob(mjtest);
             }

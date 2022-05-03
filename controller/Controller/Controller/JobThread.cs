@@ -19,18 +19,49 @@ namespace Controller
         private bool _running;
         
         TcpClient tcpClient;
+
         public void KIll()
+        { 
+            _running = false;
+            try
+            {
+                IPAddress ipAddress = IPAddress.Parse(_worker.Ipv4);
+                tcpClient = new TcpClient(AddressFamily.InterNetwork);
+                 
+                tcpClient.Connect(ipAddress, Program.JobPort);
+
+                if (tcpClient != null)
+                {
+                    _stream = tcpClient.GetStream();
+                     
+
+                    string doneMsg = "<K>#";
+                    byte[] toSend = Encoding.ASCII.GetBytes(doneMsg);
+                    _stream.Write(toSend, 0, toSend.Length);
+                    _stream.Flush();
+                }
+            }catch (Exception exp)
+            { 
+                 Program.lgr.LogError(exp, string.Format("Error Killing stream Agent:{0}", this.dt.id));
+            }
+
+
+        }
+        public void KIll_ORIG()
         {
             _running = false;
+            _stream = tcpClient.GetStream();
             if (_stream != null)
             {
+
                 string doneMsg = "<K>#";
                 byte[] toSend = Encoding.ASCII.GetBytes(doneMsg);
                 try
                 {
+                    Thread.Sleep(10 * 1000);
                     _stream.Write(toSend, 0, toSend.Length);
                     _stream.Flush();
-                    _stream.Close();
+                   // _stream.Close();
                 }catch (Exception exp)
                 {
                     Program.lgr.LogError(exp, string.Format("Error closing stream thread:{0}", this.dt.id));

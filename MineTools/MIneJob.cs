@@ -20,20 +20,21 @@ namespace MineTools
         
         public string Ver;
         
-        public string Difficulty;
+        public string JobDifficulty;
         
         public string NetTime;
         
         public bool clear;
         public string MerkleRoot;
         public byte[] target;
-        public string Data
+        public string GenData
         {
             get
             {
-                return Ver + PrevHash + MerkleRoot + NetTime + Difficulty;
+                return Ver + PrevHash + MerkleRoot + NetTime + JobDifficulty;
             }
         }
+        public string Data;
         public int NONCE;
         public int ExtraNONCE;
 
