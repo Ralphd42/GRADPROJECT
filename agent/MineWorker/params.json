@@ -13,7 +13,7 @@
     "WorkerManagerPort": "13001",
     "JobPort": "13002",
     "ControllerIP": "192.168.1.12",
-    "ThreadCount": "1",
+    "ThreadCount": "10",
     "AgentName": "AGENT.ONE",
     "JobRPort" : "13003" 
   }

@@ -4,7 +4,7 @@ namespace MineTools
 {
     public class Miner
     {
-        const int maxHASH = 1000000;//  int.MaxValue;
+        const int maxHASH =   int.MaxValue;
         public event EventHandler<uint> foundNonce;
         private volatile bool _done;  // this will allow job to stop
         public void KillProc()
