@@ -4,6 +4,7 @@ namespace MineTools
 {
     public class Miner
     {
+        const int maxHASH = 1000000;//  int.MaxValue;
         public event EventHandler<uint> foundNonce;
         private volatile bool _done;  // this will allow job to stop
         public void KillProc()
@@ -53,7 +54,7 @@ namespace MineTools
                     Databyte[79] = (byte)(_job.Nonce >> 24);
                     SHAHash = CryptoHelpers.ReHash(Databyte);
                     Hashcount++;
-                    if ( Hashcount>100000000 ||   meetsTarget(SHAHash, _job.target))  // Did we meet the target?
+                    if ( Hashcount>maxHASH ||   meetsTarget(SHAHash, _job.target))  // Did we meet the target?
                     {
                         OnFoundNonce();
                     }

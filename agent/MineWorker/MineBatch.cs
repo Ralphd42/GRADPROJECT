@@ -133,9 +133,9 @@ namespace MineWorker
                 _threads[i] = new Thread(new ThreadStart(_jobs[i].runJob));
                 _threads[i].Start();
             }
-            Thread thStats = new Thread(new ThreadStart(this.isActive));
+            /*Thread thStats = new Thread(new ThreadStart(this.isActive));
             thStats.IsBackground = true;
-            thStats.Start();
+            thStats.Start();*/
             for (uint i = 0; i < _thData.numToRun; ++i)
             {
                 _threads[i].Join();

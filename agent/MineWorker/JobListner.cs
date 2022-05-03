@@ -56,6 +56,10 @@ namespace MineWorker
                         svr = svr.Trim();
                         Console.WriteLine("received json {0}", svr);
                          
+                        if(objString.ToString().Contains("<K>"))
+                        {
+                            break;
+                        } 
                         if (svr[svr.Length - 1] == '}')
                         {
                             break;
@@ -63,6 +67,7 @@ namespace MineWorker
                     }
                     if( objString.ToString().Contains("<K>")  )
                     {
+                        Console.WriteLine("Received Kill at{0}", DateTime.Now);
                         if(mb!=null)
                         { 
                             mb.KillJobs();
