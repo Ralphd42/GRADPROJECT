@@ -70,7 +70,7 @@ namespace Controller
                 */
                 Thread.Sleep(1000 * 60);
                 Console.WriteLine("KILLING");
-                jqe.killThreads();
+                //jqe.killThreads();
 
 
             }

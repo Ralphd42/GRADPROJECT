@@ -260,22 +260,36 @@ params[8]*/
                 JArray prms = (JArray)obj["params"];
                 JArray MA = (JArray)prms[4];
                 string[] aMerk = new string[MA.Count];
-                MineTools.MineJob m = new MineJob()
+                for (int i = 0; i < aMerk.Length; i++)
                 {
-                    clear = bool.Parse(Convert.ToString(prms[8])),
-                    CoinFollow = Convert.ToString(prms[3]),
-                    CoinPre = Convert.ToString(prms[4]),
-                    JobDifficulty = Convert.ToString(prms[6]),
-                    ID = Convert.ToString(prms[0]),
-                    Merk = aMerk,
-                    NetTime = Convert.ToString(prms[7]),
-                    PrevHash = Convert.ToString(prms[2]),
-                    Ver = Convert.ToString(prms[5]),
-                    target = MineTools.CryptoHelpers.GenerateTarget((int)Difficulty),
-                    
-                };
+                    aMerk[i] = Convert.ToString(MA[i]);
+                }
+
+                MineTools.MineJob m = new MineJob()
+                    {
+                        clear = bool.Parse(Convert.ToString(prms[8])),
+                        CoinFollow = Convert.ToString(prms[3]),
+                        CoinPre = Convert.ToString(prms[2]),
+                        JobDifficulty = Convert.ToString(prms[6]),
+                        ID = Convert.ToString(prms[0]),
+                        Merk = aMerk,
+                        NetTime = Convert.ToString(prms[7]),
+                        PrevHash = Convert.ToString(prms[1]),
+                        Ver = Convert.ToString(prms[5]),
+                        target = MineTools.CryptoHelpers.GenerateTarget((int)Difficulty),
+
+                    };
                 m.Data = m.GenData;
+                //Handle Clear first
+                
+                Program.jqe.killThreads();
+                AckMan.Acks.clear();
+                _Queue.Clear();
+
                 _Queue.AddJob(m);
+                //handle clear
+
+
             }
             return retval;
         }

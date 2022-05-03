@@ -72,9 +72,7 @@ namespace Controller
 
         public void  LogWIthDate(string Message)
         {
-
             Message = string.Format("{0}:{1}", DateTime.Now, Message);
-
             lock (LogLock)
             {
                 using StreamWriter file = new(LOGFILE, append: true);

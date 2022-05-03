@@ -59,6 +59,7 @@ namespace Controller
                 foreach (var itm in ex)
                 {
                     itm.Available = Worker.WorkerState.Available;
+                    retval = true;
                 }
             }
             return retval;        

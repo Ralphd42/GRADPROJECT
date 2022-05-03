@@ -17,7 +17,7 @@ namespace Controller
     /// </summary>
     public class ResponseLoop
     {
-        public void RunLoop()
+        public async void RunLoop()
         {
             byte[] bytes = new Byte[1024];
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
@@ -53,9 +53,10 @@ namespace Controller
                         data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
                         if (data.IndexOf("#") > -1)
                         {
+                            Task tsk =Task.Run(()=>Program.jqe.killThreads());
                             ProcResponse(data);
-                            //next need to kill threads for this job
-                            Program.jqe.killThreads();
+
+                            tsk.Wait();
                             break;
                             
                         }

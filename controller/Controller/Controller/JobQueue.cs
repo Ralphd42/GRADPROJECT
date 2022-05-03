@@ -72,5 +72,13 @@ namespace Controller
             _currJob = null;
 
         }
+
+        public void Clear()
+        {
+            _jobs.Clear();
+            ClearCurrent();
+
+        }
+
     }
 }
