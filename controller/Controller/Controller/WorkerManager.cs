@@ -96,11 +96,31 @@ namespace Controller
                 Console.WriteLine(msg);
 
             }
-            Console.WriteLine("Current WORKERS(Agents)");
-            foreach (Worker w in this._workers)
+            if (this._workers != null)
             {
-                Console.WriteLine("Name:{0} |IP: {1} |State{2}", w.MachineName, w.Ipv4, w.Available   );
+                Console.WriteLine("Current WORKERS(Agents)");
+                foreach (Worker w in this._workers)
+                {
+                    Console.WriteLine("Name:{0} |IP: {1} |State{2}", w.MachineName, w.Ipv4, w.Available);
+                }
+            }else
+            { 
+                Console.WriteLine("No Active Workers");
+
             }
+        }
+        public override string ToString()
+        {
+            string retval = "Currently there are no workers";
+            StringBuilder sb = new StringBuilder();
+            if (this._workers != null)
+            {
+                foreach (Worker w in this._workers)
+                {
+                    Console.WriteLine("Name:{0}|IP:{1}|State{2}", w.MachineName, w.Ipv4, w.Available);
+                }
+            }
+            return retval;
         }
 
 

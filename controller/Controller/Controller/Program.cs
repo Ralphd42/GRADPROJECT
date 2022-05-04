@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Text;
 using System.Net;
 using Microsoft.Extensions.Configuration;
@@ -39,12 +40,13 @@ namespace Controller
 
             // wait until there are workers
             Console.WriteLine("waiting for {0} workers to join network", Program.MinWorkerCount);
-            while (wmt.Workers == null || wmt.Workers.Count < MinWorkerCount)
-            {
-                Thread.Sleep(1000);
-                Console.Write(".");
-            }
-            Console.WriteLine("Workers joined waiting for job from network");
+            Task.Run(() => CommandLoop() );
+            //while (wmt.Workers == null || wmt.Workers.Count < MinWorkerCount)
+            //{
+            //    Thread.Sleep(10000);
+                //Console.Write(".");
+            //}
+            //Console.WriteLine("Workers joined waiting for job from network");
             //Start the queue worker thread.
             jqe = new JobQueueWatcher(MainJobQueue, wmt.Workers);
             Thread jqeThread = new Thread(new ThreadStart(jqe.WatchQueue));
@@ -92,7 +94,8 @@ namespace Controller
             }
             while (_RUNNING)
             {
-                Thread.Sleep(60 * 1000);
+                Thread.Sleep(0);
+                CommandLoop();
             }
             //need to look for jobs
            
@@ -109,27 +112,34 @@ namespace Controller
         #region USerInterface
         public static string CommandMessage()
         {
+            Thread.Sleep(0);
             //String msg  = @"Enter a command: W:";
             StringBuilder msg = new StringBuilder();
+            msg.AppendLine();
             msg.AppendLine("Enter a Command:");
             msg.AppendLine("Q - QUit(Exit)");
             msg.AppendLine("W - Show WOrkers");
             msg.AppendLine("S - Show status");
-
+            msg.AppendLine();
             return msg.ToString();
         }
         public static void CommandLoop()
-        { 
+        { Thread.Sleep(0);
             while (_RUNNING)
             {
                 //Console.Clear();
+                Thread.Sleep(0);
                 Console.WriteLine(CommandMessage());
+                
                 string msg = Console.ReadLine();
+                Console.WriteLine("MESSAGE|{0}|",msg);
                 msg = msg.Trim().ToUpper();
                 char fc = msg[0];
+                Console.WriteLine("fc|{0}|", fc);
                 switch (fc)
                 {
                     case 'K':
+                    case 'Q':
                         KIllApp();
                         break;
                     case 'S':
@@ -149,7 +159,9 @@ namespace Controller
         public static void KIllApp()
         {
             _RUNNING = false;  // this will give threads a chance to end on own
+            Console.WriteLine("TERMINATING");
             Thread.Sleep(2000);
+            Console.WriteLine("Terminating 2");
             //kill
             System.Environment.Exit(1);
 
@@ -262,6 +274,22 @@ namespace Controller
             }
         }
 
+        public static int MonitorPort
+        {
+            get
+            {
+                int rv = -1;
+                var wmp = Params.GetSection("MonitorPort").Value;
+                if (!int.TryParse(wmp, out rv))
+                {
+                    rv = -1;
+                }
+                return rv;
+            }
+        }
+
+
+
         public static bool debug
         {
             get
@@ -290,6 +318,11 @@ namespace Controller
                 return lf;
             }
         }
+
+
+
+
+
         #endregion
 
         public static void exitApp()

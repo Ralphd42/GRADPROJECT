@@ -30,10 +30,11 @@ namespace Controller
 
         int availWorkers()
         {
-            int cnt =_workers.Where(x => x.Available == Worker.WorkerState.Available).Count();
-            return cnt;
-
-
+            int retval = 0;
+            if( _workers!=null){ 
+                int cnt =_workers.Where(x => x.Available == Worker.WorkerState.Available).Count();
+            }
+            return retval;
         }
 
 
