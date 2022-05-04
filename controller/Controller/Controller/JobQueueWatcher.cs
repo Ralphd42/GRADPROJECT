@@ -28,6 +28,15 @@ namespace Controller
             _workers = workers;
         }
 
+        int availWorkers()
+        {
+            int cnt =_workers.Where(x => x.Available == Worker.WorkerState.Available).Count();
+            return cnt;
+
+
+        }
+
+
         public JobQueueWatcher()
         {
             _queue = Program.MainJobQueue;
@@ -39,7 +48,7 @@ namespace Controller
         {
             while (Program._RUNNING)
             {
-                while (_queue.count() == 0)
+                while (_queue.count() == 0  || availWorkers() < Program.MinWorkerCount )
                 {
                     Thread.Sleep(500);
                 }
@@ -56,7 +65,6 @@ namespace Controller
                 
             }
         }
-
         public void killThreads()
         {
             if (jm != null)
@@ -64,7 +72,13 @@ namespace Controller
                 jm.killThreads();
             }
         }
-
-
+        public override string ToString()
+        {
+            string msg = String.Format(
+                "Queue Count : {0}|Active:{1} ", _queue.count(),
+                 _queue.CurrentJob !=null ? _queue.CurrentJob.ID : "none"
+            );
+            return msg;
+        }
     }
 }

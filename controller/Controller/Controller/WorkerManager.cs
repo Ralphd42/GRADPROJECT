@@ -99,7 +99,7 @@ namespace Controller
             Console.WriteLine("Current WORKERS(Agents)");
             foreach (Worker w in this._workers)
             {
-                Console.WriteLine("Name:{0} |IP: {1} ", w.MachineName, w.Ipv4);
+                Console.WriteLine("Name:{0} |IP: {1} |State{2}", w.MachineName, w.Ipv4, w.Available   );
             }
         }
 
@@ -173,7 +173,7 @@ namespace Controller
                 listener.Listen(10);
 
                 // Start listening for connections.  
-                while (Running)
+                while (Program._RUNNING)
                 {
                     Socket handler = listener.Accept();
                     IPAddress remAddy = IPAddress.Parse(((IPEndPoint)handler.RemoteEndPoint).Address.ToString());

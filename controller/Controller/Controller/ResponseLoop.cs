@@ -17,7 +17,7 @@ namespace Controller
     /// </summary>
     public class ResponseLoop
     {
-        public async void RunLoop()
+        public   void RunLoop()
         {
             byte[] bytes = new Byte[1024];
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());

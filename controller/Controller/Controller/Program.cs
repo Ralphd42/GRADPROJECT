@@ -14,8 +14,8 @@ namespace Controller
         public static PoolManager pm;
         public static Logger lgr;
         public static JobQueueWatcher jqe;
+        public static WorkerManager wmt;
 
-        
 
 
         static void Main(string[] args)
@@ -31,15 +31,15 @@ namespace Controller
 
             lgr = new Logger();
             // start waiting for Threads.
-            WorkerManager wmt = new WorkerManager();
+            wmt = new WorkerManager();
             Thread wmtThread = new Thread(new ThreadStart(wmt.AddWorkerThread));
             wmtThread.IsBackground = true;  // this thread must end when program hits end
                                             // there will be no joining
             wmtThread.Start();
 
             // wait until there are workers
-            Console.WriteLine("waiting for workers to join network");
-            while (wmt.Workers == null || wmt.Workers.Count <= 0)
+            Console.WriteLine("waiting for {0} workers to join network", Program.MinWorkerCount);
+            while (wmt.Workers == null || wmt.Workers.Count < MinWorkerCount)
             {
                 Thread.Sleep(1000);
                 Console.Write(".");
@@ -90,19 +90,12 @@ namespace Controller
                 System.Environment.Exit(-1);
 
             }
-
-            //need to look for jobs
             while (_RUNNING)
             {
-                //Console.Clear();
-                Console.WriteLine(CommandMessage());
-                string msg = Console.ReadLine();
-
-
-                // parse and Process
-
-                 
+                Thread.Sleep(60 * 1000);
             }
+            //need to look for jobs
+           
             //jqeThread.Join();
 
 
@@ -125,7 +118,34 @@ namespace Controller
 
             return msg.ToString();
         }
-
+        public static void CommandLoop()
+        { 
+            while (_RUNNING)
+            {
+                //Console.Clear();
+                Console.WriteLine(CommandMessage());
+                string msg = Console.ReadLine();
+                msg = msg.Trim().ToUpper();
+                char fc = msg[0];
+                switch (fc)
+                {
+                    case 'K':
+                        KIllApp();
+                        break;
+                    case 'S':
+                        dispStatus();
+                        break;
+                    default:
+                        Console.WriteLine("Please enter valid command");
+                        break;
+                }
+            }
+        }
+        public static void dispStatus()
+        {
+            wmt.ShowWorkers();
+            jqe.ToString();
+        }
         public static void KIllApp()
         {
             _RUNNING = false;  // this will give threads a chance to end on own
@@ -198,6 +218,21 @@ namespace Controller
                 return rv;
             }
         }
+
+        public static int MinWorkerCount
+        {
+            get
+            {
+                int rv = 1;
+                var wmp = Params.GetSection("MinWorkerCount").Value;
+                if (!int.TryParse(wmp, out rv))
+                {
+                    rv = 1;
+                }
+                return rv;
+            }
+        }
+
 
         public static int JobPort
         {

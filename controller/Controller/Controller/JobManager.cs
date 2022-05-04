@@ -22,7 +22,7 @@ namespace Controller
         public JobManager(MineJob job, List<Worker> Workers)
         {
             _job        = job;
-            _workers    = Workers;
+            _workers    = Workers.Where(x=>x.Available == Worker.WorkerState.Available).ToList();
             _mineThData = new List<MineThreadData>();
             _threads    = new List<Thread>();
             _jTHreads   = new List<JobThread>();

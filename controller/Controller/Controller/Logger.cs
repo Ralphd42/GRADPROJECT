@@ -26,6 +26,8 @@ namespace Controller
         {
             StringBuilder msg = new StringBuilder();
             msg.AppendLine(message);
+            msg.Append(DateTime.Now);
+            msg.Append(":");
             msg.AppendLine(exp.Message);
             if (exp.InnerException != null)
             {
