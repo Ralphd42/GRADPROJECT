@@ -67,6 +67,19 @@ namespace Controller
                             nsm.Write(outB, 0, outB.Length);
                             nsm.Flush();
                         }
+                        if (svr.Contains("<K>"))
+                        { 
+                            string rv = string.Format("<K>{0}#", "Aww yah got me...");
+                            byte[] outB = Encoding.ASCII.GetBytes(rv);
+                            
+                            nsm.Write(outB, 0, outB.Length);
+                            nsm.Flush();
+                            Console.Write("Attempting Kill from monitor");
+                            Program.KIllApp();
+
+                        }
+
+
                     }), listener);        //   .AcceptTcpClientAsync((ar) => { });
                     rb = new byte[1024];
                 }

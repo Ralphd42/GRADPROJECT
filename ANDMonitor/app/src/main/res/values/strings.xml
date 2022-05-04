@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ANDMonitor</string>
+    <string name="kill_processor">Kill Processor</string>
+</resources>

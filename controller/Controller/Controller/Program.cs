@@ -26,6 +26,11 @@ namespace Controller
 
 
             _RUNNING = true;
+
+            monitor m = new monitor();
+            new Thread(new ThreadStart(m.runMonitor)).Start();
+
+
             showIP();
 
             MainJobQueue = new JobQueue();
