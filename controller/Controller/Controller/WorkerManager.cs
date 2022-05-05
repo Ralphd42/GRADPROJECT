@@ -117,8 +117,9 @@ namespace Controller
             {
                 foreach (Worker w in this._workers)
                 {
-                    Console.WriteLine("Name:{0}|IP:{1}|State{2}", w.MachineName, w.Ipv4, w.Available);
+                   sb.AppendFormat("Name:{0}|IP:{1}|State{2}\n", w.MachineName, w.Ipv4, w.Available);
                 }
+                retval = sb.ToString();
             }
             return retval;
         }
@@ -217,7 +218,7 @@ namespace Controller
                     // parse AND PROCESS
                     if (data.ToUpper().Contains("<A>"))
                     {
-                        data = CommParser.removeHT(data);
+                        //data = CommParser.removeHT(data);
                         Worker wk = new Worker(remAddy.ToString());
                         CommParser.ParseWorker(data, wk);
                         bool rv = addWorker(wk);

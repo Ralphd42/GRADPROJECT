@@ -21,18 +21,18 @@ namespace Controller
     {
         private JobQueue _queue;
         private JobManager jm;
-        private List<Worker> _workers;
+         
         public JobQueueWatcher(JobQueue queue, List<Worker> workers)
         {
             _queue = queue;
-            _workers = workers;
+            
         }
 
         int availWorkers()
         {
             int retval = 0;
-            if( _workers!=null){ 
-                int cnt =_workers.Where(x => x.Available == Worker.WorkerState.Available).Count();
+            if( Program.wmt!=null &&  Program.wmt.Workers !=null){ 
+                retval =Program.wmt.Workers.Where(x => x.Available == Worker.WorkerState.Available).Count();
             }
             return retval;
         }
@@ -47,6 +47,8 @@ namespace Controller
         /// </summary>
         public void WatchQueue()
         {
+            Console.WriteLine("Queue watcher started");
+
             while (Program._RUNNING)
             {
                 while (_queue.count() == 0  || availWorkers() < Program.MinWorkerCount )
@@ -56,9 +58,10 @@ namespace Controller
                 MineJob jb = _queue.GetJob();
                 if (jb != null)
                 {
-                    jm= new JobManager(jb, _workers); 
+                    jm= new JobManager(jb, Program.wmt.Workers); 
                     jm.startJobs();
                 }
+                Thread.Sleep(1);
             }
             if (jm != null)
             {
