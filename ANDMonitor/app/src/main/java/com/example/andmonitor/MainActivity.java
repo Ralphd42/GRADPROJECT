@@ -27,18 +27,47 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txtOutput = findViewById(R.id.txtOutput);
     }
+     public void getStauts(View view)
+     {
+
+         txtOutput.setText("Attempting to get Agent Status");
+         new Thread(new KillNetwork("<W>#")).start();
+
+     }
+    public void getJobs(View view)
+    {
+
+        txtOutput.setText("Attempting to get JobCount");
+        new Thread(new KillNetwork("<J>#")).start();
+
+    }
+
 
     public void sendMessage(View view) {
         //Intent intent = new Intent(this, DisplayMessageActivity.class);
         //EditText editText = (EditText) findViewById(R.id.xxEdit);
 
         txtOutput.setText("Attempting to Kill Process");
-        new Thread(new KillNetwork()).start();
+        new Thread(new KillNetwork("<K>#")).start();
     }
 
 
     //kill code
     public class KillNetwork implements Runnable {
+        private String  _cmdTxt;
+        public KillNetwork( String cmdTxt)
+        {
+            if(cmdTxt==null  || cmdTxt.length()<1)
+            {
+                _cmdTxt ="<K>#";
+
+            }else
+            {
+                _cmdTxt =cmdTxt;
+            }
+
+        }
+
         @Override
         public void run() {
             try {
@@ -56,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 Socket client = new Socket(MonitorIP, MonitorPort);
                 OutputStream outS = client.getOutputStream();
                 PrintWriter pw = new PrintWriter(outS, true);
-                String JoinDistProc = "<K>";
+                String JoinDistProc = _cmdTxt;
                 pw.print(JoinDistProc);
                 pw.flush();
                 InputStream is = client.getInputStream();

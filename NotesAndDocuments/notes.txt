@@ -65,5 +65,28 @@ slushpool
 stratum+tcp://us-east.stratum.slushpool.com:3333
 ralphd42.workerName
 anything123
+--------------------------------------------------------------------------------------------------------------------
+things to test
+1)proper use of difficulty
+	This difficulty that comes in on  mining.set_difficulty 
+	stricly used in generating target
+2) difficulty from mining.notify
 
 
+3) feed a fake json in and have app run it
+4) Handle clear.  Must close all items from queue and kill all jobs
+
+0x00000000FFFF0000000000000000000000000000000000000000000000000000
+5)    ---
+User Interface
+	1) kill
+	2) show status
+		Items in Queue
+		Items processing
+		Items Processes
+		Ack Count
+		curr difficulty
+	3) test function
+	4) Pause?
+Number avail to run jobs
+organize program

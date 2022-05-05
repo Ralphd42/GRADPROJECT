@@ -27,8 +27,7 @@ namespace Controller
 
             _RUNNING = true;
 
-            monitor m = new monitor();
-            new Thread(new ThreadStart(m.runMonitor)).Start();
+            
 
 
             showIP();
@@ -62,6 +61,8 @@ namespace Controller
 
 
             pm = new PoolManager(MainJobQueue);
+            monitor m = new monitor();
+            new Thread(new ThreadStart(m.runMonitor)).Start();
             if (debug)
             {
 
