@@ -31,13 +31,18 @@ namespace MineTools
         {
             get
             {
+                MerkleRoot = CryptoHelpers.MerkleRoot(
+                    CoinPre,
+                    CoinFollow, 
+                    ExtraNONCE1,
+                   ExtraNONCE2, Merk);
                 return Ver + PrevHash + MerkleRoot + NetTime + JobDifficulty;
             }
         }
         public string Data;
         public int NONCE;
-        public int ExtraNONCE;
-
+        public string ExtraNONCE1;
+        public string ExtraNONCE2;
 
     }
     public class MineThreadData

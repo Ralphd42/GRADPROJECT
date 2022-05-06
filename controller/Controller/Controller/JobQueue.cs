@@ -66,7 +66,12 @@ namespace Controller
         private MineJob _currJob;
         public MineJob CurrentJob { get => _currJob; } 
         public int ExtraNonce2 {get => _extraNonce2; }
+        public void ClearExtraNonce()
+        {
+            _extraNonce2 = 0;
 
+
+        }
         public void ClearCurrent()
         {
             _currJob = null;
@@ -75,7 +80,11 @@ namespace Controller
 
         public void Clear()
         {
-            _jobs.Clear();
+
+            if (_jobs != null)
+            {
+                _jobs.Clear();
+            }
             ClearCurrent();
 
         }

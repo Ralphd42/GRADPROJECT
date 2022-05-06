@@ -49,14 +49,15 @@ namespace MineWorker
                     nsm.WriteTimeout = int.MaxValue;
                     int byrd = 0;
                     StringBuilder objString = new StringBuilder();
+                    string command ="";
                     while ((byrd = nsm.Read(rb)) > 0)
                     {
                         objString.Append(Encoding.ASCII.GetString(rb, 0, byrd));
                         string svr = objString.ToString();
                         svr = svr.Trim();
                         Console.WriteLine("received json {0}", svr);
-                         
-                        if(objString.ToString().Contains("<K>"))
+                        command =svr; 
+                        if(command.Contains("<K>")|| command.Contains("<T>") )
                         {
                             break;
                         } 
@@ -65,16 +66,22 @@ namespace MineWorker
                             break;
                         }
                     }
-                    if( objString.ToString().Contains("<K>")  )
+                    if( command.Contains("<K>")  || command.Contains("<T>") )
                     {
                         Console.WriteLine("Received Kill at{0}", DateTime.Now);
                         if(mb!=null)
                         { 
                             mb.KillJobs();
                         }
-                    }else
+                    }
+                    if( command.Contains("<T>"))
                     {
-                        MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(objString.ToString());
+                        //Terminate app
+                        System.Environment.Exit(1);
+                    }
+                    else
+                    {
+                        MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(command);
                         mb = new(dt, nsm);
                         new Thread( new ThreadStart(   mb.LaunchThreads)).Start();
                     }

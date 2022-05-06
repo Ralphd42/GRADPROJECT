@@ -15,7 +15,7 @@ namespace Controller
     {
         private Worker _worker;
         private MineThreadData dt;
-        public event EventHandler<uint> foundNonce;
+         public event EventHandler<uint> foundNonce;
         private bool _running;
         
         TcpClient tcpClient;

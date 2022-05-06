@@ -65,12 +65,15 @@ namespace Controller
             new Thread(new ThreadStart(m.runMonitor)).Start();
             if (debug)
             {
+                string text = System.IO.File.ReadAllText("TestData.log");
 
+                pm.PoolFuncts.StratumReaderTester(text);
+                Console.WriteLine(text);
                 Thread.Sleep(1000);
 
                 Console.Write("Adding a test task");
                 Thread.Sleep(1000);
-                LoadTestData();
+                //LoadTestData();
                 Console.WriteLine("ADDED");
                 /*
                     artificially add item to JobQueue

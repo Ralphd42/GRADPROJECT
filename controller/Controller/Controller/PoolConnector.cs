@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Linq;
 
 using System.Text;
 
@@ -19,7 +19,10 @@ namespace Controller
         private string _Pwd;
         private ILogger _Logger;
         private JobQueue _Queue;
-        private int _extraNonce;
+        private string _extraNonce;
+         
+
+
         public PoolConnector(
             string Address,
             int Port,
@@ -34,7 +37,8 @@ namespace Controller
             _User = user;
             _Pwd = pwd;
             _Queue = queue;
-
+             
+            _extraNonce = "";
         }
         private int? _difficulty;
 
@@ -173,68 +177,111 @@ namespace Controller
             [JsonProperty(PropertyName = "params")]
             public ArrayList parameters;
         }
-        public void runListner()
+        public void runListner()  // chnage from thread to async
         {
-            while (Program._RUNNING)
+            if (Program._RUNNING)
             {
-                string AllData = string.Empty;
-
                 NetworkStream ns = _Client.GetStream();
-                byte[] buffer = new byte[_Client.ReceiveBufferSize];
+                byte[] dataBytes = new byte[_Client.ReceiveBufferSize];
+                StateObject so = new StateObject() { buffer = dataBytes, NS = ns };
+                ns.BeginRead(dataBytes, 0, dataBytes.Length, new AsyncCallback(StratumReaderCallBack), so );
 
-                int read = ns.Read(buffer, 0, buffer.Length);
-                AllData = ASCIIEncoding.ASCII.GetString(buffer, 0, read);
+            }
+        }
+        private class StateObject
+        {
+            public NetworkStream NS;
+            public byte[] buffer;
+
+        }
+        void StratumReaderCallBack(IAsyncResult ar){     
+        if (Program._RUNNING)
+        {
+                string AllData = string.Empty;
+                StateObject StateOb = (StateObject)ar.AsyncState;
+                NetworkStream ns = StateOb.NS;
+                int read = ns.EndRead(ar);
+                AllData = ASCIIEncoding.ASCII.GetString(StateOb.buffer, 0, read);
                 // parse response run any rules
                 int cmdEnd = AllData.IndexOf("}");
-                if (cmdEnd > 0)
+                string[] commands = AllData.Split("}");
+
+                _Logger.LogMessage(String.Format("ALL DATA:{0}", AllData));
+                
+                foreach( String json in commands)
                 {
-                    string cmdTxt = AllData.Substring(0, cmdEnd + 1);
+                    string cmdTxt = json.Trim() + "}";
+                    _Logger.LogMessage(String.Format("Command Text:{0}", cmdTxt));
+                    Console.WriteLine("Command Text:{0}", cmdTxt);
                     //parse and process
-                    JObject Robj = JObject.Parse(cmdTxt);
-                    if (Robj.ContainsKey("method") && Robj["method"] != null)
+                    bool parsed = false;
+                    JObject Robj=null;
+
+                    try
                     {
-                        string method = Robj.ToString();
-                        if (String.Compare(method, "mining.notify") == 0)
+                        Robj = JObject.Parse(cmdTxt);
+                        parsed = true;
+                    }
+                    catch (  Exception exp )
+                    {
+                        parsed = false;
+                        Logger.LogError(exp, string.Format("Failed to parse:{0}",cmdTxt));
+
+                    }if (parsed)
+                    {
+                        if (Robj.ContainsKey("method") && Robj["method"] != null)
                         {
-                            MiningNotify(cmdTxt);
+                            string method = Robj.ToString();
+                            if (String.Compare(method, "mining.notify") == 0)
+                            {
+                                MiningNotify(cmdTxt);
+                            }
+                            else
+                            if (String.Compare(method, "mining.set_difficulty") == 0)
+                            {
+                                MiningSetDifficulty(cmdTxt);
+                            }
                         }
                         else
-                        if (String.Compare(method, "mining.set_difficulty") == 0)
                         {
-                            MiningSetDifficulty(cmdTxt);
-                        }
-                    }
-                    else
-                    {
-                        if (
-                            (Robj.ContainsKey("error") && Robj["error"] != null && Robj["error"].ToString().Trim().Length > 0)
-                                ||
-                            (Robj.ContainsKey("result") && Robj["result"] != null && Robj["result"].ToString().Trim().Length > 0)
-                        )
-                        {
-
-                            int id;
-                            if (int.TryParse(Robj["ID"].ToString(), out id))
+                            if (
+                                (Robj.ContainsKey("error") && Robj["error"] != null && Robj["error"].ToString().Trim().Length > 0)
+                                    ||
+                                (Robj.ContainsKey("result") && Robj["result"] != null && Robj["result"].ToString().Trim().Length > 0)
+                            )
                             {
-                                string method = AckMan.Acks.getACK(id);
-                                if (String.Compare(method, "mining.authorize") == 0)
-                                {
-                                    miningauthorizeACK(cmdTxt);
-                                }
-                                else if (String.Compare(method, "mining.subscribe") == 0)
-                                {
-                                    miningsubscribeACK(cmdTxt);
 
-                                }
-                                else if (String.Compare(method, "mining.submit") == 0)
+                                int id;
+                                if (int.TryParse(Robj["id"].ToString(), out id))
                                 {
-                                    miningsubmitACK(cmdTxt);
+                                    string method = AckMan.Acks.getACK(id);
+                                    if (String.Compare(method, "mining.authorize") == 0)
+                                    {
+                                        miningauthorizeACK(cmdTxt);
+                                    }
+                                    else if (String.Compare(method, "mining.subscribe") == 0)
+                                    {
+                                        miningsubscribeACK(cmdTxt);
+
+                                    }
+                                    else if (String.Compare(method, "mining.submit") == 0)
+                                    {
+                                        miningsubmitACK(cmdTxt);
+                                    }
                                 }
                             }
                         }
                     }
+                    // parse next 
+
+
+                }
+                if (Program._RUNNING)
+                { 
+                    ns.BeginRead(StateOb.buffer, 0, StateOb.buffer.Length, new AsyncCallback(StratumReaderCallBack), StateOb );
                 }
             }
+            
         }
 
         /// <summary>
@@ -266,26 +313,30 @@ params[8]*/
                 }
 
                 MineTools.MineJob m = new MineJob()
-                    {
-                        clear = bool.Parse(Convert.ToString(prms[8])),
-                        CoinFollow = Convert.ToString(prms[3]),
-                        CoinPre = Convert.ToString(prms[2]),
-                        JobDifficulty = Convert.ToString(prms[6]),
-                        ID = Convert.ToString(prms[0]),
-                        Merk = aMerk,
-                        NetTime = Convert.ToString(prms[7]),
-                        PrevHash = Convert.ToString(prms[1]),
-                        Ver = Convert.ToString(prms[5]),
-                        target = MineTools.CryptoHelpers.GenerateTarget((int)Difficulty),
+                {
+                    clear = bool.Parse(Convert.ToString(prms[8])),
+                    CoinFollow = Convert.ToString(prms[3]),
+                    CoinPre = Convert.ToString(prms[2]),
+                    JobDifficulty = Convert.ToString(prms[6]),
+                    ID = Convert.ToString(prms[0]),
+                    Merk = aMerk,
+                    NetTime = Convert.ToString(prms[7]),
+                    PrevHash = Convert.ToString(prms[1]),
+                    Ver = Convert.ToString(prms[5]),
+                    target = MineTools.CryptoHelpers.GenerateTarget((int)Difficulty),
+                    ExtraNONCE1 = _extraNonce.ToString(),
+                    ExtraNONCE2 =_Queue.ExtraNonce2.ToString("x8") 
 
-                    };
+            };
                 m.Data = m.GenData;
                 //Handle Clear first
-                
-                Program.jqe.killThreads();
-                AckMan.Acks.clear();
-                _Queue.Clear();
-
+                if (m.clear)
+                {
+                    _Queue.ClearExtraNonce();
+                    Program.jqe.killThreads();
+                    AckMan.Acks.clear();
+                    _Queue.Clear();
+                }
                 _Queue.AddJob(m);
                 //handle clear
 
@@ -337,14 +388,7 @@ params[8]*/
             {
                 JArray arr = obj["result"] as JArray;
                 var en = arr[1];
-                if (int.TryParse(Convert.ToString(en), out _extraNonce))
-                {
-                    Console.WriteLine("Set ExtraNonce");
-                }
-                else
-                {
-                    _Logger.LogMessage(String.Format("Failed to Subscribe:{0}", json));
-                }
+                _extraNonce = Convert.ToString(en);
             }
         }
 
@@ -393,6 +437,93 @@ params[8]*/
             }
             return retval;
         }
+
+        
+        public void StratumReaderTester(string AllData){     
+        if (Program._RUNNING)
+        {
+            int cmdEnd = AllData.IndexOf("}");
+            string[] commands = AllData.Split("}");
+
+                commands = commands.Where(x => x.Length > 10).ToArray();
+                foreach( String json in commands  )
+            {
+                    string cmdTxt = json.Trim() + "}";
+                    
+                    Console.WriteLine("Command Text:{0}", cmdTxt);
+                    //parse and process
+                    bool parsed = false;
+                    JObject Robj=null;
+
+                    try
+                    {
+                        Robj = JObject.Parse(cmdTxt);
+                        parsed = true;
+                    }
+                    catch (  Exception exp )
+                    {
+                        parsed = false;
+                        Logger.LogError(exp, string.Format("Failed to parse:{0}",cmdTxt));
+
+                    }if (parsed)
+                    {
+                        if (Robj.ContainsKey("method") && Robj["method"] != null)
+                        {
+                            string method = Robj["method"].ToString();
+                            if (String.Compare(method, "mining.notify") == 0)
+                            {
+                                MiningNotify(cmdTxt);
+                            }
+                            else
+                            if (String.Compare(method, "mining.set_difficulty") == 0)
+                            {
+                                MiningSetDifficulty(cmdTxt);
+                            }
+                        }
+                        else
+                        {
+                            if (
+                                (Robj.ContainsKey("error") && Robj["error"] != null && Robj["error"].ToString().Trim().Length > 0)
+                                    ||
+                                (Robj.ContainsKey("result") && Robj["result"] != null && Robj["result"].ToString().Trim().Length > 0)
+                            )
+                            {
+
+                                int id;
+                                if (int.TryParse(Robj["id"].ToString(), out id))
+                                {
+                                    string method = AckMan.Acks.getACK(id);
+                                    if (String.Compare(method, "mining.authorize") == 0)
+                                    {
+                                        miningauthorizeACK(cmdTxt);
+                                    }
+                                    else if (String.Compare(method, "mining.subscribe") == 0)
+                                    {
+                                        miningsubscribeACK(cmdTxt);
+
+                                    }
+                                    else if (String.Compare(method, "mining.submit") == 0)
+                                    {
+                                        miningsubmitACK(cmdTxt);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // parse next 
+
+
+                }
+                 
+            }
+            
+        }
+
+        
+
+
+
+
 
 
 

@@ -132,6 +132,10 @@ namespace MineWorker
                 _jobs[i].foundNonce += this.handleFound;
                 _threads[i] = new Thread(new ThreadStart(_jobs[i].runJob));
                 _threads[i].Start();
+                Console.WriteLine("Launched Thread:{0}|Nonce:{1}|Increment:{2}, ", jobData.id,
+                  jobData.Nonce ,jobData.increment   );
+
+
             }
             /*Thread thStats = new Thread(new ThreadStart(this.isActive));
             thStats.IsBackground = true;
