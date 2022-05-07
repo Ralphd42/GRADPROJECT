@@ -29,7 +29,7 @@ namespace Controller
             int numthreads =1;
             if ( 
                 arrdt.Length<2 ||
-                !int.TryParse(arrdt[1], out numthreads    )
+                !int.TryParse(arrdt[0], out numthreads    )
                 )
             {
                 numthreads = 1;
