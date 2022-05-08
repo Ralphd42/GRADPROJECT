@@ -8,12 +8,13 @@
       "DbConnection": "NOTUSED"
     },
     "Parameter": {
-      "debug"            :"true"          ,
-      "LOGFILE"          :"bc.log",
-      "WorkerManagerPort":"13001"         ,
-      "JobPort"          :"13002"         ,
-      "JobRPort"         :"13003"         ,
-      "MonitorPort"      :"13004"         ,
-      "MinWorkerCount"   :"1"
+      "debug"            :"true"   ,
+      "LOGFILE"          :"bc.log" ,
+      "WorkerManagerPort":"13001"  ,
+      "JobPort"          :"13002"  ,
+      "JobRPort"         :"13003"  ,
+      "MonitorPort"      :"13004"  ,
+      "MinWorkerCount"   :"1"      ,
+      "JsonLog"          :"bc.xslx"
     }
   }

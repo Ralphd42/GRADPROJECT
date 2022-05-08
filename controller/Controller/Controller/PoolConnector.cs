@@ -99,6 +99,7 @@ namespace Controller
                 _Client.GetStream().Write(bytes, 0, bytes.Length);
                 _Client.GetStream().Flush();
                 AckMan.Acks.AddAck(ps.id, ps.method);
+                ExcelLogger.ExcelLog.LogJsonTOPOOL(json);
                 retval = true;
             }
             catch (Exception exp)
@@ -120,6 +121,7 @@ namespace Controller
                 _Client.GetStream().Write(bytes, 0, bytes.Length);
                 _Client.GetStream().Flush();
                 AckMan.Acks.AddAck(pa.id, pa.method);
+                ExcelLogger.ExcelLog.LogJsonTOPOOL(json);
                 retval = true;
             }
             catch (Exception exp)
@@ -211,6 +213,7 @@ namespace Controller
                 foreach( String json in commands)
                 {
                     string cmdTxt = json.Trim() + "}";
+                    ExcelLogger.ExcelLog.LogJsonFromPOOL(json);
                     _Logger.LogMessage(String.Format("Command Text:{0}", cmdTxt));
                     Console.WriteLine("Command Text:{0}", cmdTxt);
                     //parse and process

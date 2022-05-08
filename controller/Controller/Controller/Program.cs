@@ -328,6 +328,14 @@ namespace Controller
             }
         }
 
+        //JsonLog
+        public static string JsonLog
+        {
+            get
+            {
+                return Params.GetSection("JsonLog").Value;
+            }
+        }
 
 
 
