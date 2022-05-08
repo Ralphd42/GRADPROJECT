@@ -37,6 +37,7 @@ namespace Controller
                     int numrow = worksheet.Dimension.Rows;
                     worksheet.Cells[++numrow, 1].Value = dirfrompool;
                     worksheet.Cells[numrow, 2].Value = msg;
+                    worksheet.Cells[numrow, 3].Value = msg;
                     FileInfo fi = new FileInfo(Program.JsonLog);
                     excelPackage.SaveAs(fi);
                 }
