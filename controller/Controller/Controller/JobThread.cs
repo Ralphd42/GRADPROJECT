@@ -90,6 +90,7 @@ namespace Controller
 
         public void sendJob()
         {
+            _worker.Available = Worker.WorkerState.working;
             IPAddress ipAddress = IPAddress.Parse(_worker.Ipv4);
             tcpClient = new TcpClient(AddressFamily.InterNetwork);
             tcpClient.Client.SetSocketOption(SocketOptionLevel.Socket,
