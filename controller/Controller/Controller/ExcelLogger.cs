@@ -23,23 +23,36 @@ namespace Controller
         {
             lock (locker)
             {
-                using (ExcelPackage excelPackage = new ExcelPackage(Program.JsonLog))
+                try
                 {
-                    ExcelWorksheet worksheet;
-                    if (excelPackage.Workbook.Worksheets.Count <= 0)
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                    using (ExcelPackage excelPackage = new ExcelPackage(Program.JsonLog))
                     {
-                        worksheet = excelPackage.Workbook.Worksheets.Add(SheetName);
+                        ExcelWorksheet worksheet;
+                        if (excelPackage.Workbook.Worksheets.Count <= 0)
+                        {
+                            worksheet = excelPackage.Workbook.Worksheets.Add(SheetName);
+                        }
+                        else
+                        {
+                            worksheet = excelPackage.Workbook.Worksheets[0];
+                        }
+                        int numrow = 0;
+                        if( worksheet != null && 
+                            worksheet.Dimension != null )
+                        { 
+                            numrow =worksheet.Dimension.Rows;
+                        }
+                        worksheet.Cells[++numrow, 1].Value = dirfrompool;
+                        worksheet.Cells[numrow, 2].Value = msg;
+                        worksheet.Cells[numrow, 3].Value = msg;
+                        FileInfo fi = new FileInfo(Program.JsonLog);
+                        excelPackage.SaveAs(fi);
                     }
-                    else
-                    {
-                        worksheet = excelPackage.Workbook.Worksheets[0];
-                    }
-                    int numrow = worksheet.Dimension.Rows;
-                    worksheet.Cells[++numrow, 1].Value = dirfrompool;
-                    worksheet.Cells[numrow, 2].Value = msg;
-                    worksheet.Cells[numrow, 3].Value = msg;
-                    FileInfo fi = new FileInfo(Program.JsonLog);
-                    excelPackage.SaveAs(fi);
+                }catch (Exception exp)
+                {
+                    Program.lgr.LogError(exp, "Failed to write Excel");
+
                 }
             }
         }

@@ -39,6 +39,7 @@ namespace Controller
             _Queue = queue;
              
             _extraNonce = "";
+            _currCommandID =0;
         }
         private int? _difficulty;
 
@@ -54,6 +55,17 @@ namespace Controller
             get
             {
                 return _Client;
+            }
+        }
+
+
+        private int  _currCommandID =0;
+        private object cmdlock = new object();
+        private int NextID()
+        {
+            lock (cmdlock)
+            {
+                return ++_currCommandID;
             }
         }
 
@@ -92,7 +104,7 @@ namespace Controller
             bool retval = false;
             try
             {
-                PoolSubscriber ps = new PoolSubscriber(1);
+                PoolSubscriber ps = new PoolSubscriber(NextID());
                 string json = JsonConvert.SerializeObject(ps, Formatting.None);
                 json = json + "\n";
                 byte[] bytes = Encoding.ASCII.GetBytes(json);
@@ -114,7 +126,7 @@ namespace Controller
             bool retval = false;
             try
             {
-                PoolAuth pa = new PoolAuth(1, PoolManager.PoolUser, PoolManager.PoolPwd);
+                PoolAuth pa = new PoolAuth(NextID(), PoolManager.PoolUser, PoolManager.PoolPwd);
                 string json = JsonConvert.SerializeObject(pa, Formatting.None);
                 json = json + "\n";
                 byte[] bytes = Encoding.ASCII.GetBytes(json);
@@ -206,7 +218,7 @@ namespace Controller
                 AllData = ASCIIEncoding.ASCII.GetString(StateOb.buffer, 0, read);
                 // parse response run any rules
                 int cmdEnd = AllData.IndexOf("}");
-                string[] commands = AllData.Split("}");
+                string[] commands = AllData.Trim().Split("}");
 
                 _Logger.LogMessage(String.Format("ALL DATA:{0}", AllData));
                 
@@ -234,7 +246,7 @@ namespace Controller
                     {
                         if (Robj.ContainsKey("method") && Robj["method"] != null)
                         {
-                            string method = Robj.ToString();
+                            string method = Robj["method"].ToString();// Robj.ToString();
                             if (String.Compare(method, "mining.notify") == 0)
                             {
                                 MiningNotify(cmdTxt);
@@ -424,13 +436,14 @@ params[8]*/
             try
             {
                 miningsubmitjson minSub = new miningsubmitjson(JobID: jobid
-                , ExtraNonce: extranonce, time: Time, NonceHS: nonceHxSt, id: ID
+                , ExtraNonce: extranonce, time: Time, NonceHS: nonceHxSt, id: NextID()
                 );
                 string json = JsonConvert.SerializeObject(minSub, Formatting.None);
                 json = json + "\n";
                 byte[] bytes = Encoding.ASCII.GetBytes(json);
                 _Client.GetStream().Write(bytes, 0, bytes.Length);
                 _Client.GetStream().Flush();
+                AckMan.Acks.AddAck(minSub.id, "mining.submit");
             }catch (Exception exp)
             {
                 retval = false;
