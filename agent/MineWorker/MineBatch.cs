@@ -66,6 +66,9 @@ namespace MineWorker
             catch (Exception exp)
             {
                 Console.WriteLine(exp);
+                Console.WriteLine(exp.Message);
+                Console.WriteLine(exp.StackTrace);
+                Console.WriteLine(exp.ToString());
             }
             Console.WriteLine("Watcher stopped");
         }
@@ -100,13 +103,16 @@ namespace MineWorker
             }
         }
 
-        public void KillJobs()
+        public void KillJobs(bool notify =true)
         {
             foreach (var jb in _jobs)
             {
                 jb.KillProc();
             }
-            notifyAvail();
+            if(notify)
+            { 
+                notifyAvail();
+            }
         }
 
 
@@ -144,6 +150,8 @@ namespace MineWorker
             {
                 _threads[i].Join();
             }
+            notifyAvail();// this could be redundant
+
         }
 
         static bool IsSocketConnected(Socket s)
@@ -178,6 +186,10 @@ namespace MineWorker
             catch (Exception exp)
             {
                 Console.WriteLine(":{0}:",exp.Message);
+                Console.WriteLine(exp);
+                Console.WriteLine(exp.Message);
+                Console.WriteLine(exp.StackTrace);
+                Console.WriteLine(exp.ToString());
             }
         }
         void isActive_OLD()
@@ -217,6 +229,10 @@ namespace MineWorker
             catch (Exception exp)
             {
                 Console.WriteLine(exp);
+                Console.WriteLine(exp);
+                Console.WriteLine(exp.Message);
+                Console.WriteLine(exp.StackTrace);
+                Console.WriteLine(exp.ToString());
 
             }
             Console.WriteLine("Watcher stopped");

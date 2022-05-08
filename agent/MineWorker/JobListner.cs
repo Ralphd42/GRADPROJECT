@@ -72,18 +72,33 @@ namespace MineWorker
                         if(mb!=null)
                         { 
                             mb.KillJobs();
+                            mb.notifyAvail();
                         }
                     }
                     if( command.Contains("<T>"))
                     {
+                        Running=false;
+                        if(mb!=null)
+                        {
+                            mb.KillJobs(false);
+                        }
                         //Terminate app
                         System.Environment.Exit(1);
                     }
                     else
                     {
-                        MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(command);
-                        mb = new(dt, nsm);
-                        new Thread( new ThreadStart(   mb.LaunchThreads)).Start();
+                        try
+                        {
+                            MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(command);
+                            mb = new(dt, nsm);
+                            new Thread( new ThreadStart(   mb.LaunchThreads)).Start();
+                        }catch(Exception exp)
+                        {
+                            _logger.LogError(exp,"Parsing Json");            
+                            Console.WriteLine(exp.Message);
+                            Console.WriteLine(exp.StackTrace);
+                            Console.WriteLine(exp.ToString());
+                        }
                     }
                 }
             }
@@ -91,6 +106,8 @@ namespace MineWorker
             {
                 _logger.LogError(e,"ListenToController");
                 Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.ToString());
             }
 
             Console.WriteLine("\nPress ENTER to continue...");
