@@ -66,7 +66,7 @@ namespace MineWorker
                             break;
                         }
                     }
-                    if( command.Contains("<K>")  || command.Contains("<T>") )
+                    if( command.Contains("<K>")    )
                     {
                         Console.WriteLine("Received Kill at{0}", DateTime.Now);
                         if(mb!=null)
@@ -74,9 +74,10 @@ namespace MineWorker
                             mb.KillJobs();
                             mb.notifyAvail();
                         }
-                    }
+                    }else 
                     if( command.Contains("<T>"))
                     {
+                        Console.WriteLine("Terminate Kill at{0}", DateTime.Now);
                         Running=false;
                         if(mb!=null)
                         {
@@ -94,7 +95,8 @@ namespace MineWorker
                             new Thread( new ThreadStart(   mb.LaunchThreads)).Start();
                         }catch(Exception exp)
                         {
-                            _logger.LogError(exp,"Parsing Json");            
+                            _logger.LogError(exp,"Parsing Json");
+                            Console.WriteLine("ProblemText|{0}" ,command );            
                             Console.WriteLine(exp.Message);
                             Console.WriteLine(exp.StackTrace);
                             Console.WriteLine(exp.ToString());
