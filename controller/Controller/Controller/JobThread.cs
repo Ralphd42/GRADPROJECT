@@ -95,8 +95,18 @@ namespace Controller
             tcpClient = new TcpClient(AddressFamily.InterNetwork);
             tcpClient.Client.SetSocketOption(SocketOptionLevel.Socket,
              SocketOptionName.KeepAlive, 2000);
-            tcpClient.Connect(ipAddress,Program.JobPort);
-            
+            try
+            {
+                tcpClient.Connect(ipAddress, Program.JobPort);
+            }catch (Exception exp)
+            {
+                // the worker died make it unavailable
+                _worker.Available = Worker.WorkerState.NotAvalable;
+                Program.lgr.LogError(exp,
+                    String.Format(
+                        "Worker:{0} - {1}" , _worker.Ipv4, _worker.MachineName) )       ;
+                return;
+            }
             if (tcpClient != null)
             {
                 _stream = tcpClient.GetStream();
@@ -109,7 +119,8 @@ namespace Controller
                 int byrd = 0;
                 byte[] rb = new byte[1024];
                 StringBuilder objString = new StringBuilder();
-                 
+                Console.Write("Sent job");
+                return;
                 /* try and indicate dead client   */
                 try
                 {

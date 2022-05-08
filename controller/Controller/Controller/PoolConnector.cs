@@ -231,7 +231,10 @@ namespace Controller
                     //parse and process
                     bool parsed = false;
                     JObject Robj=null;
-
+                    if (cmdTxt.Length < 3)
+                    {
+                        continue;
+                    }
                     try
                     {
                         Robj = JObject.Parse(cmdTxt);

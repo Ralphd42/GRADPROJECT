@@ -47,26 +47,38 @@ namespace Controller
         /// </summary>
         public void WatchQueue()
         {
-            Console.WriteLine("Queue watcher started");
+            try
+            {
+                Console.WriteLine("Queue watcher started");
 
-            while (Program._RUNNING)
-            {
-                while (_queue.count() == 0  || availWorkers() < Program.MinWorkerCount )
+                while (Program._RUNNING)
                 {
-                    Thread.Sleep(500);
+                    while (_queue.count() == 0 || availWorkers() < Program.MinWorkerCount)
+                    {
+                        Thread.Sleep(500);
+                    }
+                    MineJob jb = _queue.GetJob();
+                    if (jb != null)
+                    {
+                        jm = new JobManager(jb, Program.wmt.Workers);
+                        jm.startJobs();
+                    }
+                    Thread.Sleep(1);
                 }
-                MineJob jb = _queue.GetJob();
-                if (jb != null)
+                if (jm != null)
                 {
-                    jm= new JobManager(jb, Program.wmt.Workers); 
-                    jm.startJobs();
+                    jm.killThreads();
+
                 }
-                Thread.Sleep(1);
-            }
-            if (jm != null)
+            }catch (Exception exe)
             {
-                jm.killThreads();
-                
+                Console.WriteLine("Error in WatchQueue");
+                Console.WriteLine(exe.ToString());
+                if (exe.InnerException!=null)
+                {
+                    Console.WriteLine(exe.InnerException.ToString());
+                }
+                Program.lgr.LogError(exe, "Error in WatchQueue");
             }
         }
         public void killThreads()
