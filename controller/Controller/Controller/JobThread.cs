@@ -116,12 +116,13 @@ namespace Controller
                 _stream.Write(toSend, 0, toSend.Length);
                 _stream.Flush();
                 // receive response
-                int byrd = 0;
+                
                 byte[] rb = new byte[1024];
                 StringBuilder objString = new StringBuilder();
                 Console.Write("Sent job");
                 return;
                 /* try and indicate dead client   */
+                #if  unused
                 try
                 {
                     while ((byrd = _stream.Read(rb)) > 0)
@@ -143,6 +144,7 @@ namespace Controller
                     
                 } 
                 Console.Write("DONE");
+                #endif
             }
         }
     }

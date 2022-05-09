@@ -106,11 +106,9 @@ namespace MineTools
             Array.Reverse((Array)result);
             tarasString = byteArrToString(result);
             Console.WriteLine("DIFF :{0}  |Target:{1}|",Difficulty, tarasString);
-
-
-
             return result;
         }
+        
         public static byte[] ReHash(byte[] input)
         {
             using(SHA256 sha25Obj = SHA256.Create())

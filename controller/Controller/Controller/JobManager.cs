@@ -27,6 +27,9 @@ namespace Controller
             _threads    = new List<Thread>();
             _jTHreads   = new List<JobThread>();
         }
+        /// <summary>
+        /// this splits a job and sends it the agents
+        /// </summary>
         public void startJobs()
         {
             uint thNonce = 0;
@@ -68,7 +71,9 @@ namespace Controller
                 killThreads();
             }
         }
-        
+        /// <summary>
+        /// this kills all threads for the job
+        /// </summary>
         public void killThreads()
         {
             foreach (var jt in _jTHreads)
