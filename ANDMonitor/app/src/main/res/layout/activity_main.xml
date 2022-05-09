@@ -49,5 +49,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/LastError"
+        android:layout_width="235dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="440dp"
+        android:text="Last Error"
+        android:onClick="getLastError"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
