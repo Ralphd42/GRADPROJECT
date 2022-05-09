@@ -89,6 +89,13 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new KillNetwork("<J>#")).start();
 
     }
+    public void getLastError(View view)
+    {
+
+        txtOutput.setText("Attempting to get JobCount");
+        new Thread(new KillNetwork("<E>#")).start();
+
+    }
 
 
     public void sendMessage(View view) {
