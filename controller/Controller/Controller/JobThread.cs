@@ -115,8 +115,9 @@ namespace Controller
                 byte[] toSend = Encoding.ASCII.GetBytes(dtJson);
                 _stream.Write(toSend, 0, toSend.Length);
                 _stream.Flush();
+                _stream.Close();
                 // receive response
-                
+
                 byte[] rb = new byte[1024];
                 StringBuilder objString = new StringBuilder();
                 Console.Write("Sent job");
@@ -124,7 +125,7 @@ namespace Controller
                 /* try and indicate dead client   */
                 #if  unused
                 try
-                {
+                {!!
                     while ((byrd = _stream.Read(rb)) > 0)
                     {
                         if (!_running)

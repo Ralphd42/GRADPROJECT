@@ -25,7 +25,7 @@ namespace Controller
         {
             data = removeHT(data);
             string[] arrdt = data.Split(":");
-            worker.MachineName = arrdt[0];
+            worker.MachineName = arrdt[1];
             int numthreads =1;
             if ( 
                 arrdt.Length<2 ||

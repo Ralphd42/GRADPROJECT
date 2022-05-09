@@ -56,6 +56,7 @@ namespace MineWorker
                         string svr = objString.ToString();
                         svr = svr.Trim();
                         Console.WriteLine("received json {0}", svr);
+                        _logger.LogMessage( String.Format("received json {0}", svr));
                         command =svr; 
                         if(command.Contains("<K>")|| command.Contains("<T>") )
                         {
@@ -69,6 +70,7 @@ namespace MineWorker
                     if( command.Contains("<K>")    )
                     {
                         Console.WriteLine("Received Kill at{0}", DateTime.Now);
+                        _logger.LogMessage(string.Format("Received Kill at{0}", DateTime.Now));
                         if(mb!=null)
                         { 
                             mb.KillJobs();
@@ -91,7 +93,7 @@ namespace MineWorker
                         try
                         {
                             MineThreadData dt = JsonConvert.DeserializeObject<MineThreadData>(command);
-                            mb = new(dt, nsm);
+                            mb = new(dt, nsm, _logger);
                             new Thread( new ThreadStart(   mb.LaunchThreads)).Start();
                         }catch(Exception exp)
                         {
@@ -111,16 +113,7 @@ namespace MineWorker
                 Console.WriteLine(e.StackTrace);
                 Console.WriteLine(e.ToString());
             }
-
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
         }
-
-
-
-
-
-
     }
 }
  
