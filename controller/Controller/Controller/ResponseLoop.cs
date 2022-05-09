@@ -58,7 +58,6 @@ namespace Controller
 
                             tsk.Wait();
                             break;
-                            
                         }
                     }
                 }

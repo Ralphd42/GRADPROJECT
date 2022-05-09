@@ -37,6 +37,7 @@ namespace MineTools
 
         public void runJob()
         {
+            
             double Hashcount = 0;
             byte[] Databyte = new byte[80];
             Array.Copy(_job.thData, 0, Databyte, 0, 76);
@@ -48,6 +49,8 @@ namespace MineTools
                 // Loop until done is set or we meet the target
                 while (!_done)
                 {
+                    // this is a way using shifts to add a 32bit  number to the 
+                    // current hash
                     Databyte[76] = (byte)(_job.Nonce  >> 0);
                     Databyte[77] = (byte)(_job.Nonce >> 8);
                     Databyte[78] = (byte)(_job.Nonce >> 16);
