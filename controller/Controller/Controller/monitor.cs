@@ -66,6 +66,13 @@ namespace Controller
                     break;
                 }
             }
+            if (svr.Contains("<E>"))
+            { 
+                string rv = string.Format("<E>{0}#", Program.lgr.LastExMsg);
+                byte[] outB = Encoding.ASCII.GetBytes(rv);
+                nsm.Write(outB, 0, outB.Length);
+                nsm.Flush();
+            }else
             if (svr.Contains("<W>"))
             {
                 string rv = string.Format("<W>{0}#", Program.wmt.ToString());

@@ -15,7 +15,20 @@ namespace Controller
                 return Program.LogFile;
             }
         }
+        private Exception _lastError;
+        public String LastExMsg
+        {
+            get 
+            {
+                String retval = "No errors";
+                if (_lastError != null)
+                {
+                    retval = _lastError.Message;
+                }
+                return retval;
+            }
 
+        }
         public object LogLock = new object();
         /// <summary>
         /// Generic error handler.  Will handle all types of errors
@@ -24,6 +37,7 @@ namespace Controller
         /// <param name="message">this is the message</param>
         public void  LogError(Exception exp, string message)
         {
+            _lastError = exp;
             StringBuilder msg = new StringBuilder();
             msg.AppendLine(message);
             msg.Append(DateTime.Now);

@@ -57,6 +57,8 @@ namespace Controller
                             ProcResponse(data);
 
                             tsk.Wait();
+                            // log the response
+                            
                             break;
                         }
                     }
@@ -80,8 +82,7 @@ namespace Controller
                  jobid: cur.ID,
                  extranonce: Program.MainJobQueue.ExtraNonce2.ToString("x8"),
                  Time: cur.Data,
-                 nonceHxSt: nonce.ToString("x8"),
-                 ID: id
+                 nonceHxSt: nonce.ToString("x8") 
             );
             if (rv)
             {

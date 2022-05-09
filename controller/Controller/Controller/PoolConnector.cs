@@ -428,7 +428,7 @@ params[8]*/
             }
         }
 
-        public bool miningSubmit(String jobid,string extranonce, string Time, string nonceHxSt,int ID)
+        public bool miningSubmit(String jobid,string extranonce, string Time, string nonceHxSt )
         {
             bool retval = false;
             if (Program.debug)
@@ -450,9 +450,7 @@ params[8]*/
             }catch (Exception exp)
             {
                 retval = false;
-                _Logger.LogError(exp, String.Format("MINING SUBMIT FAILED FOR JOBID:{0}|ID:{1} " , jobid, ID));
-
-
+                _Logger.LogError(exp, String.Format("MINING SUBMIT FAILED FOR JOBID:{0}" , jobid));
             }
             return retval;
         }
