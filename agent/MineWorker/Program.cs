@@ -1,12 +1,16 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 namespace MineWorker
 {
     class Program
     {
         public static MineOperations mi;
-        static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             welcome();
             Logger lg = new Logger();
@@ -19,6 +23,27 @@ namespace MineWorker
                     lg.LogMessage("Joined Network");
                     JobListner jl = new JobListner(lg);
                     jl.ListenToController();
+                    var prcmon = Task.Run(async () =>
+                    {
+                        double minu = 0;
+                        double maxu = 0;
+                        while (true)
+                        {
+                            var usg = await ProcMonitor.GetCpuUsage();
+                            Console.WriteLine("Useage ar:{0}|min:{1}|max", usg);
+                            if (usg < minu)
+                            {
+                                minu = usg;
+                            }
+                            if (usg > maxu)
+                            {
+                                maxu = usg;
+                                 Console.WriteLine("--->>");
+                            }
+                        }
+                    });
+
+
                 }
                 else
                 {
@@ -33,12 +58,12 @@ namespace MineWorker
         }
 
         #region UIFuncts
-        
+
         static void welcome()
         {
             Console.WriteLine("Bitcoin worker starting");
         }
-        
+
         #endregion
         #region Settings
         public static bool debug
@@ -157,7 +182,7 @@ namespace MineWorker
                 return 1;
             }
         }
-        
+
         public static string LogFile
         {
             get
