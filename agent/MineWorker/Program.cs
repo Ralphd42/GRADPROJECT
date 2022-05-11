@@ -22,15 +22,16 @@ namespace MineWorker
                 {
                     lg.LogMessage("Joined Network");
                     JobListner jl = new JobListner(lg);
-                    jl.ListenToController();
+                    
                     var prcmon = Task.Run(async () =>
                     {
                         double minu = 0;
                         double maxu = 0;
                         while (true)
                         {
+                            await Task.Delay(5000);
                             var usg = await ProcMonitor.GetCpuUsage();
-                            Console.WriteLine("Useage ar:{0}|min:{1}|max", usg);
+                            Console.WriteLine("Useage:{0}|min:{1}|max{2}", usg, minu, maxu);
                             if (usg < minu)
                             {
                                 minu = usg;
@@ -38,11 +39,11 @@ namespace MineWorker
                             if (usg > maxu)
                             {
                                 maxu = usg;
-                                 Console.WriteLine("--->>");
+                                 Console.Write("*");
                             }
                         }
                     });
-
+                    jl.ListenToController();
 
                 }
                 else
