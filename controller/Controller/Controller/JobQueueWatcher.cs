@@ -88,6 +88,16 @@ namespace Controller
                 jm.killThreads();
             }
         }
+
+        public void killAgents()
+        {
+            if (jm != null)
+            {
+                jm.killAgents();
+            }
+        }
+
+
         public override string ToString()
         {
             string msg = String.Format(

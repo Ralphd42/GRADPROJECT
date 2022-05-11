@@ -20,7 +20,12 @@ namespace Controller
         
         TcpClient tcpClient;
 
-        public void KIll()
+        public void killAgent()
+        {
+            KIll("T");
+        }
+
+        public void KIll( string kt ="")
         { 
             _running = false;
             try
@@ -36,6 +41,10 @@ namespace Controller
                      
 
                     string doneMsg = "<K>#";
+                    if (kt == "T")
+                    { 
+                        doneMsg = "<T>#";
+                    }
                     byte[] toSend = Encoding.ASCII.GetBytes(doneMsg);
                     _stream.Write(toSend, 0, toSend.Length);
                     _stream.Flush();

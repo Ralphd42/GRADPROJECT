@@ -81,5 +81,14 @@ namespace Controller
                 jt.KIll();
             }
         }
+         public void killAgents()
+        {
+            foreach (var jt in _jTHreads)
+            {
+                jt.killAgent();
+            }
+        }
+
+
     }
 }

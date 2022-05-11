@@ -169,7 +169,7 @@ namespace Controller
         {
             _RUNNING = false;  // this will give threads a chance to end on own
             Console.WriteLine("TERMINATING");
-            jqe.killThreads();  
+            wmt.ShutdownWorkers();
             Thread.Sleep(2000);
             Console.WriteLine("Terminating 2");
             //kill
