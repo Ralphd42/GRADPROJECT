@@ -42,6 +42,7 @@
             // 
             // notifyIcon1
             // 
+            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "Bitcoin Miner Monitor";
             this.notifyIcon1.Visible = true;
@@ -66,7 +67,7 @@
             // 
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
-            // 
+             // 
             // lblErrors
             // 
             this.lblErrors.AutoSize = true;
@@ -86,7 +87,7 @@
             this.btnRefresh.Text = "refresh";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-            // 
+  // 
             // TRayMon
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);

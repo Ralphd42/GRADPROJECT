@@ -15,9 +15,9 @@ namespace TrayMonitor
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            Show();
-            WindowState = FormWindowState.Normal;
-            contextMenuStrip1.Show(Cursor.Position.X, Cursor.Position.Y);
+           // Show();
+           // WindowState = FormWindowState.Normal;
+           // contextMenuStrip1.Show(Cursor.Position.X, Cursor.Position.Y);
         }
 
         private void notifyIcon1_DoubleClick(object sender, EventArgs e)
@@ -33,7 +33,10 @@ namespace TrayMonitor
 
         private void TRayMon_Load(object sender, EventArgs e)
         {
-
+            
+            ShowInTaskbar = false;
+            notifyIcon1.Visible = true;
+            this.Hide();
         }
 
         private void label1_Click(object sender, EventArgs e)
