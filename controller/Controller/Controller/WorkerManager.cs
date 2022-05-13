@@ -174,26 +174,28 @@ namespace Controller
 
         public void ShutdownWorkers()
         {
-
-            foreach (var _worker in _workers)
+            if (_workers != null)
             {
-                try
+                foreach (var _worker in _workers)
                 {
-                    IPAddress ipAddress = IPAddress.Parse(_worker.Ipv4);
-                    TcpClient tcpClient = new TcpClient(AddressFamily.InterNetwork);
-                    tcpClient.Connect(ipAddress, Program.JobPort);
-                    if (tcpClient != null)
+                    try
                     {
-                        NetworkStream _stream = tcpClient.GetStream();
-                        string doneMsg = "<T>#";
-                        byte[] toSend = Encoding.ASCII.GetBytes(doneMsg);
-                        _stream.Write(toSend, 0, toSend.Length);
-                        _stream.Flush();
+                        IPAddress ipAddress = IPAddress.Parse(_worker.Ipv4);
+                        TcpClient tcpClient = new TcpClient(AddressFamily.InterNetwork);
+                        tcpClient.Connect(ipAddress, Program.JobPort);
+                        if (tcpClient != null)
+                        {
+                            NetworkStream _stream = tcpClient.GetStream();
+                            string doneMsg = "<T>#";
+                            byte[] toSend = Encoding.ASCII.GetBytes(doneMsg);
+                            _stream.Write(toSend, 0, toSend.Length);
+                            _stream.Flush();
+                        }
                     }
-                }
-                catch (Exception exp)
-                {
-                    Program.lgr.LogError(exp, string.Format("Error Killing   Agent:{0}", _worker.MachineName));
+                    catch (Exception exp)
+                    {
+                        Program.lgr.LogError(exp, string.Format("Error Killing   Agent:{0}", _worker.MachineName));
+                    }
                 }
             }
 

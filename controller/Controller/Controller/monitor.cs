@@ -89,6 +89,13 @@ namespace Controller
                 nsm.Write(outB, 0, outB.Length);
                 nsm.Flush();
             }
+            else if (svr.Contains("<P>"))   /// ping 
+            { 
+                string rv = "<P>#";
+                byte[] outB = Encoding.ASCII.GetBytes(rv);
+                nsm.Write(outB, 0, outB.Length);
+                nsm.Flush();
+            }
             else if (svr.Contains("<K>"))
             {
                 string rv = string.Format(

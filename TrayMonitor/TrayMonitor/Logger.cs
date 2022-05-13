@@ -8,23 +8,21 @@ namespace TrayMonitor
 {
     internal class Logger : ILogger
     {
-
-
         private Logger()
         { }
         private static Logger _logger;
+        static object ouLock = new object();
         public static Logger Log {
             get {
                 if (_logger == null)
-                    _logger = new Logger();
+                    lock (ouLock)
+                    {
+                        if (_logger == null)
+                            _logger = new Logger();
+                    }
                 return _logger;
-
             }
         }
-
-
-
-
         public static string LOGFILE {
             get {
                 string retval = string.Empty;
@@ -34,19 +32,28 @@ namespace TrayMonitor
                 return retval;
             }
         }
-
-
-
-        public void LogError(Exception exp, string message)
+        object LockObj = new object();
+        public string LogError(Exception exp, string message)
         {
             Console.WriteLine(exp);
+            StringBuilder msg = new StringBuilder();
+            msg.AppendLine(message);
+            msg.AppendLine(exp.ToString());
+            if (exp.InnerException != null)
+            {
+                msg.AppendLine("=======================");
+                msg.AppendLine(exp.InnerException.ToString());
+            }
+            lock (LockObj)
+            {
+                File.AppendAllText(LOGFILE, msg.ToString());
+            }
+            return msg.ToString();
         }
-
         public void LogMessage(string Message)
         {
             throw new NotImplementedException();
         }
-
         public void LogWIthDate(string Message)
         {
             throw new NotImplementedException();

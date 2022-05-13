@@ -9,7 +9,7 @@ namespace TrayMonitor
 {
     public interface ILogger
     {
-        public void LogError(Exception exp, string message);
+        public string LogError(Exception exp, string message);
         public void LogMessage(string Message);
         public void LogWIthDate(string Message);
 

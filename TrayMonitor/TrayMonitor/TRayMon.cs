@@ -6,7 +6,7 @@ namespace TrayMonitor
         {
             InitializeComponent();
         }
-
+        private bool _cRunning = false;
         private void TRayMon_Resize(object sender, EventArgs e)
         {
             if (FormWindowState.Minimized == WindowState)
@@ -33,10 +33,13 @@ namespace TrayMonitor
 
         private void TRayMon_Load(object sender, EventArgs e)
         {
-            
+            timer1.Start();
             ShowInTaskbar = false;
             notifyIcon1.Visible = true;
             this.Hide();
+            
+
+
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -47,7 +50,95 @@ namespace TrayMonitor
         private async void btnRefresh_Click(object sender, EventArgs e)
         {
             Connector cn = new Connector();
-            this.lblErrors.Text = await cn.SendCommand("<E>#");
+            var tsk  = cn.SendCommand("<E>#");
+            var tskW = cn.SendCommand("<W>#");
+            var tskj = cn.SendCommand("<J>#");
+            btnRefresh.Enabled = false;
+            cleanStat();
+            await tsk;
+            await tskW;
+            await tskj;
+            this.lblErrors.Text = tsk.Result;// await cn.SendCommand("<E>#");
+            this.lblWorkers.Text = tskW.Result;
+            this.lblJobs.Text = tskj.Result;
+            btnRefresh.Enabled = true;
+        }
+        private void cleanStat()
+        {
+            lblErrors.Text  = "No Errors";
+            lblJobs.Text    = "No Job Data";
+            lblWorkers.Text = "No worker Info";
+
+        }
+
+        async Task refresh()
+        {
+            if (_cRunning)
+            {
+                Connector cn = new Connector();
+                var tsk = cn.SendCommand("<E>#");
+                var tskW = cn.SendCommand("<W>#");
+                var tskj = cn.SendCommand("<J>#");
+                btnRefresh.Enabled = false;
+                cleanStat();
+                await tsk;
+                await tskW;
+                await tskj;
+                this.lblErrors.Text = tsk.Result;// await cn.SendCommand("<E>#");
+                this.lblWorkers.Text = tskW.Result;
+                this.lblJobs.Text = tskj.Result;
+
+                lblstatus.Text = "STOPPED";
+                if (_cRunning)
+                {
+                    lblstatus.Text = "RUNNING";
+                }
+
+                btnRefresh.Enabled = true;
+            }
+            else {
+                await Ping();
+            }
+        }
+        async Task<bool> Ping()
+        {   
+            const string png = "<P>#";
+            Connector cn = new Connector();
+            string rv = await  cn.SendCommand(png);
+            if (rv.Contains(png)) { _cRunning = true; }
+            else { _cRunning = false; }
+            return _cRunning;
+        }
+
+
+
+
+        private async void BtnKill_Click(object sender, EventArgs e)
+        {
+            var cn = new Connector();
+            var tksKill = cn.Kill();
+            BtnKill.Enabled = false;
+            await tksKill;
+            await refresh();
+            BtnKill.Enabled = true;
+        }
+
+        private void label1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void timer1_Tick(object sender, EventArgs e)
+        {
+            await Ping();
+            if (_cRunning)
+            {
+                lblstatus.Text = "RUNNING";
+            }
+            else 
+            {
+                lblstatus.Text = "STOPPED";
+            }
         }
     }
 }
