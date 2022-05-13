@@ -93,9 +93,8 @@ namespace MineWorker
                     var _nsm = tcpClient.GetStream();
                     _nsm.BeginWrite(bytes, 0, bytes.Length, new AsyncCallback((IAsyncResult ar) =>
                     {
-
-                            _nsm.Flush();
-                            _nsm.Close();
+                        _nsm.Flush();
+                        _nsm.Close();
                     }), null);
                     KillJobs();
                 }

@@ -35,5 +35,16 @@ namespace TrayMonitor
         {
 
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void btnRefresh_Click(object sender, EventArgs e)
+        {
+            Connector cn = new Connector();
+            this.lblErrors.Text = await cn.SendCommand("<E>#");
+        }
     }
 }
