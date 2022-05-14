@@ -31,9 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TRayMon));
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.CMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.KillMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.lblErrors = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnRefresh = new System.Windows.Forms.Button();
@@ -45,36 +44,34 @@
             this.BtnKill = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lblstatus = new System.Windows.Forms.Label();
-            this.contextMenuStrip1.SuspendLayout();
+            this.KillController = new System.Windows.Forms.ToolStripMenuItem();
+            this.CMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
+            this.notifyIcon1.ContextMenuStrip = this.CMenu;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "Bitcoin Miner Monitor";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
-            // contextMenuStrip1
+            // CMenu
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator1,
-            this.toolStripTextBox1});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(161, 35);
-            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            this.CMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.KillMenu,
+            this.KillController});
+            this.CMenu.Name = "contextMenuStrip1";
+            this.CMenu.Size = new System.Drawing.Size(181, 70);
+            this.CMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
-            // toolStripSeparator1
+            // KillMenu
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(157, 6);
-            // 
-            // toolStripTextBox1
-            // 
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
+            this.KillMenu.Name = "KillMenu";
+            this.KillMenu.Size = new System.Drawing.Size(180, 22);
+            this.KillMenu.Text = "Kill Monitor";
+            this.KillMenu.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // lblErrors
             // 
@@ -176,6 +173,13 @@
             this.lblstatus.TabIndex = 10;
             this.lblstatus.Text = "STOPPED";
             // 
+            // KillController
+            // 
+            this.KillController.Name = "KillController";
+            this.KillController.Size = new System.Drawing.Size(180, 22);
+            this.KillController.Text = "Kill Controller";
+            this.KillController.Click += new System.EventHandler(this.SilentKillController);
+            // 
             // TRayMon
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -195,8 +199,7 @@
             this.Text = "Bitcoin Miner Monitor";
             this.Load += new System.EventHandler(this.TRayMon_Load);
             this.Resize += new System.EventHandler(this.TRayMon_Resize);
-            this.contextMenuStrip1.ResumeLayout(false);
-            this.contextMenuStrip1.PerformLayout();
+            this.CMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -205,9 +208,7 @@
         #endregion
 
         private NotifyIcon notifyIcon1;
-        private ContextMenuStrip contextMenuStrip1;
-        private ToolStripSeparator toolStripSeparator1;
-        private ToolStripTextBox toolStripTextBox1;
+        private ContextMenuStrip CMenu;
         private Label lblErrors;
         private System.Windows.Forms.Timer timer1;
         private Button btnRefresh;
@@ -219,5 +220,7 @@
         private Button BtnKill;
         private Label label1;
         private Label lblstatus;
+        private ToolStripMenuItem KillMenu;
+        private ToolStripMenuItem KillController;
     }
 }

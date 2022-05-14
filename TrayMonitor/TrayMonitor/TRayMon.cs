@@ -49,6 +49,9 @@ namespace TrayMonitor
 
         private async void btnRefresh_Click(object sender, EventArgs e)
         {
+            await refresh();
+            
+            /*
             Connector cn = new Connector();
             var tsk  = cn.SendCommand("<E>#");
             var tskW = cn.SendCommand("<W>#");
@@ -61,7 +64,7 @@ namespace TrayMonitor
             this.lblErrors.Text = tsk.Result;// await cn.SendCommand("<E>#");
             this.lblWorkers.Text = tskW.Result;
             this.lblJobs.Text = tskj.Result;
-            btnRefresh.Enabled = true;
+            btnRefresh.Enabled = true;*/
         }
         private void cleanStat()
         {
@@ -84,17 +87,19 @@ namespace TrayMonitor
                 await tsk;
                 await tskW;
                 await tskj;
-                this.lblErrors.Text = tsk.Result;// await cn.SendCommand("<E>#");
-                this.lblWorkers.Text = tskW.Result;
-                this.lblJobs.Text = tskj.Result;
-
+                this.lblErrors.Text = removeTypeChars(tsk.Result);// await cn.SendCommand("<E>#");
+                this.lblWorkers.Text = removeTypeChars(tskW.Result);
+                this.lblJobs.Text = removeTypeChars(tskj.Result);
                 lblstatus.Text = "STOPPED";
-                if (_cRunning)
-                {
-                    lblstatus.Text = "RUNNING";
+                if (_cRunning) {
+                    lblstatus.Text  = "RUNNING";
+                    BtnKill.Enabled = true;
+                    btnRefresh.Enabled = true;
                 }
-
-                btnRefresh.Enabled = true;
+                else {
+                    btnRefresh.Enabled = false;
+                    BtnKill.Enabled    = false;
+                }
             }
             else {
                 await Ping();
@@ -105,7 +110,7 @@ namespace TrayMonitor
             const string png = "<P>#";
             Connector cn = new Connector();
             string rv = await  cn.SendCommand(png);
-            if (rv.Contains(png)) { _cRunning = true; }
+            if (rv.Contains(png)) { _cRunning = true; btnRefresh.Enabled = true; }
             else { _cRunning = false; }
             return _cRunning;
         }
@@ -139,6 +144,34 @@ namespace TrayMonitor
             {
                 lblstatus.Text = "STOPPED";
             }
+        }
+        #region parsers
+
+        public static string removeTypeChars(string resp)
+        {
+            resp = resp.Trim();
+            if (resp.Length > 0) {
+                resp = resp.Substring(3);
+                resp = resp.Replace("#", "");
+            }
+            return resp;
+        }
+
+
+
+
+
+        #endregion
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(1);
+            MessageBox.Show("Shutting Down Monitor");
+        }
+
+        private void SilentKillController(object sender, EventArgs e)
+        {
+            BtnKill_Click(sender, e);
         }
     }
 }
